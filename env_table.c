@@ -38,11 +38,11 @@ t_var *getVal(t_env *env, char *key)
     if (env->size == 0)
         return NULL;
     index = hash(key, env);
-    while (env->n > 0 && env->vars[index] != NULL && strCmp(env->vars[index]->key, key) != 0) {
+    while (i < k && env->vars[index] != NULL && strCmp(env->vars[index]->key, key) != 0) {
         env->n = i;
         i++;
         index = hash(key, env);
-        if (i >= env->size) {
+        if (i >= k) {
             env->n = k;
             return NULL;
         }

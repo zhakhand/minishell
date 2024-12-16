@@ -24,7 +24,7 @@ int	main(int ac, char **av, char **ev)
 	data->argc = ac;
 	data->args = av;
 	copyEnv(data, ev);
-	t_var *userInfo = getVal(data->env, "USER");
+	t_var *userInfo = getVal(data->env, "PWD");
 	printf("%s=%s\n", userInfo->key, userInfo->val);
 	while (1)
 	{
