@@ -37,6 +37,20 @@
 # define APPEND 107
 # define VAR 108
 
+typedef struct s_var
+{
+	char	*key;
+	char	*val;
+}				t_var;
+
+typedef struct s_env
+{
+	size_t	size;
+	size_t	tableSize;
+	size_t	n;
+	t_var	**vars;
+}				t_env;
+
 typedef struct s_token 
 {
 	char	*val;
@@ -55,5 +69,33 @@ typedef struct s_cmd
 	struct s_cmd *next;
 	struct s_cmd *prev;
 }				t_cmd;
+
+typedef struct s_data
+{
+	int		argc;
+	char	**args;
+	char	*user;
+	t_env	*env;
+	t_token	*tokens;
+	t_cmd	*cmds;	
+}				t_data;
+
+t_token *tokenize(char *line);
+int		isSep(char c);
+char	*strNDup(char *str, int len);
+int		strCmp(char *str1, char *str2);
+int		strLen(char *str);
+
+//                     TOKENIZER                                    //
+void 	placeToken(t_token *new, t_token *prev);
+void 	setToken(t_token *tok, char *line, int *start, int *end);
+void 	setWord(t_token *tok, char *line, int *start, int *end);
+void 	handleQuotation(t_token *tok, char *line, int *start, int *end);
+void 	handleRedir(t_token *tok, char *line, int *start, int *end);
+void 	handleVar(t_token *tok, char *line, int *start, int *end);
+
+t_data *initData(void);
+void	copyEnv(t_data *data, char **envp);
+t_var	*getVal(t_env *env, char *key);
 
 #endif
