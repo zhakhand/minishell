@@ -20,7 +20,7 @@ int	main(int ac, char **av, char **ev)
 	t_token	*tokens;
 	//t_cmd	*cmd;
 
-	data = initData(ac, av, ev);
+	data = init_data(ac, av, ev);
 	while (1)
 	{
 		line = readline("> ");
@@ -28,13 +28,12 @@ int	main(int ac, char **av, char **ev)
 		free(line);
 		break;
 	}
-	while (data->envVar != NULL){
-		printf("[%s] \n", data->envVar->val);
-		data->envVar = data->envVar->next;
-	}
+	// while (data->env_var != NULL){
+	// 	printf("[%s] \n", data->env_var->val);
+	// 	data->env_var = data->env_var->next;
+	// }
 	while (tokens){
-		printf("[%s, %d] ", tokens->val, tokens->index);
+		printf("[%s] ", tokens->val);
 		tokens = tokens->next;
 	}
-    printf("\n");
 }

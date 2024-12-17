@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-int	strLen(char *str)
+int	str_len(char *str)
 {
 	int	i;
 
@@ -22,7 +22,7 @@ int	strLen(char *str)
 	return (i);
 }
 
-int	strCmp(char *str1, char *str2)
+int	ft_strcmp(char *str1, char *str2)
 {
 	int	i;	
 
@@ -32,14 +32,14 @@ int	strCmp(char *str1, char *str2)
 	return (str1[i] - str2[i]);
 }
 
-int	isSep(char c)
+int	is_sep(char c)
 {
-	if (c == '|' || c == '$' || c == '<' || c == '>' || c == '\'' || c == '\"')
+	if (c == '|' || c == '$' || c == '<' || c == '>' || c == '\'' || c == '\"' || c == 32)
 		return (1);
 	return (0);
 }
 
-char	*strNDup(char *str, int len)
+char	*ft_strndup(char *str, int len)
 {
 	char	*retStr;
 	int		i;
@@ -52,4 +52,38 @@ char	*strNDup(char *str, int len)
 		retStr[i] = str[i];
 	retStr[i] = '\0';
 	return (retStr);
+}
+
+char	*str_cpy(char *dest, char const *src)
+{
+	while (*src)
+		*dest++ = *src++;
+	return (dest);
+}
+
+static	char	*new_str(size_t len)
+{
+	char	*res;
+
+	res = (char *)malloc(sizeof(char) * (len + 1));
+	if (!res)
+		return (NULL);
+	*(res + len) = '\0';
+	return (res);
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	char	*res;
+
+	if (!s1 || !s2)
+	{
+		return (NULL);
+	}
+	res = new_str(str_len(s1) + str_len(s2));
+	if (!res)
+		return (NULL);
+	str_cpy(res, s1);
+	str_cpy(res + str_len(s1), s2);
+	return (res);
 }

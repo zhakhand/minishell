@@ -12,19 +12,19 @@
 
 #include "parser.h"
 
-t_data	*initData(int ac, char **av, char **ev)
+t_data	*init_data(int ac, char **av, char **ev)
 {
 	t_data	*new;
 
 	new = malloc(sizeof(t_data));
 	if (!new)
 		exit(2);
-	new->envVar = NULL;
+	new->env_var = NULL;
 	new->argc = ac;
 	new->args = av;
 	new->cmds = NULL;
 	new->tokens = NULL;
-	copyEnv(new, ev);
-	new->user = getEnvVar(new, "USER");
+	copy_env(new, ev);
+	new->user = get_env_var(new, "USER");
 	return (new);
 }

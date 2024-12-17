@@ -6,7 +6,7 @@ BACK=\033[42m
 BOLD=\033[1m
 RESET=\033[0m
 
-SRCS = parser.c utils.c tokenizer.c data.c env_table.c env_table_utils.c
+SRCS = parser.c utils.c tokenizer.c data.c env_table.c env_table_utils.c 
 
 HEAD = parser.h
 
@@ -22,16 +22,22 @@ CFLAGS = -Wall -Werror -Wextra -g
 
 all: ${NAME}
 
+libft:
+		make -C libft
+
 %.o:	%.c
 		@echo "${BLUE}${BOLD}Compiling $<${RESET}"
-		@${CC} ${CFLAGS} -c  $< -o $@
+		@${CC} ${CFLAGS} -Ilibft -c  $< -o $@
 
 ${NAME}: $(OBJS)
-		@${CC} ${CFLAGS} ${OBJS} -o $@ -lreadline
+		${MAKE} -s -C libft
+		@${CC} ${CFLAGS} ./libft/libft.a ${OBJS} -o $@ -lreadline
 		@echo "${BACK}${RED}${BOLD} Successfuly built ${NAME} ${RESET}"
+
 
 clean:
 		@echo "${YELLOW}${BOLD}Deleting object files${RESET}" 
+		@make clean -s -C libft
 		@${RM} ${OBJS}
 
 fclean: clean

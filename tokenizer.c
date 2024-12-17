@@ -1,14 +1,19 @@
 #include "parser.h"
 
-void setIndex(t_token *tok, char *line, int start)
+void set_index(t_token *tok, char *line, int start)
 {
-	if (start != 0 && line[start - 1] == 32 && tok->prev)
+	if (start != 0 && tok->prev && (line[start - 1] == 32 || is_sep(line[start - 1])))
+    {
 		tok->index = tok->prev->index + 1;
-	else if (tok->prev)
-		tok->index = tok->prev->index;
+        return ;
+    }
+    else if (tok->prev)
+    {
+        tok->index = tok->prev->index;
+    }
 }
 
-void	placeToken( t_token *new, t_token *prev)
+void	place_token( t_token *new, t_token *prev)
 {
 	if (!prev)
 		return;
@@ -16,18 +21,18 @@ void	placeToken( t_token *new, t_token *prev)
 	new->prev = prev;
 }
 
-void	setWord(t_token *tok, char *line, int *start, int *end)
+void	set_word(t_token *tok, char *line, int *start, int *end)
 {
     *end = *start;
-    while (line[*end] != 32 && line[*end] != 0 && !isSep(line[*end]))
+    while (line[*end] != 32 && line[*end] != 0 && !is_sep(line[*end]))
         (*end)++;
-    tok->val = strNDup(line + *start, *end - *start);
-	setIndex(tok, line, *start);
+    tok->val = ft_strndup(line + *start, *end - *start);
+	//set_index(tok, line, *start);
     *start = *end;
     tok->type = WORD;
 }
 
-void	handleRedir(t_token *tok, char *line, int *start, int *end)
+void	handle_redir(t_token *tok, char *line, int *start, int *end)
 {
     char	redir;
     int		len;
@@ -39,8 +44,8 @@ void	handleRedir(t_token *tok, char *line, int *start, int *end)
         (*end)++;
     len = *end - *start;
     //printf("%d\n", len);
-    tok->val = strNDup(line + *start, len);
-	setIndex(tok, line, *start);
+    tok->val = ft_strndup(line + *start, len);
+	//set_index(tok, line, *start);
     *start = *end;
     if (redir == '<')
     {
@@ -56,35 +61,33 @@ void	handleRedir(t_token *tok, char *line, int *start, int *end)
     }
 }
 
-void	handleVar(t_token *tok, char *line, int *start, int *end)
+void	handle_var(t_token *tok, char *line, int *start, int *end)
 {
     *end = *start + 1;
-    while (line[*end] != 32 && !isSep(line[*end]) && line[*end] != 0)
+    while (line[*end] != 32 && !is_sep(line[*end]) && line[*end] != 0)
         (*end)++;
-    tok->val = strNDup(line + *start, *end - *start);
+    tok->val = ft_strndup(line + *start, *end - *start);
     tok->type = VAR;
-	setIndex(tok, line, *start);
+	//set_index(tok, line, *start);
     *start = *end;
 }
 
-void	handleQuotation(t_token *tok, char *line, int *start, int *end)
+void	handle_quotes(t_token *tok, char *line, int *start, int *end)
 {
     char quote;
 
     quote = *(line + *start);
     //printf("%c\n", quote);
-	setIndex(tok, line, *start);
+	//set_index(tok, line, *start);
     (*start)++;
+    // if (line[*start] == 32)
+    //     tok->index++;
     *end = *start;
-    //printf("%c\n", line[*end]);
     while (line[*end] != quote && line[*end] != '\0')
         (*end)++;
-	//printf("%d\n", *end - *start);
-	//printf("%c\n", line[*end]);
     if (line[*end] == '\0')
         exit(1);
-    tok->val = strNDup(line + *start, *end - *start);
-	printf("%s\n", tok->val);
+    tok->val = ft_strndup(line + *start, *end - *start);
     if (quote == '\'')
         tok->type = S_QUOTE;
     else
@@ -92,26 +95,37 @@ void	handleQuotation(t_token *tok, char *line, int *start, int *end)
     *start = ++(*end);
 }
 
-void	setToken(t_token *tok, char *line, int *start, int *end)
+void    set_space(t_token *tok, char *line, int *start, int *end)
 {
+    while (line[*start] == 32 && line[*start] != 0)
+        (*start)++;
+    *end = *start;
+    tok->val = ft_strndup(" ", 1);
+    tok->type = WS;
+}
+
+void	set_token(t_token *tok, char *line, int *start, int *end)
+{
+    if (line[*start] == 32)
+        return set_space(tok, line, start, end);
     if (line[*start] == '\'' || line[*start] == '\"')
-        return handleQuotation(tok, line, start, end);
+        return handle_quotes(tok, line, start, end);
     if (line[*start] == '|')
     {
-        tok->val = strNDup(line + *start, 1);
-		setIndex(tok, line, *start);
+        tok->val = ft_strndup(line + *start, 1);
+		//set_index(tok, line, *start);
         tok->type = PIPE;
         (*start)++;
         *end = *start;
         return ;
     }
     if (line[*start] == '$')
-        return handleVar(tok, line, start, end);
+        return handle_var(tok, line, start, end);
     if (line[*start] == '<' || line[*start] == '>')
-        return handleRedir(tok, line, start, end);
+        return handle_redir(tok, line, start, end);
 }
 
-t_token	*initToken(void)
+t_token	*init_token(void)
 {
     t_token	*new;
 
@@ -141,20 +155,15 @@ t_token *tokenize(char *line)
     previous = NULL;
     while (line[start] && line[end])
     {
-        new = initToken();
+        new = init_token();
         if(!head)
-            head =new;
-        if (line[start] == 32)
-            start++;
+            head = new;
+        place_token(new, previous);
+        if (is_sep(line[start]))
+            set_token(new, line, &start, &end);
         else
-        {
-            placeToken(new, previous);
-            if (isSep(line[start]))
-                setToken(new, line, &start, &end);
-            else
-                setWord(new, line, &start, &end);
-            previous = new;
-        }
+            set_word(new, line, &start, &end);
+        previous = new;
     }
     return head;
 }

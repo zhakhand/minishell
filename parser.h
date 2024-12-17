@@ -26,7 +26,9 @@
 # include <termios.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "libft/libft.h"
 
+# define WS 99
 # define WORD 100
 # define S_QUOTE 101
 # define D_QUOTE 102
@@ -68,31 +70,33 @@ typedef struct s_data
 	int		argc;
 	char	**args;
 	t_var	*user;
-	t_var	*envVar;
+	t_var	*env_var;
 	t_token	*tokens;
 	t_cmd	*cmds;	
 }				t_data;
 
 t_token *tokenize(char *line);
-int		isSep(char c);
-char	*strNDup(char *str, int len);
-int		strCmp(char *str1, char *str2);
-int		strLen(char *str);
+int		is_sep(char c);
+char	*ft_strndup(char *str, int len);
+int		ft_strcmp(char *str1, char *str2);
+int		str_len(char *str);
+char	*ft_strjoin(char *s1, char *s2);
 
 //                     TOKENIZER                                    //
-void 	placeToken(t_token *new, t_token *prev);
-void 	setToken(t_token *tok, char *line, int *start, int *end);
-void 	setWord(t_token *tok, char *line, int *start, int *end);
-void 	handleQuotation(t_token *tok, char *line, int *start, int *end);
-void 	handleRedir(t_token *tok, char *line, int *start, int *end);
-void 	handleVar(t_token *tok, char *line, int *start, int *end);
+void 	place_token(t_token *new, t_token *prev);
+void 	set_token(t_token *tok, char *line, int *start, int *end);
+void 	set_word(t_token *tok, char *line, int *start, int *end);
+void	set_space(t_token *tok, char *line, int *start, int *end);
+void 	handle_quotes(t_token *tok, char *line, int *start, int *end);
+void 	handle_redir(t_token *tok, char *line, int *start, int *end);
+void 	handle_var(t_token *tok, char *line, int *start, int *end);
 
-t_data *initData(int ac, char **av, char **ev);
-void	copyEnv(t_data *data, char **envp);
-t_var	*createEnvVar(char *key, char *val);
-char	*userName(t_data *data);
-t_var	*getEnvVar(t_data *data, char *key);
-void	setEnvVar(t_data *data, char *key, char *val);
-void	unsetVar(t_data *data, char *key);
+t_data *init_data(int ac, char **av, char **ev);
+void	copy_env(t_data *data, char **envp);
+t_var	*create_env_var(char *key, char *val);
+t_var	*get_env_var(t_data *data, char *key);
+void	set_env_var(t_data *data, char *key, char *val);
+void	unset_var(t_data *data, char *key);
+
 
 #endif
