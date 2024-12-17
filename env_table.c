@@ -12,116 +12,96 @@
 
 #include "parser.h"
 
-int	hash(char *key, t_env *env)
+t_var	*getEnvVar(t_data *data, char *key)
 {
-	int		i;
-	int		hash;
+	t_var	*curr;
 
-	i = 0;
-	hash = 0;
-	while (key[i] != '\0')
-	{
-		hash += key[i];
-		i++;
-	}
-	return ((hash % env->tableSize) + env->n) % env->tableSize;
+	curr = NULL;
+	if (!data->envVar)
+		return NULL;
+	curr = data->envVar;
+	while (curr && strCmp(curr->key, key) != 0)
+		curr = curr->next;
+	if (!curr)
+		return (NULL);
+	return (curr);
 }
 
-t_var *getVal(t_env *env, char *key)
+void	setEnvVar(t_data *data, char *key, char *val)
 {
-    int index;
-    size_t i;
-	size_t k;
+	t_var	*new;
 
-	i = 0;
-	k = env->n;
-    if (env->size == 0)
-        return NULL;
-    index = hash(key, env);
-    while (i < k && env->vars[index] != NULL && strCmp(env->vars[index]->key, key) != 0) {
-        env->n = i;
-        i++;
-        index = hash(key, env);
-        if (i >= k) {
-            env->n = k;
-            return NULL;
-        }
-    }
-	env->n = k;
-    if (env->vars[index] != NULL && strCmp(env->vars[index]->key, key) == 0)
-        return env->vars[index];
-    return NULL;
-}
-
-
-void	addVal(t_env *env, char *val, char *key)
-{
-	int		index;
-	t_var *new;
-
-	if (env->size == env->tableSize)
+	new = getEnvVar(data, key);
+	if (!new)
 	{
-		growTable(env);
-	}
-	if (getVal(env, key) != NULL)
+		new = createEnvVar(key, val);
+		new->next = data->envVar;
+		data->envVar = new;
 		return ;
-	new = malloc(sizeof(t_var));
-	if (!new)
-		exit(2);
-	new->key = strNDup(key, strLen(key));
-	new->val = strNDup(val, strLen(val));
-	index = hash(key, env);
-	while (env->vars[index] != NULL)
-	{
-		env->n++;
-		index = hash(key, env);
 	}
-	env->vars[index] = new;
-	env->size++;
+	free(new->val);
+	new->val = strNDup(val, strLen(val));
 }
 
-t_env	*initEnv(int size)
+void	unsetVar(t_data *data, char *key)
 {
-	t_env	*new;
+	t_var	*var;
+	t_var	*next;
+	t_var	*prev;
 
-	new = malloc(sizeof(t_env));
-	if (!new)
+	var = NULL;
+	next = NULL;
+	prev = data->envVar;
+	while (prev->next && strCmp(prev->next->key, key) != 0)
+		prev = prev->next;
+	if (!prev->next)
+		return ;
+	var = prev->next;
+	next = var->next;
+	prev->next = next;
+	free(var->key);
+	free(var->val);
+	free(var);
+}
+
+t_var	*createEnvVar(char *key, char *val)
+{
+	t_var	*var;
+
+	var = malloc(sizeof(t_var));
+	if (!var)
 		exit(2);
-	new->vars = (t_var **)malloc(sizeof(t_var *) * (size + 1));
-	if (!new->vars)
-		exit(2);
-	new->vars[size] = NULL;
-	new->tableSize = size;
-	while (size-- > 0)
-		new->vars[size] = NULL;
-	new->size = 0;
-	new->n = 0;
-	return (new);
+	var->key = strNDup(key, strLen(key));
+	var->val = strNDup(val, strLen(val));
+	var->next = NULL;
+	return (var);
 }
 
 void	copyEnv(t_data *data, char **envp)
 {
     int		i;
 	int		j;
-	char	*val;
-	char	*key;
+	t_var	*new;
+	t_var	*head;
+	t_var	*tail;
 	
-	i = 0;
-	j = 0;
-	while (envp[i] != 0)
-		i++;
-	data->env = initEnv(i);
-	i = 0;
-    while (envp[i] != 0)
+	i = -1;
+	head = NULL;
+	tail = NULL;
+	new = NULL;
+    while (envp[++i] != 0)
     {
-		j = 0;
-		while (envp[i][j] != '=')
-			j++;
-		key = strNDup(envp[i], j);
-		val = strNDup(envp[i] + j + 1, strLen(envp[i]) + j);
-		addVal(data->env, val, key);
-		free(key);
-		free(val);
-		i++;
+		j = -1;
+		while (envp[i][++j] != '=');
+		new = createEnvVar(strNDup(envp[i], j), envp[i] + j + 1);
+		if (!head) 
+		{
+            head = new;
+            tail = new;
+			continue;
+        }
+        tail->next = new;
+        tail = new;
     }
+	data->envVar = head;
 }

@@ -39,17 +39,10 @@
 
 typedef struct s_var
 {
-	char	*key;
-	char	*val;
+	char			*key;
+	char			*val;
+	struct s_var	*next;
 }				t_var;
-
-typedef struct s_env
-{
-	size_t	size;
-	size_t	tableSize;
-	size_t	n;
-	t_var	**vars;
-}				t_env;
 
 typedef struct s_token 
 {
@@ -74,8 +67,8 @@ typedef struct s_data
 {
 	int		argc;
 	char	**args;
-	char	*user;
-	t_env	*env;
+	t_var	*user;
+	t_var	*envVar;
 	t_token	*tokens;
 	t_cmd	*cmds;	
 }				t_data;
@@ -94,9 +87,12 @@ void 	handleQuotation(t_token *tok, char *line, int *start, int *end);
 void 	handleRedir(t_token *tok, char *line, int *start, int *end);
 void 	handleVar(t_token *tok, char *line, int *start, int *end);
 
-t_data *initData(void);
+t_data *initData(int ac, char **av, char **ev);
 void	copyEnv(t_data *data, char **envp);
-t_var	*getVal(t_env *env, char *key);
-void	addVal(t_env *env, char *key, char *val);
+t_var	*createEnvVar(char *key, char *val);
+char	*userName(t_data *data);
+t_var	*getEnvVar(t_data *data, char *key);
+void	setEnvVar(t_data *data, char *key, char *val);
+void	unsetVar(t_data *data, char *key);
 
 #endif

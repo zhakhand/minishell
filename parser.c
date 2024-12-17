@@ -20,12 +20,7 @@ int	main(int ac, char **av, char **ev)
 	t_token	*tokens;
 	//t_cmd	*cmd;
 
-	data = initData();
-	data->argc = ac;
-	data->args = av;
-	copyEnv(data, ev);
-	t_var *userInfo = getVal(data->env, "PWD");
-	printf("%s=%s\n", userInfo->key, userInfo->val);
+	data = initData(ac, av, ev);
 	while (1)
 	{
 		line = readline("> ");
@@ -33,10 +28,9 @@ int	main(int ac, char **av, char **ev)
 		free(line);
 		break;
 	}
-	int i = 0;
-	while (data->env->vars[i] != NULL){
-		printf("[%s] \n", data->env->vars[i]->val);
-		i++;
+	while (data->envVar != NULL){
+		printf("[%s] \n", data->envVar->val);
+		data->envVar = data->envVar->next;
 	}
 	while (tokens){
 		printf("[%s, %d] ", tokens->val, tokens->index);
