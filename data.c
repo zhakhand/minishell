@@ -14,15 +14,15 @@
 
 t_data	*initData(void)
 {
-    t_data	*new;
+	t_data	*new;
 
-    new = malloc(sizeof(t_data));
-    if (!new)
-        exit(2);
-    new->args = NULL;
-    new->user = NULL;
-    new->env = NULL;
-    new->cmds = NULL;
-    new->tokens = NULL;
-    return (new);
+	new = malloc(sizeof(t_data));
+	if (!new)
+		exit(2);
+	new->args = NULL;
+	new->user = NULL;
+	new->env = NULL;
+	new->cmds = NULL;
+	new->tokens = NULL;
+	return (new);
 }

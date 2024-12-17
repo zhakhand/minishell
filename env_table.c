@@ -54,11 +54,15 @@ t_var *getVal(t_env *env, char *key)
 }
 
 
-void	setVal(t_env *env, char *val, char *key)
+void	addVal(t_env *env, char *val, char *key)
 {
 	int		index;
 	t_var *new;
 
+	if (env->size == env->tableSize)
+	{
+		growTable(env);
+	}
 	if (getVal(env, key) != NULL)
 		return ;
 	new = malloc(sizeof(t_var));
@@ -115,7 +119,7 @@ void	copyEnv(t_data *data, char **envp)
 			j++;
 		key = strNDup(envp[i], j);
 		val = strNDup(envp[i] + j + 1, strLen(envp[i]) + j);
-		setVal(data->env, val, key);
+		addVal(data->env, val, key);
 		free(key);
 		free(val);
 		i++;

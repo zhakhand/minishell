@@ -97,5 +97,6 @@ void 	handleVar(t_token *tok, char *line, int *start, int *end);
 t_data *initData(void);
 void	copyEnv(t_data *data, char **envp);
 t_var	*getVal(t_env *env, char *key);
+void	addVal(t_env *env, char *key, char *val);
 
 #endif
