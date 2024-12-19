@@ -17,14 +17,14 @@ int	main(int ac, char **av, char **ev)
 {
 	char	*line;
 	t_data	*data;
-	t_token	*tokens;
 	//t_cmd	*cmd;
 
 	data = init_data(ac, av, ev);
 	while (1)
 	{
 		line = readline("> ");
-		tokens = tokenize(line);
+		data->tokens = tokenize(line);
+		reorder_tokens(data);
 		free(line);
 		break;
 	}
@@ -32,8 +32,8 @@ int	main(int ac, char **av, char **ev)
 	// 	printf("[%s] \n", data->env_var->val);
 	// 	data->env_var = data->env_var->next;
 	// }
-	while (tokens){
-		printf("[%s] ", tokens->val);
-		tokens = tokens->next;
+	while (data->tokens){
+		printf("[%s] ", data->tokens->val);
+		data->tokens = data->tokens->next;
 	}
 }

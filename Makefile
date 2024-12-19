@@ -6,7 +6,7 @@ BACK=\033[42m
 BOLD=\033[1m
 RESET=\033[0m
 
-SRCS = parser.c utils.c tokenizer.c data.c env_table.c env_table_utils.c 
+SRCS = parser.c utils.c tokenizer.c data.c env_table.c env_table_utils.c expansion.c
 
 HEAD = parser.h
 
@@ -30,8 +30,8 @@ libft:
 		@${CC} ${CFLAGS} -Ilibft -c  $< -o $@
 
 ${NAME}: $(OBJS)
-		${MAKE} -s -C libft
-		@${CC} ${CFLAGS} ./libft/libft.a ${OBJS} -o $@ -lreadline
+		@${MAKE} -s -C libft
+		@${CC} ${CFLAGS} ${OBJS} -o $@ ./libft/libft.a -lreadline
 		@echo "${BACK}${RED}${BOLD} Successfuly built ${NAME} ${RESET}"
 
 

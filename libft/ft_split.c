@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 12:28:53 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/05/02 15:43:05 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2024/12/19 12:34:20 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static size_t	ft_wrdcount(char const *str, char c)
 	return (count);
 }
 
-static void	free_arr(char **array, size_t i)
+void	free_arr(char **array, size_t i)
 {
 	while (i > 0)
 	{

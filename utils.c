@@ -53,37 +53,3 @@ char	*ft_strndup(char *str, int len)
 	retStr[i] = '\0';
 	return (retStr);
 }
-
-char	*str_cpy(char *dest, char const *src)
-{
-	while (*src)
-		*dest++ = *src++;
-	return (dest);
-}
-
-static	char	*new_str(size_t len)
-{
-	char	*res;
-
-	res = (char *)malloc(sizeof(char) * (len + 1));
-	if (!res)
-		return (NULL);
-	*(res + len) = '\0';
-	return (res);
-}
-
-char	*ft_strjoin(char *s1, char *s2)
-{
-	char	*res;
-
-	if (!s1 || !s2)
-	{
-		return (NULL);
-	}
-	res = new_str(str_len(s1) + str_len(s2));
-	if (!res)
-		return (NULL);
-	str_cpy(res, s1);
-	str_cpy(res + str_len(s1), s2);
-	return (res);
-}

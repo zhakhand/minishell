@@ -1,17 +1,16 @@
-#include "parser.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/19 12:40:46 by dzhakhan          #+#    #+#             */
+/*   Updated: 2024/12/19 12:40:46 by dzhakhan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void set_index(t_token *tok, char *line, int start)
-{
-	if (start != 0 && tok->prev && (line[start - 1] == 32 || is_sep(line[start - 1])))
-    {
-		tok->index = tok->prev->index + 1;
-        return ;
-    }
-    else if (tok->prev)
-    {
-        tok->index = tok->prev->index;
-    }
-}
+#include "parser.h"
 
 void	place_token( t_token *new, t_token *prev)
 {
@@ -97,10 +96,11 @@ void	handle_quotes(t_token *tok, char *line, int *start, int *end)
 
 void    set_space(t_token *tok, char *line, int *start, int *end)
 {
-    while (line[*start] == 32 && line[*start] != 0)
-        (*start)++;
     *end = *start;
-    tok->val = ft_strndup(" ", 1);
+    while (line[*end] == 32 && line[*end] != 0)
+        (*end)++;
+    tok->val = ft_strndup(line + *start, *end - *start);
+    *start = *end;
     tok->type = WS;
 }
 
@@ -132,7 +132,7 @@ t_token	*init_token(void)
     new = malloc(sizeof(t_token));
     if (!new)
         exit(2);
-    new->index = 0;
+    new->was_quoted = 0;
     new->next = NULL;
     new->prev = NULL;
     new->ogVal = NULL;

@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:16:00 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/08/09 14:03:53 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2024/12/19 12:34:35 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 void	ft_free(int **a);
+void	free_arr(char **array, size_t i);
 
 typedef struct s_list
 {

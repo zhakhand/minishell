@@ -50,8 +50,8 @@ typedef struct s_token
 {
 	char	*val;
 	char	*ogVal;
-	int		index;
 	int		type;
+	int		was_quoted;
 	struct s_token *next;
 	struct s_token *prev;
 }				t_token;
@@ -98,5 +98,5 @@ t_var	*get_env_var(t_data *data, char *key);
 void	set_env_var(t_data *data, char *key, char *val);
 void	unset_var(t_data *data, char *key);
 
-
+void	reorder_tokens(t_data *data);
 #endif
