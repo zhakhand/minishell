@@ -32,7 +32,7 @@ int	main(int ac, char **av, char **ev)
 	// 	printf("[%s] \n", data->env_var->val);
 	// 	data->env_var = data->env_var->next;
 	// }
-	while (data->tokens){
+	while (data->tokens && data->tokens->val){
 		printf("[%s] ", data->tokens->val);
 		data->tokens = data->tokens->next;
 	}

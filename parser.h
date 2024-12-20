@@ -28,6 +28,7 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 
+# define ES 98
 # define WS 99
 # define WORD 100
 # define S_QUOTE 101
@@ -75,7 +76,6 @@ typedef struct s_data
 	t_cmd	*cmds;	
 }				t_data;
 
-t_token *tokenize(char *line);
 int		is_sep(char c);
 char	*ft_strndup(char *str, int len);
 int		ft_strcmp(char *str1, char *str2);
@@ -83,6 +83,9 @@ int		str_len(char *str);
 char	*ft_strjoin(char *s1, char *s2);
 
 //                     TOKENIZER                                    //
+t_token *tokenize(char *line);
+t_token	*tokenize_quotes_vars(char *line);
+t_token	*init_token(void);
 void 	place_token(t_token *new, t_token *prev);
 void 	set_token(t_token *tok, char *line, int *start, int *end);
 void 	set_word(t_token *tok, char *line, int *start, int *end);
@@ -97,6 +100,7 @@ t_var	*create_env_var(char *key, char *val);
 t_var	*get_env_var(t_data *data, char *key);
 void	set_env_var(t_data *data, char *key, char *val);
 void	unset_var(t_data *data, char *key);
-
 void	reorder_tokens(t_data *data);
+void	merge_tokens(t_data *data);
+
 #endif

@@ -26,7 +26,6 @@ void	set_word(t_token *tok, char *line, int *start, int *end)
     while (line[*end] != 32 && line[*end] != 0 && !is_sep(line[*end]))
         (*end)++;
     tok->val = ft_strndup(line + *start, *end - *start);
-	//set_index(tok, line, *start);
     *start = *end;
     tok->type = WORD;
 }
@@ -37,14 +36,11 @@ void	handle_redir(t_token *tok, char *line, int *start, int *end)
     int		len;
 
     redir = *(line + *start);
-	//printf("%c\n", redir);
     *end = *start + 1;
     if (line[*end] == redir)
         (*end)++;
     len = *end - *start;
-    //printf("%d\n", len);
     tok->val = ft_strndup(line + *start, len);
-	//set_index(tok, line, *start);
     *start = *end;
     if (redir == '<')
     {
@@ -67,7 +63,6 @@ void	handle_var(t_token *tok, char *line, int *start, int *end)
         (*end)++;
     tok->val = ft_strndup(line + *start, *end - *start);
     tok->type = VAR;
-	//set_index(tok, line, *start);
     *start = *end;
 }
 
@@ -76,14 +71,17 @@ void	handle_quotes(t_token *tok, char *line, int *start, int *end)
     char quote;
 
     quote = *(line + *start);
-    //printf("%c\n", quote);
-	//set_index(tok, line, *start);
     (*start)++;
-    // if (line[*start] == 32)
-    //     tok->index++;
     *end = *start;
     while (line[*end] != quote && line[*end] != '\0')
-        (*end)++;
+		(*end)++;
+	if (*end - *start == 0)
+	{
+		tok->type = ES;
+		tok->val = ft_strdup("");
+		*start = ++(*end);
+		return;
+	}
     if (line[*end] == '\0')
         exit(1);
     tok->val = ft_strndup(line + *start, *end - *start);
@@ -98,7 +96,7 @@ void    set_space(t_token *tok, char *line, int *start, int *end)
 {
     *end = *start;
     while (line[*end] == 32 && line[*end] != 0)
-        (*end)++;
+		(*end)++;
     tok->val = ft_strndup(line + *start, *end - *start);
     *start = *end;
     tok->type = WS;
@@ -113,7 +111,6 @@ void	set_token(t_token *tok, char *line, int *start, int *end)
     if (line[*start] == '|')
     {
         tok->val = ft_strndup(line + *start, 1);
-		//set_index(tok, line, *start);
         tok->type = PIPE;
         (*start)++;
         *end = *start;

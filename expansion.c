@@ -6,23 +6,23 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/12/19 16:19:51 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:51:48 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-t_token	*link_tokens(t_token *token, t_token *head, t_token *curr, t_token *next)
+t_token	*link_tokens(t_token *token, t_token *head, t_token *tail)
 {
 	if (token->prev)
 	{
 		token->prev->next = head;
 		head->prev = token->prev;
 	}
-	if (next)
+	if (token->next)
 	{
-		next->prev = curr;
-		curr->next = next;
+		token->next->prev = tail;
+		tail->next = token->next;
 	}
 	free(token->val);
 	free(token);
@@ -47,14 +47,14 @@ t_token	*set_quoted(t_token	*token, t_token	*head)
 	return (curr);
 }
 
-t_token	*break_down_tokens(t_token *token, t_token *next)
+t_token	*break_down_tokens(t_token *token)
 {
 	t_token	*head;
 	t_token	*curr;
 
-	head = tokenize(token->val);
+	head = tokenize_quotes_vars(token->val); 
 	curr = set_quoted(token, head);
-	return link_tokens(token, head, curr, next);
+	return link_tokens(token, head, curr);
 }
 
 void	clear_quote_tokens(t_data *data)
@@ -71,56 +71,15 @@ void	clear_quote_tokens(t_data *data)
 		if (current->type == S_QUOTE || current->type == D_QUOTE )
 		{
 			if (!current->prev)
-				data->tokens = break_down_tokens(current, next);
+				data->tokens = break_down_tokens(current);
 			else 
-				current = break_down_tokens(current, next);
+				current = break_down_tokens(current);
 		}
 		current = next;
 	}
 }
 
-// t_token	*join_tokens(t_token *token, t_token *next, t_data *data)
-// {
-// 	t_var	*var;
-// 	t_token	*head;
-// 	t_token	*current;
-// 	char	*merged;
-
-// 	current = token;
-// 	head = current;
-// 	while (current)
-// 	{
-// 		current = current->next;
-// 	}
-// 	return NULL;
-// }
-
-// void	merge_tokens(t_data *data)
-// {
-// 	t_token *current;
-// 	t_token	*next;
-
-// 	current = data->tokens;
-// 	next = NULL;
-// 	while (current)
-// 	{
-// 		next = current->next;
-// 		if ((current->type == WORD || current->type == VAR) && next)
-// 		{
-// 			if (next->type == WS)
-// 			{
-// 				current = next;
-// 				continue ;
-// 			}
-// 			if (next->type == WORD || next->type == VAR)
-// 			{
-// 				current = join_tokens(current, next, data);
-// 			}
-// 		}
-// 	}
-// }
-
-t_token	*check_expansion(t_token *token, t_token *next, t_data *data)
+t_token	*check_expansion(t_token *token, t_data *data)
 {
 	t_var	*var;
 	t_token	*head;
@@ -128,7 +87,6 @@ t_token	*check_expansion(t_token *token, t_token *next, t_data *data)
 
 	head = NULL;
 	curr = NULL;
-	var = NULL;
 	if (token->was_quoted != 1)
 	{
 		var = get_env_var(data, token->val + 1);
@@ -136,11 +94,17 @@ t_token	*check_expansion(t_token *token, t_token *next, t_data *data)
 		{
 			token->ogVal = token->val;
 			token->val = ft_strdup("");
+			token->type = VAR;
 			return token;
 		}
-		head = tokenize(var->val);
-		set_quoted(token, head);
-		return link_tokens(token, head, curr, next);
+		if (token->was_quoted == 2)
+		{
+			token->val = ft_strdup(var->val);
+			return (token);
+		}
+		head = tokenize_quotes_vars(var->val);
+		curr = set_quoted(token, head);
+		return link_tokens(token, head, curr);
 	}
 	return (token);
 }
@@ -158,9 +122,9 @@ void	expand_vars(t_data *data)
 		if (current->type == VAR)
 		{
 			if (!current->prev)
-				data->tokens = check_expansion(current, next, data);
+				data->tokens = check_expansion(current, data);
 			else
-				current = check_expansion(current, next, data);
+				current = check_expansion(current, data);
 		}
 		current = next;
 	}
@@ -170,5 +134,5 @@ void	reorder_tokens(t_data *data)
 {
 	clear_quote_tokens(data);
 	expand_vars(data);
-	//merge_tokens(data);
+	merge_tokens(data);
 }
