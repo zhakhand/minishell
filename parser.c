@@ -12,12 +12,11 @@
 
 #include "parser.h"
 
-
-int	main(int ac, char **av, char **ev)
+int main(int ac, char **av, char **ev)
 {
-	char	*line;
-	t_data	*data;
-	//t_cmd	*cmd;
+	char *line;
+	t_data *data;
+	// t_cmd	*cmd;
 
 	data = init_data(ac, av, ev);
 	while (1)
@@ -32,8 +31,10 @@ int	main(int ac, char **av, char **ev)
 	// 	printf("[%s] \n", data->env_var->val);
 	// 	data->env_var = data->env_var->next;
 	// }
-	while (data->tokens && data->tokens->val){
+	while (data->tokens != NULL && data->tokens->val)
+	{
 		printf("[%s] ", data->tokens->val);
 		data->tokens = data->tokens->next;
 	}
+	printf("\n");
 }

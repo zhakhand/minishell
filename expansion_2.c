@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-t_token	*relink_tokens(t_token *empty, t_token *current, t_data *data)
+t_token *relink_tokens(t_token *empty, t_token *current, t_data *data)
 {
 	if (current)
 	{
@@ -27,15 +27,23 @@ t_token	*relink_tokens(t_token *empty, t_token *current, t_data *data)
 		if (current)
 			current->prev = empty->prev;
 	}
-	free(empty->val);
-	free(empty);
+	// if (empty->val)
+	// {
+	// 	free(empty->val);
+	// 	empty->val = NULL;
+	// }
+	// if (empty)
+	// {
+	// 	free(empty);
+	// 	empty = NULL;
+	// }
 	return current;
 }
 
-void	clear_out_es(t_data *data)
+void clear_out_es(t_data *data)
 {
-	t_token	*current;
-	t_token	*empty;
+	t_token *current;
+	t_token *empty;
 
 	current = data->tokens;
 	empty = NULL;
@@ -47,19 +55,20 @@ void	clear_out_es(t_data *data)
 			current = current->next;
 			current = relink_tokens(empty, current, data);
 		}
-		if (current)
+		else
 			current = current->next;
 	}
 }
 
-void	join_tokens(t_data *data)
+void join_tokens(t_data *data)
 {
-	char	*merged;
-	t_token	*current;
+	char *merged;
+	t_token *current;
 
-	current = data->tokens;
-	if (!current)
+	current = NULL;
+	if (!data->tokens)
 		exit(1);
+	current = data->tokens;
 	while (current)
 	{
 		if (current->type == WORD && current->next && current->next->type == WORD)
@@ -69,11 +78,12 @@ void	join_tokens(t_data *data)
 			free(current->val);
 			current->val = merged;
 		}
-		current = current->next;
+		else
+			current = current->next;
 	}
 }
 
-void	merge_tokens(t_data *data)
+void merge_tokens(t_data *data)
 {
 	clear_out_es(data);
 	join_tokens(data);
