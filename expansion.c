@@ -105,7 +105,7 @@ t_token *check_expansion(t_token *token, t_data *data)
 			return (token);
 		}
 		head = tokenize_quotes_vars(var->val);
-		curr = set_quoted(token, head);
+		// curr = set_quoted(token, head);
 		return link_tokens(token, head, curr);
 	}
 	token->type = WORD;

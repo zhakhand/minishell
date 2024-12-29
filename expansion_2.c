@@ -71,7 +71,8 @@ void join_tokens(t_data *data)
 	current = data->tokens;
 	while (current)
 	{
-		if (current->type == WORD && current->next && current->next->type == WORD)
+		if ((current->was_quoted || current->type == WORD) && current->next \
+		&& (current->next->was_quoted || current->next->type == WORD))
 		{
 			merged = ft_strjoin(current->val, current->next->val);
 			current = relink_tokens(current, current->next, data);
