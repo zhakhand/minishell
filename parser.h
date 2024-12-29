@@ -60,7 +60,7 @@ typedef struct s_token
 typedef struct s_redir
 {
 	char *val;
-
+	int type;
 } t_redir;
 
 typedef struct s_cmd
