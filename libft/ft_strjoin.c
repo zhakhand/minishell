@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 13:36:29 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/08/09 14:04:22 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/02 17:10:41 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static size_t	str_len(char const *s)
 	size_t	len;
 
 	len = 0;
+	if (!s)
+		return (0);
 	while (*(s + len))
 		len++;
 	return (len);
@@ -46,7 +48,12 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	if (!s1 || !s2)
 	{
-		return (NULL);
+		if (s1 && !s2)
+			return ft_strdup(s1);
+		if (!s1 && s2)
+			return ft_strdup(s2);
+		if (!s1 && !s2)
+			return NULL;
 	}
 	res = new_str(str_len(s1) + str_len(s2));
 	if (!res)

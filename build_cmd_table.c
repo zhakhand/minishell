@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:41:58 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/12/21 14:41:58 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/02 10:20:52 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,12 @@ void fill_args(t_cmd *cmd, int count, int r_count, t_token *token)
 	curr = token;
 	while (i < count)
 	{
-		cmd->cmd[i] = curr->val;
+		cmd->args[i] = curr->val;
 		curr = curr->next;
 		i++;
 	}
 	i = 0;
-	while (i < r_count) // IS << >> < > arg?
-	{
-		cmd->redirs
-	}
+	
 }
 
 t_token *put_cmds(t_token *token, t_cmd *cmd)
@@ -98,7 +95,7 @@ void set_cmd_table(t_data *data)
 	t_cmd *current;
 
 	head = create_cmd_table();
-	curr = head;
+	current = head;
 	token = data->tokens;
 	data->cmds = head;
 	while (token)

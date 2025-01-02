@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/12/20 15:51:48 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/02 17:18:10 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,9 @@ t_token *check_expansion(t_token *token, t_data *data)
 			return (token);
 		}
 		head = tokenize_quotes_vars(var->val);
+		curr = head;
+		while (curr->next)
+			curr = curr->next;
 		// curr = set_quoted(token, head);
 		return link_tokens(token, head, curr);
 	}
