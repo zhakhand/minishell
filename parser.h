@@ -61,13 +61,15 @@ typedef struct s_redir
 {
 	char *val;
 	int type;
+	struct s_redir	*next;
+	struct s_redir	*prev;
 } t_redir;
 
 typedef struct s_cmd
 {
 	char *cmd;
 	char **args;
-	char **redirs;
+	t_redir	*redir;
 	struct s_cmd *next;
 	struct s_cmd *prev;
 } t_cmd;
@@ -111,5 +113,7 @@ void merge_tokens(t_data *data);
 void delete_spaces(t_data *data);
 void check_pipes(t_data *data);
 t_token *relink_tokens(t_token *empty, t_token *current, t_data *data);
+
+void	set_cmd_table(t_data *data);
 
 #endif

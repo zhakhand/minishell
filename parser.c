@@ -24,6 +24,7 @@ int main(int ac, char **av, char **ev)
 		line = readline("> ");
 		data->tokens = tokenize(line);
 		reorder_tokens(data);
+		set_cmd_table(data);
 		free(line);
 		break;
 	}
@@ -31,10 +32,10 @@ int main(int ac, char **av, char **ev)
 	// 	printf("[%s] \n", data->env_var->val);
 	// 	data->env_var = data->env_var->next;
 	// }
-	while (data->tokens != NULL && data->tokens->val)
-	{
-		printf("[%s] ", data->tokens->val);
-		data->tokens = data->tokens->next;
-	}
+	// while (data->tokens != NULL && data->tokens->val)
+	// {
+	// 	printf("[%s] ", data->tokens->val);
+	// 	data->tokens = data->tokens->next;
+	// }
 	printf("\n");
 }
