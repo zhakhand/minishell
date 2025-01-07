@@ -21,6 +21,7 @@ t_data	*init_data(int ac, char **av, char **ev)
 		exit(2);
 	new->env_var = NULL;
 	new->argc = ac;
+	new->err_no = 0;
 	new->args = av;
 	new->cmds = NULL;
 	new->tokens = NULL;

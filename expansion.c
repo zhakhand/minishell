@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/02 17:18:10 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/07 13:24:19 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,4 +143,5 @@ void reorder_tokens(t_data *data)
 	merge_tokens(data);
 	delete_spaces(data);
 	check_pipes(data);
+	check_redirs(data);
 }

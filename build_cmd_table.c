@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:41:58 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/04 15:54:51 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:04:34 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_cmd *create_cmd_table()
 	cmd_table->next = NULL;
 	cmd_table->prev = NULL;
 	cmd_table->redir = NULL;
+	cmd_table->built_in = 0;
 	cmd_table->args = NULL;
 	cmd_table->cmd = NULL;
 	return cmd_table;
@@ -59,7 +60,7 @@ void create_arrays(t_cmd *cmd, int count)
 		exit(1);
 }
 
-void fill_args(t_cmd *cmd, int count, t_token *token)
+void fill_args(t_cmd *cmd, /*int count,*/ t_token *token)
 {
 	int i;
 	t_token *curr;
@@ -77,9 +78,9 @@ void fill_args(t_cmd *cmd, int count, t_token *token)
 		curr = curr->next;
 	}
 	cmd->args[i] = 0;
-	i = -1;
-	while (++i < count)
-		printf("%s\n", cmd->args[i]);
+	//i = -1;
+	// while (++i < count)
+	// 	printf("%s\n", cmd->args[i]);
 }
 
 t_redir	*init_redir()
@@ -140,7 +141,7 @@ t_token *put_cmds(t_token *token, t_cmd *cmd)
 	cmd->redir = redir_list(token);
 	tail = count_args(&count, token);
 	create_arrays(cmd, count);
-	fill_args(cmd, count, token);
+	fill_args(cmd, /*count,*/ token);
 	cmd->cmd = cmd->args[0];
 	if (tail)
 		return tail->next;
@@ -162,11 +163,12 @@ void set_cmd_table(t_data *data)
 		if (current == NULL)
 			current = create_cmd_table();
 		token = put_cmds(token, current);
-		t_redir	*red = current->redir;
-		while (red){
-			printf("{%s}", red->val);
-			red = red->next;
-		}
+		// t_redir	*red = current->redir;
+		// while (red){
+		// 	printf("{%s}", red->val);
+		// 	red = red->next;
+		// }
 		current = current->next;
 	}
+	check_built_in(data->cmds);
 }

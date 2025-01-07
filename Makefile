@@ -6,7 +6,9 @@ BACK=\033[42m
 BOLD=\033[1m
 RESET=\033[0m
 
-SRCS = parser.c utils.c tokenizer.c data.c env_table.c env_table_utils.c expansion.c vars_tokens_tokenizer.c expansion_2.c expansion_3.c build_cmd_table.c
+SRCS = parser.c utils.c tokenizer.c data.c env_table.c env_table_utils.c \
+expansion.c vars_tokens_tokenizer.c expansion_2.c expansion_3.c build_cmd_table.c \
+built_in_check.c errors.c clean_up.c
 
 HEAD = parser.h
 

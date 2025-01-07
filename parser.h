@@ -40,6 +40,16 @@
 #define APPEND 107
 #define VAR 108
 
+#define ECH 901
+#define CD   902
+#define PWD  903
+#define EXPORT 904
+#define UNSET 905
+#define ENV 906
+#define EXIT 907
+
+#define UNEXPECTED_TOKEN "syntax error near unexpected token "
+
 typedef struct s_var
 {
 	char *key;
@@ -67,16 +77,20 @@ typedef struct s_redir
 
 typedef struct s_cmd
 {
-	char *cmd;
-	char **args;
-	t_redir	*redir;
-	struct s_cmd *next;
-	struct s_cmd *prev;
+	int	in;
+	int	out;
+	char 			*cmd;
+	char 			**args;
+	t_redir			*redir;
+	int				built_in;
+	struct s_cmd	*next;
+	struct s_cmd	*prev;
 } t_cmd;
 
 typedef struct s_data
 {
 	int argc;
+	int	err_no;
 	char **args;
 	t_var *user;
 	t_var *env_var;
@@ -112,8 +126,13 @@ void reorder_tokens(t_data *data);
 void merge_tokens(t_data *data);
 void delete_spaces(t_data *data);
 void check_pipes(t_data *data);
+void	check_redirs(t_data *data);
 t_token *relink_tokens(t_token *empty, t_token *current, t_data *data);
 
 void	set_cmd_table(t_data *data);
+int	is_redir(int type);
+void	check_built_in(t_cmd *cmd);
+void	error_msg(char *error, t_token *token, t_data *data);
+void	clean_data(t_data *data);
 
 #endif

@@ -6,11 +6,31 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 13:40:06 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/12/21 13:40:06 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:52:21 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
+void	check_redirs(t_data *data)
+{
+	t_token	*current;
+
+	if (!data->tokens)
+		exit(1);
+	current = data->tokens;
+	while (current)
+	{
+		if (is_redir(current->type))
+		{
+			if (current->next && is_redir(current->next->type))
+				error_msg(UNEXPECTED_TOKEN, current->next, data);
+			else if (!current->next)
+				error_msg(UNEXPECTED_TOKEN, NULL, data);
+		}
+		current = current->next;
+	}
+}
 
 void check_pipes(t_data *data)
 {
@@ -26,10 +46,10 @@ void check_pipes(t_data *data)
 			if (current->next)
 			{
 				if (current->next->type == PIPE)
-					exit(1);
+					error_msg(UNEXPECTED_TOKEN, current->next, data);
 			}
 			else
-				exit(1);
+				error_msg(UNEXPECTED_TOKEN, NULL, data);
 		}
 		current = current->next;
 	}
