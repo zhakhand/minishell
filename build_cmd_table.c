@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:41:58 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/07 14:04:34 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:16:17 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,7 @@ t_cmd *create_cmd_table()
 	cmd_table = malloc(sizeof(t_cmd));
 	if (!cmd_table)
 		exit(2);
-	cmd_table->next = NULL;
-	cmd_table->prev = NULL;
-	cmd_table->redir = NULL;
-	cmd_table->built_in = 0;
-	cmd_table->args = NULL;
-	cmd_table->cmd = NULL;
+	ft_bzero(cmd_table, sizeof(t_cmd));
 	return cmd_table;
 }
 
@@ -32,12 +27,6 @@ int	is_redir(int type)
 {
 	return (type == IN || type == OUT || type == HEREDOC || type == APPEND);
 }
-
-/*****
- * << >> < > should be in different cmd tables? NO
- * put redirs also in args[]? NO
- * 
-******/
 
 t_token *count_args(int *count, t_token *token)
 {
@@ -51,13 +40,6 @@ t_token *count_args(int *count, t_token *token)
 		tail = tail->next;
 	}
 	return (tail);
-}
-
-void create_arrays(t_cmd *cmd, int count)
-{
-	cmd->args = (char **)malloc((sizeof(char *) * count) + 1);
-	if (!cmd->args)
-		exit(1);
 }
 
 void fill_args(t_cmd *cmd, /*int count,*/ t_token *token)
@@ -77,10 +59,12 @@ void fill_args(t_cmd *cmd, /*int count,*/ t_token *token)
 		}
 		curr = curr->next;
 	}
-	cmd->args[i] = 0;
-	//i = -1;
-	// while (++i < count)
-	// 	printf("%s\n", cmd->args[i]);
+	//cmd->args[i] = 0;
+	i = 0;
+	while (cmd->args[i]){
+		printf("%s\n", cmd->args[i]);
+		i++;
+	}
 }
 
 t_redir	*init_redir()
@@ -140,7 +124,7 @@ t_token *put_cmds(t_token *token, t_cmd *cmd)
 	count = 0;
 	cmd->redir = redir_list(token);
 	tail = count_args(&count, token);
-	create_arrays(cmd, count);
+	cmd->args = ft_calloc(count, sizeof(char *));
 	fill_args(cmd, /*count,*/ token);
 	cmd->cmd = cmd->args[0];
 	if (tail)
@@ -151,23 +135,37 @@ t_token *put_cmds(t_token *token, t_cmd *cmd)
 void set_cmd_table(t_data *data)
 {
 	t_token *token;
-	t_cmd *head;
-	t_cmd *current;
+	t_cmd 	*head;
+	t_cmd 	*current;
+	t_cmd	*prev;
 
 	head = create_cmd_table();
 	current = head;
+	prev = NULL;
 	token = data->tokens;
 	data->cmds = head;
 	while (token)
 	{
 		if (current == NULL)
+		{
 			current = create_cmd_table();
+			if (prev)
+				prev->next = current;
+		}
 		token = put_cmds(token, current);
-		// t_redir	*red = current->redir;
-		// while (red){
-		// 	printf("{%s}", red->val);
-		// 	red = red->next;
-		// }
+		t_redir	*red = current->redir;
+		while (red){
+			printf("{%s}", red->val);
+			red = red->next;
+		}
+		printf("\n");
+		prev = current;
+		current = current->next;
+	}
+	current = data->cmds;
+	while (current)
+	{
+		printf("(%s)\n", current->cmd);
 		current = current->next;
 	}
 	check_built_in(data->cmds);

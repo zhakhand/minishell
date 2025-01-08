@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 14:39:05 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/12/20 15:53:13 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:06:09 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,16 @@ t_token *relink_tokens(t_token *empty, t_token *current, t_data *data)
 		if (current)
 			current->prev = empty->prev;
 	}
-	// if (empty->val)
-	// {
-	// 	free(empty->val);
-	// 	empty->val = NULL;
-	// }
-	// if (empty)
-	// {
-	// 	free(empty);
-	// 	empty = NULL;
-	// }
+	if (empty)
+	{
+		if (empty->val)
+		{
+			free(empty->val);
+			empty->val = NULL;
+		}
+		free(empty);
+		empty = NULL;
+	}
 	return current;
 }
 
@@ -76,7 +76,6 @@ void join_tokens(t_data *data)
 		{
 			merged = ft_strjoin(current->val, current->next->val);
 			current = relink_tokens(current, current->next, data);
-			free(current->val);
 			current->val = merged;
 		}
 		else

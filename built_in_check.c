@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 13:38:09 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/07 14:44:48 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:56:11 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 int	is_built_in(char *cmd)
 {
 	if (cmd)
-		return (ft_strcmp(cmd, "echo") || ft_strcmp(cmd, "cd") || ft_strcmp(cmd, "pwd") \
-	|| ft_strcmp(cmd, "export") || ft_strcmp(cmd, "unset") || ft_strcmp(cmd, "env") \
-	|| ft_strcmp(cmd, "exit"));
+		return (ft_strcmp(cmd, "echo") == 0 || ft_strcmp(cmd, "cd") == 0 \
+		|| ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "export") == 0 \
+		|| ft_strcmp(cmd, "unset") == 0 || ft_strcmp(cmd, "env") == 0 \
+	|| ft_strcmp(cmd, "exit") == 0);
 	return (0);
 }
 

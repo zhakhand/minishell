@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 14:11:46 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/07 14:43:22 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:49:54 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,12 +90,40 @@ void	free_tokens(t_token *token)
 	}
 }
 
+void	clean_env(t_data *data)
+{
+	t_var	*curr;
+	t_var	*to_free;
+
+	curr = data->env_var;
+	to_free = NULL;
+	while (curr)
+	{
+		to_free = curr;
+		curr = curr->next;
+		if (to_free->key)
+			free(to_free->key);
+		to_free->key = NULL;
+		if (to_free->val)
+			free(to_free->val);
+		to_free->val = NULL;
+		free(to_free);
+		to_free = NULL;
+	}
+}
+
 void	clean_data(t_data *data)
 {
+	if (!data)
+		return ;
 	if (data->tokens)
 		free_tokens(data->tokens);
 	if (data->cmds)
 		free_cmds(data->cmds);
 	data->tokens = NULL;
-	data->cmds = NULL;		
+	data->cmds = NULL;
+	if (data->env_var)
+		clean_env(data);
+	free(data);
+	data = NULL;	
 }
