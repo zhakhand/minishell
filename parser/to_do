@@ -1,0 +1,2 @@
+cmd not found: for non empty cmds add check in executor
+invalid file descriptors: in executor
