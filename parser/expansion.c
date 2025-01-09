@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/07 13:24:19 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:59:06 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void clear_quote_tokens(t_data *data)
 {
 	t_token *current;
 	t_token *next;
-	// t_token	*head;
 
 	current = data->tokens;
 	next = NULL;
@@ -87,6 +86,11 @@ t_token *check_expansion(t_token *token, t_data *data)
 
 	head = NULL;
 	curr = NULL;
+	if (token->prev && token->prev->prev && token->prev->prev->type == HEREDOC) // WHILE LOOP BACKWARDS
+	{
+		token->type = WORD;
+		return (token);
+	}
 	if (token->was_quoted != 1)
 	{
 		var = get_env_var(data, token->val + 1);
@@ -99,7 +103,7 @@ t_token *check_expansion(t_token *token, t_data *data)
 		}
 		if (token->was_quoted == 2)
 		{
-			free(token->val);
+			token->val = NULL;
 			token->val = ft_strdup(var->val);
 			token->type = WORD;
 			return (token);
@@ -138,6 +142,7 @@ void expand_vars(t_data *data)
 
 void reorder_tokens(t_data *data)
 {
+	merge_tokens(data);
 	clear_quote_tokens(data);
 	expand_vars(data);
 	merge_tokens(data);

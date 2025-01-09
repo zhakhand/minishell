@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 13:40:06 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/07 14:52:21 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/09 14:48:17 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void check_pipes(t_data *data)
 	{
 		if (current->type == PIPE)
 		{
+			if (!current->prev)
+				error_msg(UNEXPECTED_TOKEN, current, data);
 			if (current->next)
 			{
 				if (current->next->type == PIPE)
@@ -64,7 +66,7 @@ void delete_spaces(t_data *data)
 	current = data->tokens;
 	while (current)
 	{
-		if (current->type == WS)
+		if (current->type == WS && current->was_quoted == 0)
 			current = relink_tokens(current, current->next, data);
 		else
 			current = current->next;

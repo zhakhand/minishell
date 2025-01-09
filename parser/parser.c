@@ -12,6 +12,48 @@
 
 #include "parser.h"
 
+void	print_cmd_table(t_cmd *cmd)
+{
+	t_cmd	*curr;
+	t_redir	*red;
+	int		i;
+	int		j;
+
+	j = 0;
+	curr = cmd;
+	printf("*******Command Table*********\n");
+	while (curr)
+	{
+		i = 0;
+		printf("***%d***\n", j);
+		if (curr->cmd)
+			printf("CMD: %s\n", curr->cmd);
+		if (curr->args)
+		{
+			printf("ARGS: ");
+			while (curr->args[i])
+				printf("[%s] ", curr->args[i++]);
+			printf("\n");
+		}
+		if (curr->redir)
+		{
+			red = curr->redir;
+			printf("REDIRS: ");
+			while (red)
+			{
+				printf("[%s, %d]", red->val, red->type);
+				red = red->next;
+			}
+			printf("\n");
+		}
+		printf("BUILT IN: %d\n", curr->built_in);
+		printf("IN File: %d\n", curr->in);
+		printf("OUT File: %d\n", curr->out);
+		j++;
+		curr = curr->next;
+	}
+}
+
 int main(int ac, char **av, char **ev)
 {
 	char *line;
@@ -28,9 +70,6 @@ int main(int ac, char **av, char **ev)
 		free(line);
 		break;
 	}
-	// while (data->env_var != NULL){
-	// 	printf("[%s] \n", data->env_var->val);
-	// 	data->env_var = data->env_var->next;
-	// }
+	print_cmd_table(data->cmds);
 	clean_data(data);
 }

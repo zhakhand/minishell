@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 14:39:05 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/08 15:06:09 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:42:07 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void clear_out_es(t_data *data)
 	empty = NULL;
 	while (current)
 	{
-		if (current->type == ES)
+		if (current->type == ES && current->was_quoted == 0)
 		{
 			empty = current;
 			current = current->next;
@@ -72,7 +72,7 @@ void join_tokens(t_data *data)
 	while (current)
 	{
 		if ((current->was_quoted || current->type == WORD) && current->next \
-		&& (current->next->was_quoted || current->next->type == WORD))
+		&& (current->next->was_quoted || (current->next->type == WORD || current->next->type == VAR)))
 		{
 			merged = ft_strjoin(current->val, current->next->val);
 			current = relink_tokens(current, current->next, data);

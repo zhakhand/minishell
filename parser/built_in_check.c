@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 13:38:09 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/08 14:56:11 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/09 12:04:55 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,33 +24,33 @@ int	is_built_in(char *cmd)
 
 void	set_built_in(t_cmd *cmd)
 {
-	if (ft_strcmp(cmd->cmd, "echo"))
+	if (ft_strcmp(cmd->cmd, "echo") == 0)
 		cmd->built_in = ECH;
-	else if (ft_strcmp(cmd->cmd, "cd"))
+	else if (ft_strcmp(cmd->cmd, "cd") == 0)
 		cmd->built_in = CD;
-	else if (ft_strcmp(cmd->cmd, "pwd"))
+	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
 		cmd->built_in = PWD;
-	else if (ft_strcmp(cmd->cmd, "export"))
+	else if (ft_strcmp(cmd->cmd, "export") == 0)
 		cmd->built_in = EXPORT;
-	else if (ft_strcmp(cmd->cmd, "unset"))
+	else if (ft_strcmp(cmd->cmd, "unset") == 0)
 		cmd->built_in = UNSET;
-	else if (ft_strcmp(cmd->cmd, "env"))
+	else if (ft_strcmp(cmd->cmd, "env") == 0)
 		cmd->built_in = ENV;
-	else if (ft_strcmp(cmd->cmd, "exit"))
+	else if (ft_strcmp(cmd->cmd, "exit") == 0)
 		cmd->built_in = EXIT;
 }
 
-void	check_built_in(t_cmd *cmd)
+void	check_built_in(t_data *data)
 {
 	t_cmd	*curr;
 	
-	if (!cmd)
+	if (!data->cmds)
 		return;
-	curr = cmd;
+	curr = data->cmds;
 	while (curr)
 	{
-		if (is_built_in(cmd->cmd))
-			set_built_in(cmd);
+		if (is_built_in(curr->cmd))
+			set_built_in(curr);
 		curr = curr->next;
 	}
 }

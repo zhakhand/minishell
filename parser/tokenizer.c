@@ -80,7 +80,8 @@ void handle_quotes(t_token *tok, char *line, int *start, int *end)
     if (*end - *start == 0)
     {
         tok->type = ES;
-        tok->val = NULL;
+        tok->val = ft_strdup("");
+        tok->was_quoted = 1;
         *start = ++(*end);
         return;
     }

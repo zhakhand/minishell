@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 13:36:29 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/02 17:10:41 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:37:07 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static size_t	str_len(char const *s)
 	size_t	len;
 
 	len = 0;
-	if (!s)
+	if (!s || !*s)
 		return (0);
 	while (*(s + len))
 		len++;

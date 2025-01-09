@@ -26,7 +26,7 @@
 #include <termios.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 #define ES 98
 #define WS 99
@@ -52,6 +52,7 @@
 
 typedef struct s_var
 {
+	int	is_valid;
 	char *key;
 	char *val;
 	struct s_var *next;
@@ -104,7 +105,7 @@ int ft_strcmp(char *str1, char *str2);
 int str_len(char *str);
 char *ft_strjoin(char *s1, char *s2);
 
-//                     TOKENIZER                                    //
+//                     TOKENIZER                       //
 t_token *tokenize(char *line);
 t_token *tokenize_quotes_vars(char *line);
 t_token *init_token(void);
@@ -124,6 +125,7 @@ void set_env_var(t_data *data, char *key, char *val);
 void unset_var(t_data *data, char *key);
 void reorder_tokens(t_data *data);
 void merge_tokens(t_data *data);
+void clear_out_es(t_data *data);
 void delete_spaces(t_data *data);
 void check_pipes(t_data *data);
 void	check_redirs(t_data *data);
@@ -131,7 +133,7 @@ t_token *relink_tokens(t_token *empty, t_token *current, t_data *data);
 
 void	set_cmd_table(t_data *data);
 int	is_redir(int type);
-void	check_built_in(t_cmd *cmd);
+void	check_built_in(t_data *data);
 void	error_msg(char *error, t_token *token, t_data *data);
 void	clean_data(t_data *data);
 

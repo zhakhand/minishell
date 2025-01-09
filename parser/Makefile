@@ -25,21 +25,21 @@ CFLAGS = -Wall -Werror -Wextra -g
 all: ${NAME}
 
 libft:
-		make -C libft
+		make -C ../libft
 
 %.o:	%.c
 		@echo "${BLUE}${BOLD}Compiling $<${RESET}"
 		@${CC} ${CFLAGS} -Ilibft -c  $< -o $@
 
 ${NAME}: $(OBJS)
-		@${MAKE} -s -C libft
-		@${CC} ${CFLAGS} ${OBJS} -o $@ ./libft/libft.a -lreadline
+		@${MAKE} -s -C ../libft
+		@${CC} ${CFLAGS} ${OBJS} -o $@ ../libft/libft.a -lreadline
 		@echo "${BACK}${RED}${BOLD} Successfuly built ${NAME} ${RESET}"
 
 
 clean:
 		@echo "${YELLOW}${BOLD}Deleting object files${RESET}" 
-		@make clean -s -C libft
+		@make clean -s -C ../libft
 		@${RM} ${OBJS}
 
 fclean: clean

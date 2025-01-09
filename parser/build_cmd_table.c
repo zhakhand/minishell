@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:41:58 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/08 16:16:17 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:25:56 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ t_cmd *create_cmd_table()
 	if (!cmd_table)
 		exit(2);
 	ft_bzero(cmd_table, sizeof(t_cmd));
+	cmd_table->in = -1;
+	cmd_table->out = -1;
 	return cmd_table;
 }
 
@@ -42,7 +44,7 @@ t_token *count_args(int *count, t_token *token)
 	return (tail);
 }
 
-void fill_args(t_cmd *cmd, /*int count,*/ t_token *token)
+void fill_args(t_cmd *cmd, t_token *token)
 {
 	int i;
 	t_token *curr;
@@ -58,12 +60,6 @@ void fill_args(t_cmd *cmd, /*int count,*/ t_token *token)
 			i++;
 		}
 		curr = curr->next;
-	}
-	//cmd->args[i] = 0;
-	i = 0;
-	while (cmd->args[i]){
-		printf("%s\n", cmd->args[i]);
-		i++;
 	}
 }
 
@@ -106,6 +102,8 @@ t_redir	*redir_list(t_token *token)
 			}
 			tail->type = token->prev->type;
 			tail->val = token->val;
+			if (token->prev->type == HEREDOC && token->was_quoted == 2 && token->ogVal)
+				tail->val = token->ogVal;
 			token->val = NULL;
 			free(token->prev->val);
 			token->prev->val = NULL;
@@ -125,7 +123,7 @@ t_token *put_cmds(t_token *token, t_cmd *cmd)
 	cmd->redir = redir_list(token);
 	tail = count_args(&count, token);
 	cmd->args = ft_calloc(count, sizeof(char *));
-	fill_args(cmd, /*count,*/ token);
+	fill_args(cmd, token);
 	cmd->cmd = cmd->args[0];
 	if (tail)
 		return tail->next;
@@ -153,20 +151,8 @@ void set_cmd_table(t_data *data)
 				prev->next = current;
 		}
 		token = put_cmds(token, current);
-		t_redir	*red = current->redir;
-		while (red){
-			printf("{%s}", red->val);
-			red = red->next;
-		}
-		printf("\n");
 		prev = current;
 		current = current->next;
 	}
-	current = data->cmds;
-	while (current)
-	{
-		printf("(%s)\n", current->cmd);
-		current = current->next;
-	}
-	check_built_in(data->cmds);
+	check_built_in(data);
 }
