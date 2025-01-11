@@ -21,9 +21,9 @@ int handle_heredoc(char *file)
 	lseek(temp_fd, 0, SEEK_SET);
 	return (temp_fd);
 }
-int handle_input_redirects(t_redirects *redir)
+int handle_input_redirects(t_redir *redir)
 {
-	t_redirects *redirects;
+	t_redir *redirects;
 	int in_fd;
 	int temp_fd;
 
@@ -32,7 +32,7 @@ int handle_input_redirects(t_redirects *redir)
 	{
 		if (redir->type == IN)
 		{
-			in_fd = open(redir->file, O_RDONLY);
+			in_fd = open(redir->val, O_RDONLY);
 			if (in_fd == -1)
 				return (-1);
 			if (dup2(in_fd, STDIN_FILENO) == -1)
@@ -41,7 +41,7 @@ int handle_input_redirects(t_redirects *redir)
 		}
 		else if (redir->type == HEREDOC)
 		{
-			temp_fd = handle_heredoc(redir->file);
+			temp_fd = handle_heredoc(redir->val);
 			if (dup2(temp_fd, STDIN_FILENO) == -1)
 				return (-1);
 		}
@@ -51,7 +51,7 @@ int handle_input_redirects(t_redirects *redir)
 	return (0);
 }
 
-int handle_output_redirects(t_redirects *redir)
+int handle_output_redirects(t_redir *redir)
 {
 	int out_fd;
 	out_fd = -1;
@@ -64,9 +64,9 @@ int handle_output_redirects(t_redirects *redir)
 		if (redir->type == OUT || redir->type == APPEND)
 		{
 			if (redir->type == OUT)
-				out_fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+				out_fd = open(redir->val, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 			else
-				out_fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0666);
+				out_fd = open(redir->val, O_WRONLY | O_CREAT | O_APPEND, 0666);
 			if (out_fd == -1)
 				return (-1);
 			if (dup2(out_fd, STDOUT_FILENO) == -1)
@@ -79,12 +79,12 @@ int handle_output_redirects(t_redirects *redir)
 	return (0);
 }
 
-int open_and_close(t_redirects *redir)
+int open_and_close(t_redir *redir)
 {
 	int out_fd;
 	out_fd = -1;
 
-	out_fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	out_fd = open(redir->val, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (out_fd == -1)
 	{
 		panic("No such file or directory");
@@ -94,19 +94,19 @@ int open_and_close(t_redirects *redir)
 	return (0);
 }
 
-void handle_redirects(t_cmd_node *node)
+void handle_redirects(t_cmd *node)
 {
-	t_redirects *input_redirects;
-	t_redirects *output_redirects;
-	t_redirects *temp;
+	t_redir *input_redirects;
+	t_redir *output_redirects;
+	t_redir *temp;
 
-	temp = node->redirects;
+	temp = node->redir;
 	while (temp)
 	{
-		printf("redir %d  %s\n", temp->type, temp->file);
+		printf("redir %d  %s\n", temp->type, temp->val);
 		temp = temp->next;
 	}
-	temp = node->redirects;
+	temp = node->redir;
 	input_redirects = NULL;
 	output_redirects = NULL;
 	while (temp)

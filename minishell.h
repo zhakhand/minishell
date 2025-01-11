@@ -48,7 +48,7 @@ typedef struct s_redirects
 void free_node(t_cmd_node *node);
 void free_node_2(t_cmd_node *node);
 
-void handle_redirects(t_cmd_node *node);
+void handle_redirects(t_cmd *node);
 void ft_env_no_args(t_data *data, t_cmd_node *node);
 void sort_env(t_data *data);
 int ft_echo(t_cmd_node *node);
@@ -65,7 +65,7 @@ void panic(char *msg);
 void find_env_in_cmd(t_cmd_node **node, t_data *data);
 int get_arr_lines(char **arr);
 void get_envs(t_data *data, char **envp);
-void run_pipe(t_data *data, t_cmd_node *list, char **envp);
+void run_pipe(t_data *data, t_cmd *cmd, char **envp);
 void run_fork(t_cmd_node *list, char **envp);
 char *find_path(char *cmd, char **envp);
 char **get_path_arr(char **envp);
@@ -74,7 +74,7 @@ void 	run(t_cmd_node *list, char **envp);
 void	ft_bzero(void *s, size_t n);
 char	*ft_strdup(const char *s);
 
-int execute(t_data *data);
+int execute(t_data *data, char **envp);
 
 
 #endif
