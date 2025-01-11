@@ -34,7 +34,8 @@ void change_env_to_value(t_cmd_node *node, t_data *data, char *found, int ii)
 	int i;
 	int len;
 	char *no_dollar;
-	char *value;
+	char *value;int execute(t_data *data)
+
 
 	printf("fou %s", found);
 	no_dollar = ft_strdup(found + 1);

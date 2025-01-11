@@ -74,4 +74,7 @@ void 	run(t_cmd_node *list, char **envp);
 void	ft_bzero(void *s, size_t n);
 char	*ft_strdup(const char *s);
 
+int execute(t_data *data);
+
+
 #endif

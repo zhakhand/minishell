@@ -95,6 +95,7 @@ typedef struct s_data
 	int 	argc;
 	int		err_no;
 	char 	**args;
+	char 	**path_arr;
 	char	*path;
 	char	*old_pwd;
 	char	*pwd;

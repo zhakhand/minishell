@@ -1,39 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   exec_new.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/11 14:04:20 by oshcheho         ###   ########.fr       */
+/*   Created: 2025/01/11 13:39:20 by oshcheho          #+#    #+#             */
+/*   Updated: 2025/01/11 14:01:12 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "parser.h"
+#include "../minishell.h"
 
-int main(int ac, char **av, char **ev)
+int execute(t_data *data)
 {
-	char *line;
-	t_data *data;
-	// t_cmd	*cmd;
+	char *full_path;
 
-	data = init_data(ac, av, ev);
-	while (1)
-	{
-		line = readline("> ");
-		data->tokens = tokenize(line);
-		reorder_tokens(data);
-		set_cmd_table(data);
-		free(line);
-		break;
-	}
+	printf("path %s \n", data->path);
+	printf("node %s \n", data->cmds->args[0]);
 
+	full_path = find_path(data->cmds->args[0], data->path_arr);
+	printf("f path %s \n", full_path);
 
-	print_cmd_table(data->cmds);
-	data->path_arr = get_path_arr(ev);
-	execute(data);
-	clean_data(data);
-
+	return (EXIT_SUCCESS);
 }

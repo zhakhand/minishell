@@ -1,6 +1,7 @@
 
 #include "../minishell.h"
 
+
 void run(t_cmd_node *list, char **envp)
 {
 	char *full_path;
@@ -81,8 +82,8 @@ void run_pipe(t_data *data, t_cmd_node *list, char **envp)
 		{
 			// full_path = find_path(list->cmd_args[0], envp);
 			free(full_path);
-			free_data(data);
-			free_node_2(list);
+	//		free_data(data);
+//			free_node_2(list);
 		}
 //		}
 
