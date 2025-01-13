@@ -240,7 +240,9 @@ int ft_export(t_data *data, t_cmd *node)
 		{
 			if (check_symbols(node->args[i]) == 1)
 			{
-//				printf("minishell: export: `%s': not a valid identifier\n", node->args[i]);
+				ft_putstr_fd("minishell: export: ", STDERR_FILENO); 
+				ft_putstr_fd(node->args[i], STDERR_FILENO);
+				ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
 				return (1);
 			}
 			if (ft_strchr(node->args[i], '=') != NULL)

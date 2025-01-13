@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/12 12:34:34 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/13 18:58:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int main(int ac, char **av, char **ev)
 {
 	char *line;
 	t_data *data;
+	int err_no;
 	// t_cmd	*cmd;
 
 	data = init_data(ac, av, ev);
@@ -33,7 +34,9 @@ int main(int ac, char **av, char **ev)
 
 //	print_cmd_table(data->cmds);
 	data->path_arr = get_path_arr(ev);
-	execute(data, ev);
+	err_no = execute(data, ev);
+	
 	clean_data(data);
+	return (err_no);
 
 }

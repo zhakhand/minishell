@@ -39,10 +39,21 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	int pid;
 	int fds[2];
 
-
 	pid = 0;
 	if (data == NULL)
 		return (-1);
+	
+	// t_cmd *temp = cmd;
+	// while (temp)
+	// {
+	// 	int i = 0;
+	// 	while (temp->args[i])
+	// 	{
+	// 		printf("args %s\n", temp->args[i]);
+	// 		i++;
+	// 	}
+	// 	temp = temp->next;
+	// }
 	// t_var *temp = data->env_var;
 	// while (temp)
 	// {
@@ -51,6 +62,8 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	// }
 	
 	full_path = find_path(cmd->args[0], data->path_arr);
+	if (cmd->built_in == CD)
+		data->err_no = changedir(data, cmd);
 
 	if (cmd->next != NULL && !cmd->redir)
 	{
@@ -63,7 +76,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	else if (pid == 0)
 	{
 		if (cmd->redir)
-			handle_redirects(cmd);
+			data->err_no = handle_redirects(cmd);
 		if (cmd->next != NULL && !cmd->redir)
 		{
 			close(fds[0]);
@@ -73,7 +86,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 		}
 		if (!check_if_buildin(cmd))
 		{
-			exec_buildin(data, cmd);
+			data->err_no = exec_buildin(data, cmd);
 	//		printf("buildin\n");
 		}
 		else
@@ -101,5 +114,5 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	}
 //	free_data(data);
 	free(full_path);
-	return (0);
+	return (data->err_no);
 }

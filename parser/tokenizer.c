@@ -74,7 +74,7 @@ void handle_var(t_token *tok, char *line, int *start, int *end)
             tok->type = ERROR;
         }
         *start = *end;
-        printf("%s\n", tok->val); 
+//        printf("%s\n", tok->val); 
         return ;
     }
     tok->val = ft_strndup(line + *start, *end - *start);

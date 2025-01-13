@@ -49,15 +49,17 @@ void free_node(t_cmd_node *node);
 void free_node_2(t_cmd_node *node);
 
 int exec_buildin(t_data *data, t_cmd *node);
-void handle_redirects(t_cmd *node);
+int handle_redirects(t_cmd *node);
 
 int ft_env_no_args(t_data *data);
 void sort_env(t_data *data);
 int ft_echo(t_cmd *node);
 int ft_unset(t_data *data, t_cmd *node);
 int ft_export(t_data *data, t_cmd *node);
-void changedir(t_data *data, t_cmd *node);
+int changedir(t_data *data, t_cmd *node);
 char *get_pwd(t_data *data);
+int ft_exit(t_data *data, t_cmd *node);
+
 
 void free_array(char ***arr);
 void free_data(t_data *data);

@@ -97,7 +97,7 @@ int open_and_close(t_redir *redir)
 	return (0);
 }
 
-void handle_redirects(t_cmd *node)
+int handle_redirects(t_cmd *node)
 {
 	t_redir *input_redirects;
 	t_redir *output_redirects;
@@ -127,4 +127,5 @@ void handle_redirects(t_cmd *node)
 		panic("Failed to handle input redirects");
 	if (handle_output_redirects(output_redirects) == -1)
 		panic("Failed to handle output redirects");
+	return (0);
 }
