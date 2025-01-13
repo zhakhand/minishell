@@ -66,7 +66,10 @@ int handle_output_redirects(t_redir *redir)
 			if (redir->type == OUT)
 				out_fd = open(redir->val, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 			else
+			{
+		printf("from red %d\n", redir->type);
 				out_fd = open(redir->val, O_WRONLY | O_CREAT | O_APPEND, 0666);
+			}
 			if (out_fd == -1)
 				return (-1);
 			if (dup2(out_fd, STDOUT_FILENO) == -1)
@@ -100,12 +103,12 @@ void handle_redirects(t_cmd *node)
 	t_redir *output_redirects;
 	t_redir *temp;
 
-	temp = node->redir;
-	while (temp)
-	{
-		printf("redir %d  %s\n", temp->type, temp->val);
-		temp = temp->next;
-	}
+	// temp = node->redir;
+	// while (temp)
+	// {
+	// 	printf("redir %d  %s\n", temp->type, temp->val);
+	// 	temp = temp->next;
+	// }
 	temp = node->redir;
 	input_redirects = NULL;
 	output_redirects = NULL;

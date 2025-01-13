@@ -75,7 +75,7 @@ char *find_path(char *cmd, char **path)
 		res = ft_substr(cmd, 2, ft_strlen(cmd) - 2);
 			if (access(res, X_OK) == 0)
 			{
-				printf("CMD  %s %s \n", cmd, res);
+//				printf("CMD  %s %s \n", cmd, res);
 				return(res);
 			}
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/11 17:31:25 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/01/12 12:34:34 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int main(int ac, char **av, char **ev)
 	}
 
 
-	print_cmd_table(data->cmds);
+//	print_cmd_table(data->cmds);
 	data->path_arr = get_path_arr(ev);
 	execute(data, ev);
 	clean_data(data);

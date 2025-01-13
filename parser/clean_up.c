@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clean_up.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 14:11:46 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/09 19:46:26 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/13 13:31:14 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	free_args(char	**args)
 	{
 		free(args[i]);
 		args[i] = NULL;
+		i++;
 	}
 	free(args);
 	args = NULL;
@@ -120,12 +121,16 @@ void	clean_data(t_data *data)
 		free_tokens(data->tokens);
 	if (data->cmds)
 		free_cmds(data->cmds);
+	if (data->path_arr)
+		free_args(data->path_arr);
 	data->tokens = NULL;
 	data->cmds = NULL;
 	if (data->env_var)
 		clean_env(data);
 	if (data->old_pwd)
 		free(data->old_pwd);
+	if (data->pwd)
+		free(data->pwd);
 	if (data->path)
 		free(data->path);
 	free(data);

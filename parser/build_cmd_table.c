@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_cmd_table.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:41:58 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/09 19:46:19 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:09:17 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,12 @@ t_redir	*init_redir()
 
 t_redir	*redir_list(t_token *token)
 {
-	t_token	*curr;
 	t_redir	*head;
 	t_redir *prev;
 	t_redir	*tail;
+//	t_token	*curr;
 
-	curr = token;
+//	curr = token;
 	head = NULL;
 	prev = NULL;
 	while (token && token->type != PIPE)

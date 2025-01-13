@@ -2,7 +2,7 @@
 #include "../minishell.h"
 
 
-int if_no_newline(t_cmd_node *node)
+int if_no_newline(t_cmd *node)
 {
 	int i;
 	int j;
@@ -13,12 +13,12 @@ int if_no_newline(t_cmd_node *node)
 	j = 2;
 	flag = 0;
 	no_newline = 0;
-	while (ft_strncmp(node->cmd_args[i], "-n", 2) == 0)
+	while (ft_strncmp(node->args[i], "-n", 2) == 0)
 	{
-		while(node->cmd_args[i][j] != '\0')
+		while(node->args[i][j] != '\0')
 		{
 			no_newline = 0;
-			if (node->cmd_args[i][j] != 'n')
+			if (node->args[i][j] != 'n')
 				break;
 			j++;
 			no_newline = 1;
@@ -31,15 +31,17 @@ int if_no_newline(t_cmd_node *node)
 	return (flag);
 }
 
-int ft_echo(t_cmd_node *node)
+int ft_echo(t_cmd *node)
 {
 	int i;
 
+//	printf("test_echo\n");
+
 	i = if_no_newline(node) + 1;
-	while (node->cmd_args[i] != NULL)
+	while (node->args[i] != NULL)
 	{
-		printf("%s", node->cmd_args[i]);
-		if (node->cmd_args[i + 1] != NULL)
+		printf("%s", node->args[i]);
+		if (node->args[i + 1] != NULL)
 			printf(" ");
 		i++;
 	}

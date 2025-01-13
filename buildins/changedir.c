@@ -215,12 +215,13 @@ void cd_dir(t_data *data, t_cmd_node *node)
 	free(pwd);
 }
 
-void changedir(t_data *data, t_cmd_node *node)
+int changedir(t_data *data, t_cmd *node)
 {
 	char *pwd;
 	int old_pwd_line;
 	int pwd_line;
 	char *old_pwd;
+	int res;
 
 	check_abs_path(node);
 	pwd = get_pwd(data);
@@ -228,12 +229,12 @@ void changedir(t_data *data, t_cmd_node *node)
 	pwd_line = get_pwd_line(data);
 	old_pwd = ft_strdup(data->env[old_pwd_line] + 7);
 	if (!pwd || !old_pwd || pwd_line == -1 || old_pwd_line == -1)
-		panic("pwd error!");
+		return (EXIT_FAILURE);
 
 	if (get_arr_lines(node->cmd_args) > 2)
 	{
 		printf("cd: too many arguments\n");
-		return ;
+		return (EXIT_FAILURE);
 	}	
 	if (check_cd(node))
 	{
@@ -242,12 +243,13 @@ void changedir(t_data *data, t_cmd_node *node)
 				if (node->cmd_args[1] == NULL || ft_strncmp(node->cmd_args[1], "~", 2) == 0)
 					cd_home(data, node, pwd);
 				else if (ft_strncmp(node->cmd_args[1], "-", 1) == 0)
-					cd_prev(data, node);
+					res = cd_prev(data, node);
 				else
-					cd_dir(data, node);
+					res = cd_dir(data, node);
 			}
 		}	
 		free(old_pwd);
 		if (pwd)
 			free(pwd);
+		return (EXIT_SUCCESS);
 }

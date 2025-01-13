@@ -1,7 +1,7 @@
 
 #include "../minishell.h"
 
-void ft_env_no_args(t_data *data, t_cmd_node *node)
+int ft_env_no_args(t_data *data, t_cmd_node *node)
 {
 	int i;
 //	int out_fd;
