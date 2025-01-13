@@ -36,7 +36,11 @@ int ft_echo(t_cmd *node)
 	int i;
 
 //	printf("test_echo\n");
-
+	if (node->args[1] == NULL)
+	{
+		printf("\n");
+		return (0);
+	}
 	i = if_no_newline(node) + 1;
 	while (node->args[i] != NULL)
 	{

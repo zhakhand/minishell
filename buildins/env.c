@@ -1,22 +1,24 @@
 
 #include "../minishell.h"
 
-int ft_env_no_args(t_data *data, t_cmd_node *node)
+int ft_env_no_args(t_data *data)
 {
-	int i;
-//	int out_fd;
+	t_var *temp;
+//	sort_env(data);
+	if (!data->env_var)
+		return (EXIT_FAILURE);
+	temp = data->env_var;
+	while (temp)
+	{
+		if (temp->key)
+			printf("%s=", temp->key);
+		if (temp->val)
+			printf("%s", temp->val);
+		printf("\n");
+		temp = temp->next;
+	}
+	return (EXIT_SUCCESS);
 
-	i = 0;
-	sort_env(data);
-	// if (ft_strncmp(node->redirects->type, ">", 1) == 0)
-	// {
-	// 	out_fd = open(node->redirects->file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-	// 	if (out_fd == -1)
-	// 		panic("outfile");
-	// 	if (dup2(out_fd, STDOUT_FILENO) == -1)
-	// 		panic("dup2");
-	// 	close(out_fd);
-	// }
 	// while (data->env[i] != NULL)
 	// {
 	// 	printf("%s\n", data->env[i]);

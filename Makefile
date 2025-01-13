@@ -10,9 +10,9 @@ SRCS = minishell.c parser/parser.c parser/utils.c parser/tokenizer.c parser/data
 		parser/expansion.c parser/vars_tokens_tokenizer.c parser/expansion_2.c parser/expansion_3.c parser/build_cmd_table.c \
 		parser/built_in_check.c parser/errors.c parser/clean_up.c \
 		exec/exec_new.c exec/exec.c exec/exec_utils.c exec/redirects.c exec/envp.c \
-		buildins/buildins_utils.c buildins/echo.c buildins/pwd.c \
-		##buildins/changedir.c buildins/env.c \
-		buildins/export.c buildins/unset.c exec/exec.c 
+		buildins/buildins_utils.c buildins/echo.c buildins/pwd.c buildins/env.c buildins/unset.c buildins/export.c \
+		##buildins/changedir.c \
+		 
 		
 HEAD = parser.h minishell.h
 

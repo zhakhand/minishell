@@ -43,7 +43,12 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	pid = 0;
 	if (data == NULL)
 		return (-1);
-//	printf("ex %s \n", cmd->built_in);
+	// t_var *temp = data->env_var;
+	// while (temp)
+	// {
+	// 	printf("ex %s  %s\n", temp->val, temp->key);
+	// 	temp = temp->next;
+	// }
 	
 	full_path = find_path(cmd->args[0], data->path_arr);
 

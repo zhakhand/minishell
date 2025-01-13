@@ -37,6 +37,13 @@ int exec_buildin(t_data *data, t_cmd *node)
 		res = show_pwd(data);
 	if (node->built_in == ECH)
 		res = ft_echo(node);
+	if (node->built_in == ENV)
+		res = ft_env_no_args(data);
+	if (node->built_in == UNSET)
+		res = ft_unset(data, node);
+	if (node->built_in == EXPORT)
+		res = ft_export(data, node);
+
 	// if (ft_strncmp(node->cmd, "unset", 5) == 0)
 	// {
 	// 	ft_unset(data, node);
