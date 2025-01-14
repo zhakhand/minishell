@@ -75,6 +75,7 @@ t_var	*create_env_var(char *key, char *val)
 	if (key)
 		free(key);
 	key = NULL;
+	var->is_valid = 1;
 	var->val = ft_strndup(val, str_len(val));
 	var->next = NULL;
 	return (var);

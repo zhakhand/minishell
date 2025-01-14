@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/09 19:47:59 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:08:40 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	is_delim(t_token *token)
 	while (curr && (curr->type == WORD || curr->type == VAR || \
 	curr->type == D_QUOTE || curr->type == S_QUOTE || curr->was_quoted))
 		curr = curr->prev;
-	if (curr && curr->prev->type == HEREDOC)
+	if (curr->prev && curr->prev->type == HEREDOC)
 		return (1);
 	else if (curr && curr->type == HEREDOC)
 		return (1);
@@ -175,7 +175,7 @@ void	find_error(t_data *data)
 void reorder_tokens(t_data *data)
 {
 	find_error(data);
-	merge_tokens(data);
+	//merge_tokens(data);
 	clear_quote_tokens(data);
 	expand_vars(data);
 	merge_tokens(data);

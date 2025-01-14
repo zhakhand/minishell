@@ -27,31 +27,32 @@
 
 int add_to_env(char *str, t_data *data)
 {
-	t_var *new_var;
-	t_var *temp;
+	// t_var *new_var;
+	// t_var *temp;
 	int i;
 
 
 	i = 0;
-	new_var = malloc(sizeof(t_var));
-	if (!new_var)
-		panic("malloc");
+	// new_var = malloc(sizeof(t_var));
+	// if (!new_var)
+	// 	panic("malloc");
 	while (str[i] != '=')
 		i++;
-	new_var->key = ft_substr(str, 0, i);
-	new_var->val = ft_substr(str, i + 1, ft_strlen(str) - i - 1);
-	if (!new_var->key || !new_var->val)
-		panic("strdup");
-	new_var->next = NULL;
-	if (!data->env_var)
-	{
-		data->env_var = new_var;
-		return (0);
-	}
-	temp = data->env_var;
-	while (temp->next)
-		temp = temp->next;
-	temp->next = new_var;
+	// new_var->key = ft_substr(str, 0, i);
+	// new_var->val = ft_substr(str, i + 1, ft_strlen(str) - i - 1);
+	// if (!new_var->key || !new_var->val)
+	// 	panic("strdup");
+	// new_var->next = NULL;
+	// if (!data->env_var)
+	// {
+	// 	data->env_var = new_var;
+	// 	return (0);
+	// }
+	// temp = data->env_var;
+	// while (temp->next)
+	// 	temp = temp->next;
+	// temp->next = new_var;
+	set_env_var(data, ft_substr(str, 0, i), ft_substr(str, i + 1, ft_strlen(str) - i - 1));
 	return (0);
 	// int i;
 	// int len;
@@ -77,22 +78,22 @@ int add_to_env(char *str, t_data *data)
 	// data->env = new_env;
 }
 
-int check_symbols(char *str)
-{
-	int i;
+// int check_symbols(char *str)
+// {
+// 	int i;
 
-	i = 0;
-	if (str[i] < 'A' || (str[i] > 'Z' && str[i] < 'a') || str[i] > 'z')
-		return (1);
-	while (str[i] != '\0')
-	{
-		if (ft_isalnum(str[i]) == 0 && str[i] != '_' && str[i] != '='
-			&& str[i] != '"' && str[i] != '$')
-			return (1);
-		i++;
-	}
-	return (0);
-}
+// 	i = 0;
+// 	if (str[i] == '|')
+// 		return (1);
+// 	while (str[i] != '\0')
+// 	{
+// 		if (ft_isalnum(str[i]) == 0 && str[i] != '_' && str[i] != '='
+// 			&& str[i] != '"' && str[i] != '$')
+// 			return (1);
+// 		i++;
+// 	}
+// 	return (0);
+// }
 
 char *add_quotes(char *str)
 {
@@ -238,13 +239,13 @@ int ft_export(t_data *data, t_cmd *node)
 		i = 1;
 		while (node->args[i] != NULL)
 		{
-			if (check_symbols(node->args[i]) == 1)
-			{
-				ft_putstr_fd("minishell: export: ", STDERR_FILENO); 
-				ft_putstr_fd(node->args[i], STDERR_FILENO);
-				ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
-				return (1);
-			}
+			// if (check_symbols(node->args[i]) == 1)
+			// {
+			// 	ft_putstr_fd("minishell: export: ", STDERR_FILENO); 
+			// 	ft_putstr_fd(node->args[i], STDERR_FILENO);
+			// 	ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
+			// 	return (1);
+			// }
 			if (ft_strchr(node->args[i], '=') != NULL)
 			{
 				if (check_open_quotes(node->args[i]) == 1)
