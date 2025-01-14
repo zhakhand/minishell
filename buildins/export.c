@@ -1,29 +1,129 @@
 
 #include "../minishell.h"
 
-// void sort_env(t_data *data)
-// {
-// 	int i;
-// 	int j;
-// 	char *tmp;
+char *add_quotes(char *str)
+{
+	char *new_str;
+	int i;
+	int len;
 
-// 	i = 0;
-// 	while (data->env[i] != NULL)
-// 	{
-// 		j = i + 1;
-// 		while (data->env[j] != NULL)
-// 		{
-// 			if (ft_strncmp(data->env[i], data->env[j], ft_strlen(data->env[i])) > 0)
-// 			{
-// 				tmp = data->env[i];
-// 				data->env[i] = data->env[j];
-// 				data->env[j] = tmp;
-// 			}
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// }
+	i = 0;
+//	printf("jjsdsdsjjsdsdasdsa   %s\n", str);
+
+	len = ft_strlen(str);
+	new_str = malloc((len + 3) * sizeof(char));
+	if (!new_str)
+		panic("malloc");
+	while (str[i] != '=')
+	{
+		new_str[i] = str[i];
+		i++;
+	}
+	new_str[i] = '=';
+	i++;
+	new_str[i] = '"';
+	i++;
+	while (str[i - 1] != '\0')
+	{
+		new_str[i] = str[i - 1];
+		i++;
+	}
+	new_str[i] = '"';
+	new_str[i + 1] = '\0';
+//	printf("jjsdsdsjj   %s\n", new_str);
+
+	return (new_str);
+}
+
+char *add_quotes_to_val(char *str)
+{
+	char *new_str;
+	int i;
+	int len;
+
+	len = ft_strlen(str);
+	new_str = malloc((len + 4) * sizeof(char));
+	if (!new_str)
+		panic("malloc");
+	new_str[0] = '=';
+	new_str[1] = '"';
+	i = 2;
+	while (str[i - 2] != '\0')
+	{
+		new_str[i] = str[i - 2];
+		i++;
+	}
+	new_str[i] = '"';
+	new_str[i + 1] = '\0';
+	return (new_str);
+}
+
+char **make_env_arr(t_data *data)
+{
+	char **res;
+	t_var *temp;
+	int i;
+	char *tmp_val;
+
+	temp = data->env_var;
+
+	i = 0;
+	while (temp)
+	{
+		i++;
+		temp = temp->next;
+	}
+	res = malloc((i + 1) * sizeof(char *));
+	if (!res)
+		panic("malloc");
+	i = 0;
+	temp = data->env_var;
+	while (temp)
+	{
+		if (temp->is_valid == 1)
+		{
+			tmp_val = add_quotes_to_val(temp->val);
+			res[i] = ft_strjoin(temp->key, tmp_val);
+			if (!res[i])
+				panic("strjoin");
+			free(tmp_val);
+		}
+		// res[i] = ft_strjoin(res[i], temp->val);
+		// if (!res[i])
+		// 	panic("strjoin");
+		// if (res[i][ft_strlen(res[i]) - 1] == '=')
+		// 	res[i] = add_quotes(res[i]);
+		i++;
+		temp = temp->next;
+	}
+	res[i] = NULL;
+	return (res);
+}
+
+char **sort_env(char **arr)
+{
+	int i;
+	int j;
+	char *tmp;
+
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		j = i + 1;
+		while (arr[j] != NULL)
+		{
+			if (ft_strncmp(arr[i], arr[j], ft_strlen(arr[i])) > 0)
+			{
+				tmp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+	return (arr);
+}
 
 int add_to_env(char *str, t_data *data)
 {
@@ -36,7 +136,7 @@ int add_to_env(char *str, t_data *data)
 	// new_var = malloc(sizeof(t_var));
 	// if (!new_var)
 	// 	panic("malloc");
-	while (str[i] != '=')
+	while (str[i] != '=' && str[i] != '\0')
 		i++;
 	// new_var->key = ft_substr(str, 0, i);
 	// new_var->val = ft_substr(str, i + 1, ft_strlen(str) - i - 1);
@@ -95,39 +195,6 @@ int add_to_env(char *str, t_data *data)
 // 	return (0);
 // }
 
-char *add_quotes(char *str)
-{
-	char *new_str;
-	int i;
-	int len;
-
-	i = 0;
-//	printf("jjsdsdsjjsdsdasdsa   %s\n", str);
-
-	len = ft_strlen(str);
-	new_str = malloc((len + 3) * sizeof(char));
-	if (!new_str)
-		panic("malloc");
-	while (str[i] != '=')
-	{
-		new_str[i] = str[i];
-		i++;
-	}
-	new_str[i] = '=';
-	i++;
-	new_str[i] = '"';
-	i++;
-	while (str[i - 1] != '\0')
-	{
-		new_str[i] = str[i - 1];
-		i++;
-	}
-	new_str[i] = '"';
-	new_str[i + 1] = '\0';
-//	printf("jjsdsdsjj   %s\n", new_str);
-
-	return (new_str);
-}
 
 int check_open_quotes(char *str)
 {
@@ -199,24 +266,34 @@ char *if_one_quote(char *str)
 
 void export_no_args(t_data *data)
 {
-	t_var *temp;
-//	int i;
-//	int out_fd;
-	char *tmp;
-//	i = 0;
-//	sort_env(data);
-	temp = data->env_var;
-	while (temp)
+//	t_var *temp;
+	int i;
+	char **tmp;
+
+	tmp = make_env_arr(data);
+	tmp = sort_env(tmp);
+	i = 0;
+	while (tmp[i] != NULL)
 	{
-		if (temp->key)
-		{
-			tmp = add_quotes(temp->key);
-			printf("declare -x %s", tmp);
-			printf("=\"%s\"\n", temp->val);
-			free(tmp);
-		}
-		temp = temp->next;
+		printf("declare -x %s\n", tmp[i]);
+		free(tmp[i]);
+		i++;
 	}
+	free(tmp);
+
+//	sort_env(data);
+	// temp = data->env_var;
+	// while (temp)
+	// {
+	// 	if (temp->key)
+	// 	{
+	// 		tmp = add_quotes(temp->key);
+	// 		printf("declare -x %s", tmp);
+	// 		printf("=\"%s\"\n", temp->val);
+	// 		free(tmp);
+	// 	}
+	// 	temp = temp->next;
+	// }
 	// {
 	// 	tmp = add_quotes(data->env[i]);
 	// 	printf("declare -x %s\n", tmp);

@@ -30,23 +30,24 @@ int handle_input_redirects(t_redir *redir)
 	redirects = redir;
 	while (redirects)
 	{
-		if (redir->type == IN)
+		if (redirects->type == IN)
 		{
-			in_fd = open(redir->val, O_RDONLY);
+
+			in_fd = open(redirects->val, O_RDONLY);
 			if (in_fd == -1)
 				return (-1);
 			if (dup2(in_fd, STDIN_FILENO) == -1)
 				return(-1);
 			close(in_fd);
 		}
-		else if (redir->type == HEREDOC)
+		else if (redirects->type == HEREDOC)
 		{
-			temp_fd = handle_heredoc(redir->val);
+			temp_fd = handle_heredoc(redirects->val);
 			if (dup2(temp_fd, STDIN_FILENO) == -1)
 				return (-1);
+			close(temp_fd);
 		}
-		close(temp_fd);
-		redir = redir->next;
+		redirects = redirects->next;
 	}
 	return (0);
 }
@@ -67,7 +68,7 @@ int handle_output_redirects(t_redir *redir)
 				out_fd = open(redir->val, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 			else
 			{
-		printf("from red %d\n", redir->type);
+//		printf("from red %d\n", redir->type);
 				out_fd = open(redir->val, O_WRONLY | O_CREAT | O_APPEND, 0666);
 			}
 			if (out_fd == -1)
@@ -123,9 +124,15 @@ int handle_redirects(t_cmd *node)
 		}
 		temp = temp->next;
 	}
-	if (handle_input_redirects(input_redirects) == -1)
-		panic("Failed to handle input redirects");
-	if (handle_output_redirects(output_redirects) == -1)
-		panic("Failed to handle output redirects");
+	if(input_redirects)
+	{
+		if (handle_input_redirects(input_redirects) == -1)
+			panic("Failed to handle input redirects");
+	}
+	if (output_redirects)
+	{
+		if (handle_output_redirects(output_redirects) == -1)
+			panic("Failed to handle output redirects");
+	}
 	return (0);
 }

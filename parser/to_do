@@ -1,2 +1,16 @@
 cmd not found: for non empty cmds add check in executor
 invalid file descriptors: in executor
+
+
+delete parent dir after cd into it
+
+
+
+
+
+
+
+//don't touch, it'sfrom tester )))))
+env | sort | grep -v SHLVL | grep -v ^_
+cat ./test_files/infile_big | grep oi
+cat minishell.h | grep ");"$

@@ -52,7 +52,7 @@ int exec_buildin(t_data *data, t_cmd *node);
 int handle_redirects(t_cmd *node);
 
 int ft_env_no_args(t_data *data);
-void sort_env(t_data *data);
+char **sort_env(char **arr);
 int ft_echo(t_cmd *node);
 int ft_unset(t_data *data, t_cmd *node);
 int ft_export(t_data *data, t_cmd *node);

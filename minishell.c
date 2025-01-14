@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/14 13:23:47 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/14 17:01:11 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int main(int ac, char **av, char **ev)
 	int err_no;
 	// t_cmd	*cmd;
 
+//printf("1\n");
 	data = init_data(ac, av, ev);
 	while (1)
 	{
@@ -31,10 +32,11 @@ int main(int ac, char **av, char **ev)
 		reorder_tokens(data);
 		set_cmd_table(data);
 		err_no = execute(data, ev);
-		free_tokens(data->tokens);
-		free_cmds(data->cmds);
-		add_history(line);
+		// free_tokens(data->tokens);
+		// free_cmds(data->cmds);
+		// add_history(line);
 		free(line);
+		break;
 	}
 
 
