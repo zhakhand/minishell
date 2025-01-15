@@ -1,0 +1,31 @@
+cmd not found: for non empty cmds add check in executor
+invalid file descriptors: in executor
+
+
+delete parent dir after cd into it
+
+
+
+
+
+
+
+//don't touch, it's from tester )))))
+env | sort | grep -v SHLVL | grep -v ^_
+cat ./test_files/infile_big | grep oi
+cat minishell.h | grep ");"$
+
+
+
+
+
+
+	//
+
+	if (cmd->redir->val[0] == '.' && cmd->redir->val[1] == '/')
+	{
+		tmp_val = ft_strdup(cmd->redir->val + 2);
+		free(cmd->redir->val);
+		cmd->redir->val = tmp_val;
+	}
+	printf("cmd %s\n", cmd->redir->val);

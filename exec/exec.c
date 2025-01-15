@@ -33,86 +33,166 @@ void run_fork(t_cmd_node *list, char **envp)
 
 }
 
+// int run_pipe(t_data *data, t_cmd *cmd, char **envp)
+// {
+// 	char *full_path;
+// 	int status;
+// 	int pid;
+// 	int fds[2];
+
+// 	pid = 0;
+// 	if (data == NULL)
+// 		return (-1);
+// 	full_path = find_path(cmd->args[0], data->path_arr);
+// 	if (cmd->built_in == CD)
+// 		data->err_no = changedir(data, cmd);
+// 	if (cmd->redir)
+// 		data->err_no = handle_redirects(cmd);
+// //	printf("exec cd  %d\n", data->err_no);
+// 	// if (cmd->next != NULL && !cmd->redir)
+// 	// {
+// 	if (pipe(fds) == -1)
+// 		panic("pipe err");
+// 	// }
+// 	pid = fork();
+// 	if (pid == -1)
+// 		panic("fork err");
+	
+// //	 && !cmd->redir
+// 	else if (pid == 0)
+// 	{
+// 		if (cmd->next != NULL)
+// 		{
+// 			close(fds[0]);
+// 			if (dup2(fds[1], STDOUT_FILENO) == -1)
+// 				panic("dup2");
+// 			close(fds[1]);
+// 		}
+// 		if (!check_if_buildin(cmd))
+// 		{
+// 			data->err_no = exec_buildin(data, cmd);
+// 	//		printf("buildin\n");
+// 		}
+// 		else
+// 		{
+// //		printf("exec  %s\n", cmd->args[0]);
+// 		if (execve(full_path, cmd->args, envp) == -1)
+// 			panic("execveaaaaa fail2");
+// 		else
+// 			free(full_path);
+// 		}
+// 	}
+// 	// else
+// 	// {
+// 	waitpid(pid, &status, 0);
+// 	if (WIFEXITED(status)) {
+//     	data->err_no = WEXITSTATUS(status); // Сохраняем код возврата
+// }
+// //		 && !cmd->redir
+// 	if (cmd->next != NULL)
+// 	{
+// 		close(fds[1]);
+// 		if (dup2(fds[0], STDIN_FILENO) == -1)
+// 			panic("dup2");
+// 		close(fds[0]);
+// 	}
+// 	//		printf("ln %s\n", list->left->cmd_args[0]);
+
+// //	}
+// 	if (cmd->next != NULL)
+// 		run_pipe(data, cmd->next, envp);
+// 	free(full_path);
+// //	data->err_no = 0;
+// //	printf("before ex  %d\n", data->err_no);
+// 	return (data->err_no);
+// //	free_data(data);
+// }
+
 int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 {
-	char *full_path;
-	int pid;
 	int fds[2];
+	int prev_fd = STDIN_FILENO;
+	int status;
+	char *full_path;
+	pid_t pid;
 
-	pid = 0;
-	if (data == NULL)
-		return (-1);
-	
-	// t_cmd *temp = cmd;
-	// while (temp)
-	// {
-	// 	int i = 0;
-	// 	while (temp->args[i])
-	// 	{
-	// 		printf("args %s\n", temp->args[i]);
-	// 		i++;
-	// 	}
-	// 	temp = temp->next;
-	// }
-	// t_var *temp = data->env_var;
-	// while (temp)
-	// {
-	// 	printf("ex %s  %s\n", temp->val, temp->key);
-	// 	temp = temp->next;
-	// }
-	
-	full_path = find_path(cmd->args[0], data->path_arr);
-	if (cmd->built_in == CD)
-		data->err_no = changedir(data, cmd);
+	while (cmd != NULL)
+	{
+		full_path = find_path(cmd->args[0], data->path_arr);
 
-	if (cmd->next != NULL && !cmd->redir)
-	{
-		if (pipe(fds) == -1)
-			panic("pipe err");
-		pid = fork();
-	}
-	if (pid == -1)
-		panic("fork err");
-	else if (pid == 0)
-	{
-		if (cmd->redir)
-			data->err_no = handle_redirects(cmd);
-		if (cmd->next != NULL && !cmd->redir)
-		{
-			close(fds[0]);
-			if (dup2(fds[1], STDOUT_FILENO) == -1)
-				panic("dup2");
-			close(fds[1]);
-		}
-		if (!check_if_buildin(cmd))
-		{
-			data->err_no = exec_buildin(data, cmd);
-	//		printf("buildin\n");
-		}
-		else
-		{
-//		printf("exec  %s\n", cmd->args[0]);
-		if (execve(full_path, cmd->args, envp) == -1)
-			panic("execveaaaaa fail2");
-		else
-			free(full_path);
-		}
-	}
-	else
-	{
-		waitpid(pid, NULL, 0);
-		if (cmd->next != NULL && !cmd->redir)
-		{
-			close(fds[1]);
-			if (dup2(fds[0], STDIN_FILENO) == -1)
-				panic("dup2");
-			close(fds[0]);
-		}
-	//		printf("ln %s\n", list->left->cmd_args[0]);
+		// Создаем пайп, если есть следующая команда./
 		if (cmd->next != NULL)
-			run_pipe(data, cmd->next, envp);
+		{
+			if (pipe(fds) == -1)
+				panic("pipe err");
+		}
+
+		pid = fork();
+		if (pid == -1)
+		{
+			panic("fork err");
+		}
+		else if (pid == 0)
+		{
+			// В дочернем процессе
+
+			// Если есть предыдущий пайп, перенаправляем ввод
+			if (prev_fd != STDIN_FILENO)
+			{
+				if (dup2(prev_fd, STDIN_FILENO) == -1)
+					panic("dup2 prev_fd");
+				close(prev_fd);
+			}
+
+			// Если есть следующий пайп, перенаправляем вывод
+			if (cmd->next != NULL)
+			{
+				close(fds[0]); // Закрываем чтение из нового пайпа
+				if (dup2(fds[1], STDOUT_FILENO) == -1)
+					panic("dup2 fds[1]");
+				close(fds[1]);
+			}
+			if (cmd->redir)
+			{
+				if (handle_redirects(cmd) == -1)
+					panic("redirect fail");
+			}
+			// Выполняем команду
+			if (!check_if_buildin(cmd))
+			{
+				data->err_no = exec_buildin(data, cmd);
+			}
+			else
+			{
+				if (execve(full_path, cmd->args, envp) == -1)
+					panic("execve fail");
+			}
+		}
+
+		// Родительский процесс
+
+		// Закрываем старые пайпы
+		if (prev_fd != STDIN_FILENO)
+			close(prev_fd);
+
+		if (cmd->next != NULL)
+		{
+			close(fds[1]); // Закрываем запись в новый пайп
+			prev_fd = fds[0]; // Устанавливаем новый ввод для следующей команды
+		}
+
+		// НЕ ждем завершения дочернего процесса здесь
+		cmd = cmd->next;
+		free(full_path);
 	}
-//	free_data(data);
-	free(full_path);
-	return (data->err_no);
+
+	// Ждём все дочерние процессы после завершения всех команд
+	while (waitpid(-1, &status, 0) > 0)
+	{
+		if (WIFEXITED(status))
+			data->err_no = WEXITSTATUS(status);
+	}
+
+	return data->err_no;
 }
+

@@ -253,7 +253,12 @@ int cd_dir(t_data *data, t_cmd *node)
 	// if(node->abs_path == 1)
 	// {
 		if (chdir(node->args[1]) == -1)
-			perror(" No such file or directory");
+		{
+			ft_putstr_fd(" cd: ", STDERR_FILENO);
+			ft_putstr_fd(node->args[1], STDERR_FILENO);
+			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+			return (1);
+		}
 		else
 		{
 			change_old_pwd_in_env(data, data->pwd);
@@ -263,32 +268,31 @@ int cd_dir(t_data *data, t_cmd *node)
 	// }
 	free(old_pwd);
 	free(pwd);
-	return (EXIT_SUCCESS);
+	return (0);
 }
 
 int changedir(t_data *data, t_cmd *node)
 {
 	int res;
-
 	res = -1;
 	check_abs_path(node);
 
 	if (node->args[2])
 	{
-		printf("cd: too many arguments\n");
+		ft_putstr_fd(" too many arguments\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	// if (check_cd(node))
 	// {
-			if (!node->next)
-			{
+			// if (!node->next)
+			// {
 				if (node->args[1] == NULL || ft_strncmp(node->args[1], "~", 2) == 0)
 					res = cd_home(data);
 				else if (ft_strncmp(node->args[1], "-", 1) == 0)
 					res = cd_prev(data);
 				else
 					res = cd_dir(data, node);
-			}
+//			}
 		// }	
 		return (res);
 }

@@ -111,6 +111,7 @@ int handle_redirects(t_cmd *node)
 	// 	temp = temp->next;
 	// }
 	temp = node->redir;
+//	printf("from handle redir %s\n", temp->val);
 	input_redirects = NULL;
 	output_redirects = NULL;
 	while (temp)

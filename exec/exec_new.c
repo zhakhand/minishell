@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 13:39:20 by oshcheho          #+#    #+#             */
-/*   Updated: 2025/01/13 14:00:36 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/15 10:51:41 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 int execute(t_data *data, char **envp)
 {
-	int res;
+//	int res;
 //	char *full_path;
 
-//	printf("path %s \n", data->path);
 //	printf("node %s \n", data->cmds->args[0]);
 
 //	full_path = find_path(data->cmds->args[0], data->path_arr);
 //	printf("f path %s \n", full_path);
-	res = run_pipe(data, data->cmds, envp);
+	data->err_no = run_pipe(data, data->cmds, envp);
+	printf("res %d \n", data->err_no);
 
-	return (res);
+	return (data->err_no);
 }

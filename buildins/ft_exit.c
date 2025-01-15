@@ -18,6 +18,7 @@ int ft_exit(t_data *data, t_cmd *node)
 	int exit_code;
 
 	i = 0;
+	exit_code = 0;
 	if (node->args[1] == NULL)
 	{
 		clean_data(data);
@@ -37,14 +38,15 @@ int ft_exit(t_data *data, t_cmd *node)
 				ft_putstr_fd(" minishell: exit: \n", STDERR_FILENO);
 //				ft_putstr_fd(node->args[1], STDERR_FILENO);
 				ft_putstr_fd(" numeric argument required\n", STDERR_FILENO);
-				return (1);
+				return (255);
 			}
 			i++;
 		}
 
 		exit_code = ft_atoi(node->args[1]);
+//		printf("exit  %d \n", exit_code);
 		clean_data(data);
 		exit(exit_code);
 	}
-	return (0);
+	return (exit_code);
 }

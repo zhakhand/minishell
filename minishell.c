@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/14 17:01:11 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:54:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int main(int ac, char **av, char **ev)
 
 //printf("1\n");
 	data = init_data(ac, av, ev);
+	data->err_no = 0;
 	while (1)
 	{
 		line = readline("> ");
@@ -31,7 +32,7 @@ int main(int ac, char **av, char **ev)
 		data->path_arr = get_path_arr(ev);
 		reorder_tokens(data);
 		set_cmd_table(data);
-		err_no = execute(data, ev);
+		data->err_no = run_pipe(data, data->cmds, ev);
 		// free_tokens(data->tokens);
 		// free_cmds(data->cmds);
 		// add_history(line);
@@ -41,7 +42,7 @@ int main(int ac, char **av, char **ev)
 
 
 //	print_cmd_table(data->cmds);
-	
+	err_no = data->err_no;
 	clean_data(data);
 	return (err_no);
 
