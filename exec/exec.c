@@ -119,14 +119,12 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	while (cmd != NULL)
 	{
 		full_path = find_path(cmd->args[0], data->path_arr);
-
 		// Создаем пайп, если есть следующая команда./
 		if (cmd->next != NULL)
 		{
 			if (pipe(fds) == -1)
 				panic("pipe err");
 		}
-
 		pid = fork();
 		if (pid == -1)
 		{
@@ -135,7 +133,6 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 		else if (pid == 0)
 		{
 			// В дочернем процессе
-
 			// Если есть предыдущий пайп, перенаправляем ввод
 			if (prev_fd != STDIN_FILENO)
 			{
@@ -168,24 +165,19 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 					panic("execve fail");
 			}
 		}
-
 		// Родительский процесс
-
 		// Закрываем старые пайпы
 		if (prev_fd != STDIN_FILENO)
 			close(prev_fd);
-
 		if (cmd->next != NULL)
 		{
 			close(fds[1]); // Закрываем запись в новый пайп
 			prev_fd = fds[0]; // Устанавливаем новый ввод для следующей команды
 		}
-
 		// НЕ ждем завершения дочернего процесса здесь
 		cmd = cmd->next;
 		free(full_path);
 	}
-
 	// Ждём все дочерние процессы после завершения всех команд
 	while (waitpid(-1, &status, 0) > 0)
 	{
