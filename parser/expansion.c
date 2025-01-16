@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/16 10:42:58 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/16 12:47:02 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ t_token *check_expansion(t_token *token, t_data *data)
 	if (token->was_quoted != 1)
 	{
 		var = get_env_var(data, token->val + 1);
-		if (!var || (var && var->is_valid == 0))
+		if (!var || (var && var->is_valid == 0) || (var && var->is_valid == 1 && !ft_strlen(var->val)))
 		{
 			token->ogVal = token->val;
 			token->val = ft_strdup("");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clean_up.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 14:11:46 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/13 13:31:14 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/16 13:26:38 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ void	free_cmds(t_cmd *cmd)
 		if (to_free->redir)
 			free_redirs(to_free->redir);
 		to_free->redir = NULL;
-		free(to_free);
+		if (to_free)
+			free(to_free);
 		to_free = NULL;
 	}
 }
@@ -74,7 +75,9 @@ void	free_tokens(t_token *token)
 	t_token	*curr;
 	t_token	*to_free;
 
-	curr = token;
+	curr = NULL;
+	if (token)
+		curr = token;
 	to_free = NULL;
 	while (curr)
 	{
