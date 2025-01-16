@@ -129,7 +129,7 @@ t_data *init_data(int ac, char **av, char **ev);
 void copy_env(t_data *data, char **envp);
 t_var *create_env_var(char *key, char *val);
 t_var *get_env_var(t_data *data, char *key);
-void set_env_var(t_data *data, char *key, char *val);
+t_var *set_env_var(t_data *data, char *key, char *val);
 void unset_var(t_data *data, char *key);
 void reorder_tokens(t_data *data);
 void merge_tokens(t_data *data);

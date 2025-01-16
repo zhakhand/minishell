@@ -127,7 +127,7 @@ char **sort_env(char **arr)
 
 int add_to_env(char *str, t_data *data)
 {
-	// t_var *new_var;
+	t_var *new_var;
 	// t_var *temp;
 	int i;
 
@@ -152,7 +152,14 @@ int add_to_env(char *str, t_data *data)
 	// while (temp->next)
 	// 	temp = temp->next;
 	// temp->next = new_var;
-	set_env_var(data, ft_substr(str, 0, i), ft_substr(str, i + 1, ft_strlen(str) - i - 1));
+	if (str[i] == 0)
+	{
+		new_var = set_env_var(data, str, "");
+		new_var->is_valid = 0;
+		return (0);
+	}
+	new_var = set_env_var(data, ft_substr(str, 0, i), str + i + 1);
+	new_var->is_valid = 1;
 	return (0);
 	// int i;
 	// int len;
@@ -323,17 +330,17 @@ int ft_export(t_data *data, t_cmd *node)
 			// 	ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
 			// 	return (1);
 			// }
-			if (ft_strchr(node->args[i], '=') != NULL)
-			{
-				if (check_open_quotes(node->args[i]) == 1)
-				{
-					node->args[i] = if_one_quote(node->args[i]);
-					if (!node->args[i])
-						return (0);
-				}
-			remove_quotes_in_the_middle(node->args[i]);
-	//		node->cmd_args[i] = add_quotes(node->cmd_args[i]);
-			}
+	// 		if (ft_strchr(node->args[i], '=') != NULL)
+	// 		{
+	// 			if (check_open_quotes(node->args[i]) == 1)
+	// 			{
+	// 				node->args[i] = if_one_quote(node->args[i]);
+	// 				if (!node->args[i])
+	// 					return (0);
+	// 			}
+	// 		remove_quotes_in_the_middle(node->args[i]);
+	// //		node->cmd_args[i] = add_quotes(node->cmd_args[i]);
+	// 		}
 			add_to_env(node->args[i], data);
 			i++;
 		}

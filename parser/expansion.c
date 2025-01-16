@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/14 13:08:40 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/16 10:42:58 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ t_token *link_tokens(t_token *token, t_token *head, t_token *tail)
 	if (token->prev)
 	{
 		token->prev->next = head;
-		head->prev = token->prev;
+		if (head)
+			head->prev = token->prev;
 	}
 	if (token->next)
 	{
@@ -109,7 +110,7 @@ t_token *check_expansion(t_token *token, t_data *data)
 	if (token->was_quoted != 1)
 	{
 		var = get_env_var(data, token->val + 1);
-		if (!var)
+		if (!var || (var && var->is_valid == 0))
 		{
 			token->ogVal = token->val;
 			token->val = ft_strdup("");
