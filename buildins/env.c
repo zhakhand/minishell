@@ -11,10 +11,15 @@ int ft_env_no_args(t_data *data)
 	while (temp)
 	{
 		if (temp->key)
-			printf("%s=", temp->key);
+		{
+			ft_putstr_fd(temp->key, STDOUT_FILENO);
+			ft_putstr_fd("=", STDOUT_FILENO);
+		}
 		if (temp->val)
-			printf("%s", temp->val);
-		printf("\n");
+		{
+			ft_putstr_fd(temp->val, STDOUT_FILENO);
+		}
+		ft_putstr_fd("\n", STDOUT_FILENO);
 		temp = temp->next;
 	}
 	return (EXIT_SUCCESS);

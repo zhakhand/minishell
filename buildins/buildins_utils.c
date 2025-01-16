@@ -3,6 +3,7 @@
 
 int check_if_buildin(t_cmd *node)
 {
+//	printf("check_if_buildin, %d\n", node->built_in);
 	if (node == NULL || node->cmd == NULL || node->cmd == NULL)
 		return (-1);
 	if (node->built_in == 901 || 
