@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/16 13:24:36 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/16 15:56:49 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,10 @@ void	sighandler(int signal)
 {
 	if (signal == SIGINT)
 	{
-		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		write(STDIN_FILENO, "\n", 2);
 		rl_on_new_line();
 		//rl_replace_line("", 0);
+		//rl_redisplay();
 		g_signal = signal;
 	}
 }
@@ -82,16 +83,9 @@ int main(int ac, char **av, char **ev)
 	char *line;
 	t_data *data;
 	int err_no;
-	// char *svl_str = getenv("SHLVL");
-	// if (svl_str)
-	// 	shl_lvl = atoi(svl_str);
-	// shl_lvl++;
-	// printf("%d\n", shl_lvl);
-	// t_cmd	*cmd;
 
-//printf("1\n");
-	signal(SIGINT, sighandler);
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, sighandler);
 	data = init_data(ac, av, ev);
 	data->err_no = 0;
 	increase_shell_lvl(data);

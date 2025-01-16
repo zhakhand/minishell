@@ -195,22 +195,40 @@ int add_to_env(char *str, t_data *data)
 	// data->env = new_env;
 }
 
-// int check_symbols(char *str)
-// {
-// 	int i;
+int check_symbols(char *str)
+{
+	int i;
+	int flag;
 
-// 	i = 0;
-// 	if (str[i] == '|')
-// 		return (1);
-// 	while (str[i] != '\0')
-// 	{
-// 		if (ft_isalnum(str[i]) == 0 && str[i] != '_' && str[i] != '='
-// 			&& str[i] != '"' && str[i] != '$')
-// 			return (1);
-// 		i++;
-// 	}
-// 	return (0);
-// }
+//	printf("str   %s\n", str);
+	i = 0;
+	flag = 0;
+	if (str[i] == '|')
+		return (1);
+	if (str[i] == '=')
+		return (1);
+	if (str[i] >= '0' && str[i] <='9' )
+		return (1);
+	while (str[i] != '\0')
+	{
+		if (str[i] == '=')
+		{
+			flag = 1;
+			i++;
+		}
+		if (flag == 0 && str[i] == '-')
+			return (1);
+		if (flag == 1)
+		{
+//			printf("str[i]   %c\n", str[i]);
+			// if (ft_isalnum(str[i]) == 0 && str[i] != '_' && str[i] != ' '
+			// && str[i] != '"' && str[i] != '$' && str[i] != '-' && str[i] != '+')
+			// return (1);
+		}
+		i++;
+	}
+	return (0);
+}
 
 
 int check_open_quotes(char *str)
@@ -323,37 +341,40 @@ int ft_export(t_data *data, t_cmd *node)
 {
 	int i;
 
-	// if (node->left == NULL)
-	// {
+	//  if (node->next == NULL)
+	//  {
 		if(node->args[1] == NULL)
 		{
 			export_no_args(data);
 			return (0);
 		}
 		i = 1;
+		if (check_symbols(node->args[1]) == 1)
+		{
+			ft_putstr_fd("minishell: export: ", STDERR_FILENO); 
+			ft_putstr_fd(node->args[1], STDERR_FILENO);
+			ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
+			return (1);
+		}
 		while (node->args[i] != NULL)
 		{
-			// if (check_symbols(node->args[i]) == 1)
-			// {
-			// 	ft_putstr_fd("minishell: export: ", STDERR_FILENO); 
-			// 	ft_putstr_fd(node->args[i], STDERR_FILENO);
-			// 	ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
-			// 	return (1);
-			// }
-	// 		if (ft_strchr(node->args[i], '=') != NULL)
-	// 		{
-	// 			if (check_open_quotes(node->args[i]) == 1)
-	// 			{
-	// 				node->args[i] = if_one_quote(node->args[i]);
-	// 				if (!node->args[i])
-	// 					return (0);
-	// 			}
-	// 		remove_quotes_in_the_middle(node->args[i]);
-	// //		node->cmd_args[i] = add_quotes(node->cmd_args[i]);
-	// 		}
+			if (ft_strchr(node->args[i], '=') != NULL)
+			{
+				if (check_open_quotes(node->args[i]) == 1)
+				{
+					node->args[i] = if_one_quote(node->args[i]);
+					if (!node->args[i])
+						return (0);
+				}
+			remove_quotes_in_the_middle(node->args[i]);
+	//		node->cmd_args[i] = add_quotes(node->cmd_args[i]);
+			}
+	  if (node->next == NULL)
+	  {
 			add_to_env(node->args[i], data);
+	  }	
 			i++;
 		}
-	return (0);
 //	}
+	return (0);
 }

@@ -38,7 +38,7 @@ int ft_exit(t_data *data, t_cmd *node)
 				ft_putstr_fd(" minishell: exit: \n", STDERR_FILENO);
 //				ft_putstr_fd(node->args[1], STDERR_FILENO);
 				ft_putstr_fd(" numeric argument required\n", STDERR_FILENO);
-				return (255);
+				return (2);
 			}
 			i++;
 		}
