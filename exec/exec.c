@@ -1,5 +1,7 @@
 
 #include "../minishell.h"
+//#include <cerrno>
+#include <unistd.h>
 
 void run(t_cmd_node *list, char **envp)
 {
@@ -110,14 +112,26 @@ void run_fork(t_cmd_node *list, char **envp)
 
 int run_execve(t_cmd *cmd, char **envp, char *full_path)
 {
+//	printf("full_path: %s\n", cmd->cmd);
+	// if (cmd->cmd[0] == '.' && cmd->cmd[1] == '/')
+	// 	if (chdir(cmd->args[0]) == 0)
+	// 	{
+	// 		chdir(data->pwd);
+	// 		ft_putstr_fd("minishell: ", STDERR_FILENO);
+	// 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+	// 		ft_putstr_fd(": is a directory\n", STDERR_FILENO);
+	// 		return(126);
+	// 	}
+	// int acc = access(full_path, F_OK);
+	// 	printf("acc %s %s %d\n", full_path, data->cmds->cmd, acc);
 	if (!full_path || access(full_path, F_OK) == -1)
 	{
+		
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		return 127;
 	}
-
 	if (access(full_path, X_OK) == -1)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -125,17 +139,16 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path)
 		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 		return 126;
 	}
-
 	if (execve(full_path, cmd->args, envp) == -1)
 	{
-		if (errno == EISDIR)
-		{
+		// if (errno == EISDIR)
+		// {
 			ft_putstr_fd("minishell: ", STDERR_FILENO);
 			ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
 			return 126;
-		}
-		perror("execve fail");
+		// }
+		// perror("execve fail");
 		return 1;
 	}
 
@@ -163,39 +176,41 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 
 		// Проверяем, является ли команда билдином
 		if (cmd->redir)
-			if (handle_redirects(cmd) == -1)
-				panic("Failed to handle redirects");
+			data->err_no = (handle_redirects(cmd) == -1);
+//				return (-1);
+//				panic("Failed to handle redirects");
 
 			// Обработка редиректов в билдинах
 			// Выполнение билдина в родительском процессе
 		// else
 		// {
-			pid = fork();
-			if (pid == -1)
-				panic("fork err");
-			else if (pid == 0)
+		pid = fork();
+		if (pid == -1)
+			panic("fork err");
+		else if (pid == 0)
+		{
+			// Дочерний процесс
+
+			// Перенаправляем ввод, если нужно
+			if (prev_fd != STDIN_FILENO)
 			{
-				// Дочерний процесс
+				if (dup2(prev_fd, STDIN_FILENO) == -1)
+					panic("dup2 prev_fd");
+				close(prev_fd);
+			}
 
-				// Перенаправляем ввод, если нужно
-				if (prev_fd != STDIN_FILENO)
-				{
-					if (dup2(prev_fd, STDIN_FILENO) == -1)
-						panic("dup2 prev_fd");
-					close(prev_fd);
-				}
-
-				// Обработка редиректов
-				if (handle_redirects(cmd) == -1)
-					panic("Failed to handle redirects");
-				// Перенаправляем вывод, если нужно
-				if (cmd->next != NULL)
-				{
-					close(fds[0]); // Закрываем чтение из нового пайпа
-					if (dup2(fds[1], STDOUT_FILENO) == -1)
-						panic("dup2 fds[1]");
-					close(fds[1]);
-				}
+			// Обработка редиректов
+//			data->err_no = handle_redirects(cmd);
+			if (handle_redirects(cmd) == -1)
+				panic("minishell: ");
+			// Перенаправляем вывод, если нужно
+			if (cmd->next != NULL)
+			{
+				close(fds[0]); // Закрываем чтение из нового пайпа
+				if (dup2(fds[1], STDOUT_FILENO) == -1)
+					panic("dup2 fds[1]");
+				close(fds[1]);
+		}
 
 
 		if (!check_if_buildin(cmd))

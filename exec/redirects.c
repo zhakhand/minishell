@@ -92,6 +92,7 @@ int open_and_close(t_redir *redir)
 	if (out_fd == -1)
 	{
 		panic("No such file or directory");
+//	return (-1);
 	}
 	close(out_fd);
 
@@ -128,12 +129,14 @@ int handle_redirects(t_cmd *node)
 	if(input_redirects)
 	{
 		if (handle_input_redirects(input_redirects) == -1)
-			panic("Failed to handle input redirects");
+			return (-1);
+//			panic("Failed to handle input redirects");
 	}
 	if (output_redirects)
 	{
 		if (handle_output_redirects(output_redirects) == -1)
-			panic("Failed to handle output redirects");
+			return (-1);
+//			panic("Failed to handle output redirects");
 	}
 	return (0);
 }
