@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 13:55:49 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/09 19:47:52 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/19 10:56:21 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,6 @@ void	error_msg(char *error, t_token *token, t_data *data)
 		ft_putstr_fd(error, 2);
 	data->err_no = 2;
 	clean_data(data);
-	exit(0);
+	exit(2);
 }
 

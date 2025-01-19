@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/17 15:48:00 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/01/19 16:54:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parser.h"
-#include <unistd.h>
 
 int main(int ac, char **av, char **ev)
 {
@@ -27,22 +26,14 @@ int main(int ac, char **av, char **ev)
 	while (1)
 	{
 		line = readline("> ");
-//	char *prompt;
-	// if (isatty(fileno(stdin)))
-	// 	line = readline("minishell$ ");
-	// else
-	// {
-	// 	prompt = get_next_line(fileno(stdin));
-	// 	line = ft_strtrim(prompt, "\n");
-	// 	free(prompt);
-	// }
 		if (ft_strlen(line) == 0)
 			continue ;
 		data->tokens = tokenize(line);
 		data->path_arr = get_path_arr(ev);
 		reorder_tokens(data);
 		set_cmd_table(data);
-		data->err_no = run_pipe(data, data->cmds, ev);
+		run_pipe(data, data->cmds, ev);
+		//data->err_no = run_pipe(data, data->cmds, ev);
 		// free_tokens(data->tokens);
 		// free_cmds(data->cmds);
 		// add_history(line);

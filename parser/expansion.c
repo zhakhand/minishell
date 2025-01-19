@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/14 13:08:40 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/19 10:56:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	is_delim(t_token *token)
 	while (curr && (curr->type == WORD || curr->type == VAR || \
 	curr->type == D_QUOTE || curr->type == S_QUOTE || curr->was_quoted))
 		curr = curr->prev;
-	if (curr->prev && curr->prev->type == HEREDOC)
+	if (curr && curr->prev && curr->prev->type == HEREDOC)
 		return (1);
 	else if (curr && curr->type == HEREDOC)
 		return (1);
