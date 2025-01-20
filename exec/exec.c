@@ -348,7 +348,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
         if (cmd->built_in == CD)
         {
             data->err_no = changedir(data, cmd);
-            return data->err_no;
+//            return data->err_no;
         }
 
         // Создание пайпа

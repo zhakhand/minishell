@@ -228,7 +228,7 @@ int cd_prev(t_data *data)
 		perror("cd");
 	change_old_pwd_in_env(data, pwd);
 	change_pwd_in_env(data, old_pwd);
-	printf(" > %s\n", data->old_pwd);
+//	printf(" > %s\n", data->old_pwd);
 	free(pwd);
 	free(old_pwd);
 	return (EXIT_SUCCESS);
@@ -240,12 +240,48 @@ int cd_prev(t_data *data)
 // 	tmp = ft_strjoin(data->)
 
 // }
+
+int cd_up(t_data *data)
+{
+	char *pwd;
+	char *old_pwd;
+	char *tmp;
+	char *tmp2;
+	int i;
+
+	pwd = ft_strdup(data->pwd);
+	i = ft_strlen(pwd);
+	old_pwd = ft_strdup(data->old_pwd);
+	if (!pwd || !old_pwd)
+		panic("pwd error!");
+	while (pwd[i] != '/')
+		i--;
+	tmp = ft_substr(pwd, 0, i);
+	tmp2 = ft_strjoin(tmp, "/");
+	if (!tmp || !tmp2 || !data->old_pwd)
+		panic("strdup");
+	data->old_pwd = ft_strdup(data->pwd);
+	data->pwd = ft_strdup(tmp2);
+	if (!data->old_pwd || !data->pwd)
+		panic("strdup");
+//	printf("tmp %s\n", tmp2);
+	if(chdir(tmp2) == -1)
+	{
+		perror("cd");
+		return (EXIT_FAILURE);
+	}
+	free(tmp);
+	free(tmp2);
+
+	return (0);
+}
+
 int cd_dir(t_data *data, t_cmd *node)
 {
 	char *pwd;
 	char *old_pwd;
 	
-	pwd = ft_strdup(data->pwd);
+	pwd = ft_strjoin(data->pwd, node->args[1]);
 	old_pwd = ft_strdup(data->old_pwd);
 	if (!pwd || !old_pwd)
 		panic("pwd error!");
@@ -262,8 +298,8 @@ int cd_dir(t_data *data, t_cmd *node)
 		else
 		{
 			change_old_pwd_in_env(data, data->pwd);
-			change_pwd_in_env(data, node->args[1]);
-			printf(" > %s\n", data->pwd);
+			change_pwd_in_env(data, pwd);
+//			printf(" > %s\n", data->pwd);
 		}
 	// }
 	free(old_pwd);
@@ -288,6 +324,8 @@ int changedir(t_data *data, t_cmd *node)
 			// {
 				if (node->args[1] == NULL || ft_strncmp(node->args[1], "~", 2) == 0)
 					res = cd_home(data);
+				else if (ft_strncmp(node->args[1], "..", 1) == 0)
+					res = cd_up(data);
 				else if (ft_strncmp(node->args[1], "-", 1) == 0)
 					res = cd_prev(data);
 				else

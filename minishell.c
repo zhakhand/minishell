@@ -6,7 +6,7 @@
 /*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/20 15:39:59 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/01/20 19:42:15 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int main(int ac, char **av, char **ev)
 		// 	line = ft_strtrim(pr, "\n");
 		// 	free(pr);
 		// }
-		line = readline("> ");
+		line = readline(data->pwd);
 		if (line == 0)
 			break ;
 		if (ft_strlen(line) == 0)
