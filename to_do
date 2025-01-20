@@ -20,12 +20,27 @@ cat minishell.h | grep ");"$
 
 
 
-	//
-
-	if (cmd->redir->val[0] == '.' && cmd->redir->val[1] == '/')
-	{
-		tmp_val = ft_strdup(cmd->redir->val + 2);
-		free(cmd->redir->val);
-		cmd->redir->val = tmp_val;
-	}
-	printf("cmd %s\n", cmd->redir->val);
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 425
+             STD_OUT: 204  STD_ERR: 442  EXIT_CODE: 172  CRASHING: 19
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 837 
+                                      ✅ 2140 
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 429
+             STD_OUT: 204  STD_ERR: 439  EXIT_CODE: 171  CRASHING: 19
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 833 
+                                      ✅ 2144 
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 495
+             STD_OUT: 204  STD_ERR: 364  EXIT_CODE: 170  CRASHING: 19
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 757 
+                                      ✅ 2220 

@@ -240,7 +240,7 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
     // Check if the command is a directory
     struct stat sb;
     if (stat(full_path, &sb) == 0 && S_ISDIR(sb.st_mode)) {
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
+//        ft_putstr_fd("minishell: ", STDERR_FILENO);
         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
         ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
         return 126;
@@ -248,7 +248,7 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
 
     // Check if the command exists
     if (!full_path || access(full_path, F_OK) == -1) {
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
+//        ft_putstr_fd("minishell: ", STDERR_FILENO);
         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
         ft_putstr_fd(": command not found\n", STDERR_FILENO);
         return 127;
@@ -256,7 +256,7 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
 
     // Check if the command is executable
     if (access(full_path, X_OK) == -1) {
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
+//        ft_putstr_fd("minishell: ", STDERR_FILENO);
         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
         ft_putstr_fd(": Permission denied!\n", STDERR_FILENO);
         return 126;
