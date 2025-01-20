@@ -27,7 +27,7 @@ int ft_exit(t_data *data, t_cmd *node)
 	else if (node->args[2] != NULL)
 	{
 		ft_putstr_fd("minishell: exit: too many arguments", STDERR_FILENO);
-		return (1);
+		exit (1);
 	}
 	else
 	{

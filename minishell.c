@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/19 16:54:35 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/20 15:39:59 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@
 int main(int ac, char **av, char **ev)
 {
 	char *line;
+//	char *prompt;
 	t_data *data;
 	int err_no;
+
 	// t_cmd	*cmd;
 
 //printf("1\n");
@@ -25,7 +27,18 @@ int main(int ac, char **av, char **ev)
 	data->err_no = 0;
 	while (1)
 	{
+		// if (isatty(fileno(stdin)))
+		// 	line = readline("> ");
+		// else
+		// {
+		// 	char *pr;
+		// 	pr = get_next_line(fileno(stdin));
+		// 	line = ft_strtrim(pr, "\n");
+		// 	free(pr);
+		// }
 		line = readline("> ");
+		if (line == 0)
+			break ;
 		if (ft_strlen(line) == 0)
 			continue ;
 		data->tokens = tokenize(line);
@@ -36,9 +49,9 @@ int main(int ac, char **av, char **ev)
 		//data->err_no = run_pipe(data, data->cmds, ev);
 		// free_tokens(data->tokens);
 		// free_cmds(data->cmds);
-		// add_history(line);
+		add_history(line);
 		free(line);
-		break;
+	//	break;
 	}
 
 

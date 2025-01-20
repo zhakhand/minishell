@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/19 10:56:30 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/20 13:51:05 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ t_token *check_expansion(t_token *token, t_data *data)
 		{
 			token->ogVal = token->val;
 			token->val = ft_strdup("");
-			token->type = WORD;
+			token->type = ES;
 			return token;
 		}
 		if (token->was_quoted == 2)
@@ -178,6 +178,7 @@ void reorder_tokens(t_data *data)
 	//merge_tokens(data);
 	clear_quote_tokens(data);
 	expand_vars(data);
+	find_error(data);
 	merge_tokens(data);
 	delete_spaces(data);
 	check_pipes(data);
