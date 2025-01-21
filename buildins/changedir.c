@@ -86,7 +86,7 @@ int cd_home(t_data *data)
 	if (!home)
 		panic("home error!");
 	if (chdir(home) == -1)
-		perror(" No such file or directory");
+		perror("home: No such file or directory");
 	change_old_pwd_in_env(data, data->pwd);
 	change_pwd_in_env(data, home);
 //	printf(" > %s\n", "~");
@@ -162,7 +162,7 @@ int cd_dir(t_data *data, t_cmd *node)
 	char *old_pwd;
 	
 	pwd = ft_strjoin(data->pwd, node->args[1]);
-	
+
 	old_pwd = ft_strdup(data->old_pwd);
 	if (!pwd || !old_pwd)
 		panic("pwd error!");
@@ -196,7 +196,7 @@ int changedir(t_data *data, t_cmd *node)
 
 	if (node->args && node->args[1] && node->args[2])
 	{
-		ft_putstr_fd(" too many arguments\n", STDERR_FILENO);
+		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	// if (check_cd(node))
@@ -205,8 +205,11 @@ int changedir(t_data *data, t_cmd *node)
 			// {
 	if (node->args[1] == NULL || ft_strncmp(node->args[1], "~", 2) == 0)
 		res = cd_home(data);
-	else if (ft_strncmp(node->args[1], "..", 1) == 0)
+
+	else if (ft_strncmp(node->args[1], "..", 2) == 0)
 		res = cd_up(data);
+	else if (ft_strncmp(node->args[1], ".", 1) == 0)
+		res = 0;
 	else if (ft_strncmp(node->args[1], "-", 1) == 0)
 		res = cd_prev(data);
 	else
