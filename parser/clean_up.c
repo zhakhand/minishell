@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 14:11:46 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/16 13:26:38 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/20 12:09:37 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ void	free_tokens(t_token *token)
 		if (to_free->ogVal)
 			free(to_free->ogVal);
 		to_free->ogVal = NULL;
-		free(to_free);
+		if (to_free)
+			free(to_free);
 		to_free = NULL;
 	}
 }

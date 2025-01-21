@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 13:40:06 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/09 19:47:57 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/21 15:25:01 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ void	check_redirs(t_data *data)
 {
 	t_token	*current;
 
-	if (!data->tokens)
-		exit(1);
-	current = data->tokens;
+	current = NULL;
+	if (data->tokens)
+		current = data->tokens;
 	while (current)
 	{
 		if (is_redir(current->type))
@@ -36,12 +36,12 @@ void check_pipes(t_data *data)
 {
 	t_token *current;
 
-	if (!data->tokens)
-		exit(1);
-	current = data->tokens;
+	current = NULL;
+	if (data->tokens)
+		current = data->tokens;
 	while (current)
 	{
-		if (current->type == PIPE)
+		if (current && current->type == PIPE)
 		{
 			if (!current->prev)
 				error_msg(UNEXPECTED_TOKEN, current, data);
@@ -61,9 +61,9 @@ void delete_spaces(t_data *data)
 {
 	t_token *current;
 
-	if (!data->tokens)
-		exit(1);
-	current = data->tokens;
+	current = NULL;
+	if (data->tokens)
+		current = data->tokens;
 	while (current)
 	{
 		if (current->type == WS && current->was_quoted == 0)

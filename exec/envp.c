@@ -69,11 +69,12 @@ char *find_path(char *cmd, char **path)
 //	char *exec_o;
 
 	res = NULL;
+//	printf("CMD1  %s \n", cmd);
 	
 	if (ft_strncmp(cmd, "./", 2) == 0)
 	{
 		res = ft_substr(cmd, 2, ft_strlen(cmd) - 2);
-			if (access(res, X_OK) == 0)
+			if (access(res, F_OK) == 0)
 			{
 //				printf("CMD  %s %s \n", cmd, res);
 				return(res);
@@ -82,6 +83,13 @@ char *find_path(char *cmd, char **path)
 		// printf("sub %s\n", res);
 		// return (res);
 	}
+	else if (ft_strncmp(cmd, "/", 1) == 0)
+	{
+		if (access(cmd, F_OK) == 0)
+		{
+			return(cmd);
+		}
+	}
 	else
 	{
 	
@@ -89,9 +97,8 @@ char *find_path(char *cmd, char **path)
 		while (path[i] != NULL)
 		{
 			res = ft_strjoin(path[i], cmd);
-			if (access(res, X_OK) == 0)
+			if (access(res, F_OK) == 0)
 			{
-	//			printf("CMD1  %s %s  %s  \n", cmd, path[i], res);
 				return(res);
 			}
 			i++;

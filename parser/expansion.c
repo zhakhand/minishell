@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/16 12:47:02 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/21 15:59:39 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@ t_token *link_tokens(t_token *token, t_token *head, t_token *tail)
 		token->next->prev = tail;
 		tail->next = token->next;
 	}
-	free(token->val);
-	free(token);
+	if (token->val)
+		free(token->val);
+	if (token)
+		free(token);
 	return (head);
 }
 
@@ -43,6 +45,7 @@ t_token *set_quoted(t_token *token, t_token *head)
 			curr->was_quoted = 2;
 		if (!curr->next)
 			break;
+		curr->touches_next = 1;
 		curr = curr->next;
 	}
 	return (curr);
@@ -79,21 +82,6 @@ void clear_quote_tokens(t_data *data)
 	}
 }
 
-int	is_delim(t_token *token)
-{
-	t_token	*curr;
-
-	curr = token;
-	while (curr && (curr->type == WORD || curr->type == VAR || \
-	curr->type == D_QUOTE || curr->type == S_QUOTE || curr->was_quoted))
-		curr = curr->prev;
-	if (curr->prev && curr->prev->type == HEREDOC)
-		return (1);
-	else if (curr && curr->type == HEREDOC)
-		return (1);
-	return (0);
-}
-
 t_token *check_expansion(t_token *token, t_data *data)
 {
 	t_var *var;
@@ -102,11 +90,6 @@ t_token *check_expansion(t_token *token, t_data *data)
 
 	head = NULL;
 	curr = NULL;
-	if (is_delim(token))
-	{
-		token->type = WORD;
-		return (token);
-	}
 	if (token->was_quoted != 1)
 	{
 		var = get_env_var(data, token->val + 1);
@@ -114,7 +97,7 @@ t_token *check_expansion(t_token *token, t_data *data)
 		{
 			token->ogVal = token->val;
 			token->val = ft_strdup("");
-			token->type = WORD;
+			token->type = ES;
 			return token;
 		}
 		if (token->was_quoted == 2)
@@ -173,15 +156,62 @@ void	find_error(t_data *data)
 	}
 }
 
+void	mark_merges(t_data *data)
+{
+	t_token *curr;
+	
+	curr = NULL;
+	if (data->tokens)
+		curr = data->tokens;
+	while (curr)
+	{
+		if ((curr->type == WORD || curr->type == D_QUOTE || curr->type == S_QUOTE || curr->type == VAR || curr->type == ERROR) && curr->next \
+		&& (curr->next->type == WORD || curr->next->type == D_QUOTE || curr->next->type == S_QUOTE || curr->next->type == VAR || curr->next->type == ERROR))
+		{
+			curr->touches_next = 1;
+		}
+		curr = curr->next;
+	}
+}
+
+void	mark_vars(t_data *data)
+{
+	t_token	*curr;
+
+	curr = NULL;
+	if (data->tokens)
+		curr = data->tokens;
+	while (curr)
+	{
+		if (curr->type == HEREDOC)
+		{
+			curr = curr->next;
+			while (curr)
+			{
+				curr->type = WORD;
+				curr->is_delim = 1;
+				if (curr->touches_next)
+					curr = curr->next;
+				else
+					break ;
+			}
+		}
+		curr = curr->next;
+	}
+}
+
 void reorder_tokens(t_data *data)
 {
-	find_error(data);
-	//merge_tokens(data);
-	clear_quote_tokens(data);
-	expand_vars(data);
-	merge_tokens(data);
+	//FIRST STEP
+	mark_merges(data);
 	delete_spaces(data);
 	check_pipes(data);
 	check_redirs(data);
-	syntax_check(data);
+	//syntax_check(data);
+	//SECOND STEP
+	mark_vars(data);
+	clear_quote_tokens(data);
+	find_error(data);
+	expand_vars(data);
+ 	merge_tokens(data);
 }

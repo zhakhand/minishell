@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/16 15:56:49 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/21 16:01:24 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,17 +78,33 @@ void	sighandler(int signal)
 	}
 }
 
+void	print_tokens(t_data *data)
+{
+	t_token *curr;
+
+	curr = NULL;
+	if (data->tokens)
+		curr = data->tokens;
+	while (curr)
+	{
+		printf("[%s]", curr->val);
+		curr = curr->next;
+	}
+}
+
 int main(int ac, char **av, char **ev)
 {
 	char *line;
 	t_data *data;
 	int err_no;
+	char **env;
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sighandler);
 	data = init_data(ac, av, ev);
 	data->err_no = 0;
 	increase_shell_lvl(data);
+	env = NULL;
 	while (1)
 	{
 		line = readline("> ");
@@ -100,18 +116,25 @@ int main(int ac, char **av, char **ev)
 		data->path_arr = get_path_arr(ev);
 		reorder_tokens(data);
 		set_cmd_table(data);
-		data->err_no = run_pipe(data, data->cmds, make_env(data));
-		free_tokens(data->tokens);
-		free_cmds(data->cmds);
-		add_history(line);
+		//print_tokens(data);
+		//print_cmd_table(data->cmds);
+		env = make_env(data);
+		run_pipe(data, data->cmds, env);
+		//data->err_no = run_pipe(data, data->cmds, ev);
+		// if (data->tokens)
+		// 	free_tokens(data->tokens);
+		// if (data->cmds)
+		// 	free_cmds(data->cmds);
+		// add_history(line);
 		free(line);
-		//break;
+		break;
 	}
 
 
 //	print_cmd_table(data->cmds);
 	err_no = data->err_no;
 	clean_data(data);
+	free_args(env);
 	return (err_no);
 
 }

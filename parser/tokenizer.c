@@ -72,6 +72,7 @@ void handle_var(t_token *tok, char *line, int *start, int *end)
         {
             tok->val = ft_strndup(line + *start, ++(*end) - *start);
             tok->type = ERROR;
+            tok->error = 1;
         }
         *start = *end;
 //        printf("%s\n", tok->val); 
@@ -95,7 +96,7 @@ void handle_quotes(t_token *tok, char *line, int *start, int *end)
         exit(1);
     if (*end - *start == 0)
     {
-        tok->type = ES;
+        tok->type = WORD;
         tok->val = ft_strdup("");
         tok->was_quoted = 1;
         *start = ++(*end);
@@ -147,6 +148,9 @@ t_token *init_token(void)
     if (!new)
         exit(2);
     new->was_quoted = 0;
+    new->touches_next = 0;
+    new->error = 0;
+    new->is_delim = 0;
     new->next = NULL;
     new->prev = NULL;
     new->ogVal = NULL;
