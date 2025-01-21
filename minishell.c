@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/21 16:01:24 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/21 16:13:37 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,14 @@ void	print_tokens(t_data *data)
 int main(int ac, char **av, char **ev)
 {
 	char *line;
+	char *prompt;
+//	char *prompt;
 	t_data *data;
 	int err_no;
 	char **env;
+	
+
+	// t_cmd	*cmd;
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sighandler);
@@ -107,8 +112,20 @@ int main(int ac, char **av, char **ev)
 	env = NULL;
 	while (1)
 	{
-		line = readline("> ");
-		if (line == NULL)
+		// if (isatty(fileno(stdin)))
+		// 	line = readline("> ");
+		// else
+		// {
+		// 	char *pr;
+		// 	pr = get_next_line(fileno(stdin));
+		// 	line = ft_strtrim(pr, "\n");
+		// 	free(pr);
+		// }
+		prompt = ft_strjoin(data->pwd, " $ ");
+		if (!prompt)
+			panic("strjoin");
+		line = readline(prompt);
+		if (line == 0)
 			break ;
 		if (ft_strlen(line) == 0)
 			continue ;
@@ -121,13 +138,13 @@ int main(int ac, char **av, char **ev)
 		env = make_env(data);
 		run_pipe(data, data->cmds, env);
 		//data->err_no = run_pipe(data, data->cmds, ev);
-		// if (data->tokens)
-		// 	free_tokens(data->tokens);
-		// if (data->cmds)
-		// 	free_cmds(data->cmds);
-		// add_history(line);
+		// free_tokens(data->tokens);
+		// free_cmds(data->cmds);
+		add_history(line);
 		free(line);
-		break;
+//		clean_data(data);
+	
+	//	break;
 	}
 
 

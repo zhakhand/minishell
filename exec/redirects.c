@@ -41,7 +41,7 @@ int handle_input_redirects(t_redir *redir)
 			in_fd = open(redirects->val, O_RDONLY);
 			if (in_fd == -1)
 			{
-				ft_putstr_fd("minishell: ", 2);
+				// ft_putstr_fd("minishell: ", 2);
 				ft_putstr_fd(redirects->val, 2);
 				ft_putstr_fd(": No such file or directory\n", 2);
 				return (-1);
@@ -76,8 +76,10 @@ int open_and_close(t_redir *redir)
 	out_fd = open(redir->val, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	if (out_fd == -1)
 	{
-		panic("minishell");
-//	return (-1);
+//		panic("minishell");
+		ft_putstr_fd(redir->val, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		return (-1);
 	}
 	close(out_fd);
 
@@ -138,7 +140,12 @@ int handle_redirects(t_cmd *node)
 	while (temp)
 	{
 		if (temp->type == IN || temp->type == HEREDOC)
+		{
 			input_redirects = temp;
+			err = handle_input_redirects(input_redirects);
+			if (err == -1)
+				return (-1);
+		}
 		else if (temp->type == OUT || temp->type == APPEND)
 		{
            if (output_redirects == NULL)
@@ -168,6 +175,8 @@ int handle_redirects(t_cmd *node)
 		{
 
 //			write(2, "minishell: ", 11);
+			ft_putstr_fd(input_redirects->val, 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
 			err = -1;
 		}
 

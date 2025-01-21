@@ -20,12 +20,16 @@ int check_if_buildin(t_cmd *node)
 int exec_buildin(t_data *data, t_cmd *node)
 {
 	int res;
+
+	res = 0;
 	if (node == NULL || node->cmd == NULL || node->cmd == NULL)
 		return (-1);
+	// if (node->built_in == CD)
+	// 	res = changedir(data, node);
 	if (node->built_in == PWD)
 		res = show_pwd(data);
 	if (node->built_in == ECH)
-		res = ft_echo(node);
+		res = ft_echo(data, node);
 	if (node->built_in == ENV)
 		res = ft_env_no_args(data);
 	if (node->built_in == UNSET)

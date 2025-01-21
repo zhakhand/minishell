@@ -53,7 +53,7 @@ int handle_redirects(t_cmd *node);
 
 int ft_env_no_args(t_data *data);
 char **sort_env(char **arr);
-int ft_echo(t_cmd *node);
+int ft_echo(t_data *data, t_cmd *node);
 int ft_unset(t_data *data, t_cmd *node);
 int ft_export(t_data *data, t_cmd *node);
 int changedir(t_data *data, t_cmd *node);
