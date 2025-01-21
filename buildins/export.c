@@ -334,9 +334,9 @@ int ft_export(t_data *data, t_cmd *node)
 		i = 1;
 		if (check_symbols(node->args[1]) == 1)
 		{
-			ft_putstr_fd("minishell: export: ", STDERR_FILENO); 
+			ft_putstr_fd("export: `", STDERR_FILENO); 
 			ft_putstr_fd(node->args[1], STDERR_FILENO);
-			ft_putstr_fd(" not a valid identifier\n", STDERR_FILENO);
+			ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 			return (1);
 		}
 		while (node->args[i] != NULL)

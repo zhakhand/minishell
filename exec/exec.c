@@ -2,6 +2,19 @@
 //#include <cerrno>
 #include <unistd.h>
 
+void clear_path_arr(t_data *data)
+{
+    int i;
+
+    i = 0;
+    while (data->path_arr[i] != NULL)
+    {
+        free(data->path_arr[i]);
+        i++;
+    }
+    free(data->path_arr);
+}
+
 void run(t_cmd_node *list, char **envp)
 {
 	char *full_path;
@@ -338,6 +351,7 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
 // }
 int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 {
+//    printf("begin  %d\n", cmd->built_in);
     int fds[2];
     int prev_fd = STDIN_FILENO;
     int status;
@@ -349,8 +363,10 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
         {
             data->err_no = changedir(data, cmd);
 //            return data->err_no;
-        }
-
+            if(cmd->next != NULL)
+                return (0);
+       }
+//printf("err_no %d  %s\n", data->err_no, cmd->args[0]);
         // Создание пайпа
         if (cmd->next != NULL && pipe(fds) == -1)
             panic("pipe err");
@@ -389,9 +405,9 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
             }
 //            printf("err_no %d\n", data->err_no);
             // Выполнение команды (builtin или execve)
-            if (!check_if_buildin(cmd) && data->err_no == 0)
+            if (!check_if_buildin(cmd))
                 data->err_no = exec_buildin(data, cmd);
-            else if (check_if_buildin(cmd) && data->err_no == 0)
+            else if (check_if_buildin(cmd))
             {
                 char *full_path = find_path(cmd->args[0], data->path_arr);
                 data->err_no = run_execve(cmd, envp, full_path);
@@ -417,227 +433,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
         if (WIFEXITED(status))
             data->err_no = WEXITSTATUS(status);
     }
-
+//    clear_path_arr(data);
     return (0);
 }
 
-
-//  ORIGINAL
-// int run_pipe(t_data *data, t_cmd *cmd, char **envp)
-// {
-// 	int fds[2];
-// 	int prev_fd = STDIN_FILENO;
-// 	int status;
-// 	pid_t pid;
-
-// 	while (cmd != NULL)
-// 	{
-
-// 		if(cmd->built_in == CD)
-// 		{
-// 			data->err_no = changedir(data, cmd);
-// 			return data->err_no;
-// 		}
-// 		// if (cmd->next != NULL)
-// 		// {
-// 		// 	close(fds[1]); // Закрываем запись в новый пайп
-// 		// 	prev_fd = fds[0]; // Устанавливаем новый ввод для следующей команды
-// 		// }
-// 		if (cmd->redir)
-// 			data->err_no = (handle_redirects(cmd) == -1);
-
-// 		// Настраиваем пайп, если есть следующая команда
-// 		if (cmd->next != NULL && pipe(fds) == -1)
-// 			panic("pipe err");
-// 		// if (cmd->next != NULL)
-// 		// 	{
-// 		// 		close(fds[0]); // Закрываем чтение из нового пайпа
-// 		// 		if (dup2(fds[1], STDOUT_FILENO) == -1)
-// 		// 			panic("dup2 fds[1]");
-// 		// 		close(fds[1]);
-// 		// }
-
-// 		// Проверяем, является ли команда билдином
-// //				return (-1);
-// //				panic("Failed to handle redirects");
-
-// 			// Обработка редиректов в билдинах
-// 			// Выполнение билдина в родительском процессе
-// 		// else
-// 		// {
-// 		pid = fork();
-// 		if (pid == -1)
-// 			panic("fork err");
-// 		else if (pid == 0)
-// 		{
-// 			// Дочерний процесс
-
-// 			// Перенаправляем ввод, если нужно
-// 			if (prev_fd != STDIN_FILENO)
-// 			{
-// 				if (dup2(prev_fd, STDIN_FILENO) == -1)
-// 					panic("dup2 prev_fd");
-// 				close(prev_fd);
-// 			}
-
-// 			// Обработка редиректов
-// //			data->err_no = handle_redirects(cmd);
-// 			if (handle_redirects(cmd) == -1)
-// 				panic("minishell: ");
-// 			// Перенаправляем вывод, если нужно
-// 			if (cmd->next != NULL)
-// 			{
-// 				close(fds[0]); // Закрываем чтение из нового пайпа
-// 				if (dup2(fds[1], STDOUT_FILENO) == -1)
-// 					panic("dup2 fds[1]");
-// 				close(fds[1]);
-// 		}
-
-// 		if (!check_if_buildin(cmd))
-// 		{
-// 			data->err_no = exec_buildin(data, cmd);
-// 		}
-
-// 		// else
-// 		// {
-// 				// Выполнение команды
-// 				if (check_if_buildin(cmd))
-// 				{
-// //					printf("%d\n", check_if_buildin(cmd));
-// 				char *full_path = find_path(cmd->args[0], data->path_arr);
-// 				data->err_no = run_execve(cmd, envp, full_path);
-// 				free(full_path);
-// 				}
-// 				exit(data->err_no);
-// 		// }
-// 			}
-// 		// }
-
-// 		// Родительский процесс
-
-// 		// Закрываем старые пайпы
-// 		if (prev_fd != STDIN_FILENO)
-// 			close(prev_fd);
-
-// 		if (cmd->next != NULL)
-// 		{
-// 			close(fds[1]); // Закрываем запись в новый пайп
-// 			prev_fd = fds[0]; // Устанавливаем новый ввод для следующей команды
-// 		}
-
-// 		cmd = cmd->next;
-// 	}
-
-// 	// Ожидаем завершения всех дочерних процессов
-// 	while (waitpid(-1, &status, 0) > 0)
-// 	{
-// 		if (WIFEXITED(status))
-// 			data->err_no = WEXITSTATUS(status);
-// 	}
-
-// 	return data->err_no;
-// }
-
-
-// int run_pipe(t_data *data, t_cmd *cmd, char **envp)
-// {
-//     int fds[2];
-//     int prev_fd = STDIN_FILENO;
-//     int status;
-//     pid_t pid;
-
-//     while (cmd != NULL)
-//     {
-//         printf("fd %d \n", prev_fd);
-//         if(cmd->built_in == CD)
-//         {
-//             data->err_no = changedir(data, cmd);
-//             return data->err_no;
-//         }
-//         // Настраиваем пайп, если есть следующая команда
-//         if (cmd->next != NULL && pipe(fds) == -1)
-//             panic("pipe err");
-
-//         // Проверяем, является ли команда билдином
-//         if (cmd->redir != NULL)
-// {
-//             data->err_no = (handle_redirects(cmd) == -1);
-// //            return (-1);
-// }
-// //				panic("Failed to handle redirects");
-
-//             // Обработка редиректов в билдинах
-//             // Выполнение билдина в родительском процессе
-//         // else
-//         // {
-//         pid = fork();
-//         if (pid == -1)
-//             panic("fork err");
-//         else if (pid == 0)
-//         {
-//             // Дочерний процесс
-//             printf("prev_fd: %d, fds[0]: %d, fds[1]: %d %s\n", prev_fd, fds[0], fds[1], cmd->args[0]);
-//             // Перенаправляем ввод, если нужно
-//             if (prev_fd != STDIN_FILENO)
-//             {
-//                 printf("fd in if %d\n", prev_fd);
-
-//                 if (dup2(prev_fd, STDIN_FILENO) == -1)
-//                     panic("dup2 prev_fd");
-//                 close(prev_fd);
-//             }
-
-//             // Обработка редиректов
-// //			data->err_no = handle_redirects(cmd);
-//             if (handle_redirects(cmd) == -1)
-//                 panic("minishell: ");
-//             // Перенаправляем вывод, если нужно
-//             if (cmd->next != NULL)
-//             {
-//                 close(fds[0]); // Закрываем чтение из нового пайпа
-//                 if (dup2(fds[1], STDOUT_FILENO) == -1)
-//                     panic("dup2 fds[1]");
-//                 close(fds[1]);
-//             }
-
-//             if (!check_if_buildin(cmd))
-//             {
-//                 printf("Before exec_buildin: prev_fd=%d, fds[0]=%d, fds[1]=%d\n", prev_fd, fds[0], fds[1]);
-//                 data->err_no = exec_buildin(data, cmd);
-//                 printf("After exec_buildin: prev_fd=%d, fds[0]=%d, fds[1]=%d\n", prev_fd, fds[0], fds[1]);
-//             }
-//             else
-//             {
-//                 // Выполнение команды
-//                 // if (check_if_buildin(cmd))
-//                 // {
-//                 char *full_path = find_path(cmd->args[0], data->path_arr);
-//                 data->err_no = run_execve(cmd, envp, full_path);
-//                 free(full_path);
-//                 // }
-//                 exit(data->err_no);
-//             }
-//         }
-//         else
-//         {
-//             // Родительский процесс
-//             printf("parent: prev_fd=%d, fds[0]=%d, fds[1]=%d\n", prev_fd, fds[0], fds[1]);
-
-//             if (prev_fd != STDIN_FILENO)
-//                 close(prev_fd);
-
-//             if (cmd->next != NULL)
-//             {
-//                 close(fds[1]);
-//                 prev_fd = fds[0];
-//             }
-
-//             waitpid(pid, &status, 0);
-//             printf("parent after wait: prev_fd=%d, fds[0]=%d, fds[1]=%d\n", prev_fd, fds[0], fds[1]);
-//         }
-
-//         cmd = cmd->next;
-//     }
-
-//     return 0;
-// }

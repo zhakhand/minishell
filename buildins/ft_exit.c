@@ -26,7 +26,8 @@ int ft_exit(t_data *data, t_cmd *node)
 	}
 	else if (node->args[2] != NULL)
 	{
-		ft_putstr_fd("minishell: exit: too many arguments", STDERR_FILENO);
+		ft_putstr_fd("exit: too many arguments", STDERR_FILENO);
+		data->err_no = 1;
 		exit (1);
 	}
 	else
@@ -35,9 +36,10 @@ int ft_exit(t_data *data, t_cmd *node)
 		{
 			if (ft_isdigit(node->args[1][i]) == 0 && node->args[1][i] != '+' && node->args[1][i] != '-')
 			{
-				ft_putstr_fd(" minishell: exit: \n", STDERR_FILENO);
-//				ft_putstr_fd(node->args[1], STDERR_FILENO);
-				ft_putstr_fd(" numeric argument required\n", STDERR_FILENO);
+				ft_putstr_fd("exit: `\n", STDERR_FILENO);
+				ft_putstr_fd(node->args[1], STDERR_FILENO);
+				ft_putstr_fd("': numeric argument required\n", STDERR_FILENO);
+				data->err_no = 2;
 				return (2);
 			}
 			i++;

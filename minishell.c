@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/20 19:42:15 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/01/21 14:20:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@
 int main(int ac, char **av, char **ev)
 {
 	char *line;
+	char *prompt;
 //	char *prompt;
 	t_data *data;
 	int err_no;
+	
 
 	// t_cmd	*cmd;
 
@@ -36,7 +38,10 @@ int main(int ac, char **av, char **ev)
 		// 	line = ft_strtrim(pr, "\n");
 		// 	free(pr);
 		// }
-		line = readline(data->pwd);
+		prompt = ft_strjoin(data->pwd, " $ ");
+		if (!prompt)
+			panic("strjoin");
+		line = readline(prompt);
 		if (line == 0)
 			break ;
 		if (ft_strlen(line) == 0)
@@ -51,6 +56,8 @@ int main(int ac, char **av, char **ev)
 		// free_cmds(data->cmds);
 		add_history(line);
 		free(line);
+//		clean_data(data);
+	
 	//	break;
 	}
 

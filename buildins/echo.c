@@ -31,7 +31,7 @@ int if_no_newline(t_cmd *node)
 	return (flag);
 }
 
-int ft_echo(t_cmd *node)
+int ft_echo(t_data *data, t_cmd *node)
 {
 	int i;
 
@@ -41,6 +41,12 @@ int ft_echo(t_cmd *node)
 		printf("\n");
 		return (0);
 	}
+	if (ft_strncmp(node->args[1], "$?", 2) == 0)
+	{
+		ft_putstr_fd(ft_itoa(data->err_no), 1);
+		return (0);
+	}
+	
 	i = if_no_newline(node) + 1;
 	while (node->args[i] != NULL)
 	{

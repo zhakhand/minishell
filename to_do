@@ -52,3 +52,11 @@ cat minishell.h | grep ");"$
                           TOTAL FAILED AND PASSED CASES:
                                       ❌ 745 
                                       ✅ 2232 
+                                      🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 571
+             STD_OUT: 189  STD_ERR: 296  EXIT_CODE: 151  CRASHING: 15
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 651 
+                                      ✅ 2322 
