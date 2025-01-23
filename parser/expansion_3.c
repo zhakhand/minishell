@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 13:40:06 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/09 19:47:57 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/23 12:23:36 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ void	check_redirs(t_data *data)
 {
 	t_token	*current;
 
-	if (!data->tokens)
-		exit(1);
-	current = data->tokens;
+	current = NULL;
+	if (data->tokens)
+		current = data->tokens;
 	while (current)
 	{
 		if (is_redir(current->type))
@@ -36,15 +36,19 @@ void check_pipes(t_data *data)
 {
 	t_token *current;
 
-	if (!data->tokens)
-		exit(1);
-	current = data->tokens;
+	current = NULL;
+	if (data->tokens)
+		current = data->tokens;
 	while (current)
 	{
-		if (current->type == PIPE)
+		if (current && current->type == PIPE)
 		{
 			if (!current->prev)
 				error_msg(UNEXPECTED_TOKEN, current, data);
+			else{
+				if (is_redir(current->prev->type))
+					error_msg(UNEXPECTED_TOKEN, current, data);
+			}
 			if (current->next)
 			{
 				if (current->next->type == PIPE)
@@ -61,9 +65,9 @@ void delete_spaces(t_data *data)
 {
 	t_token *current;
 
-	if (!data->tokens)
-		exit(1);
-	current = data->tokens;
+	current = NULL;
+	if (data->tokens)
+		current = data->tokens;
 	while (current)
 	{
 		if (current->type == WS && current->was_quoted == 0)
@@ -75,16 +79,8 @@ void delete_spaces(t_data *data)
 
 void	syntax_check(t_data *data)
 {
-	t_token *curr;
-
-	curr = data->tokens;
-	while (curr)
-	{
-		if (curr->was_quoted && ft_strlen(curr->val) == 0)
-		{
-			if (curr->next && curr->next->type == PIPE)
-				error_msg(CMD_NOT_FOUND, curr, data);
-		}
-		curr = curr->next;
+	if (data->tokens && ft_strcmp(data->tokens->val, ".") == 0){
+		ft_putstr_fd(".: usage: .filename [arguments]\n", 2);
+		exit(2);
 	}
 }

@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 16:52:52 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/20 13:51:05 by oshcheho         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/01/23 12:26:40 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../parser.h"
 
@@ -17,15 +18,18 @@ t_token *link_tokens(t_token *token, t_token *head, t_token *tail)
 	if (token->prev)
 	{
 		token->prev->next = head;
-		head->prev = token->prev;
+		if (head)
+			head->prev = token->prev;
 	}
 	if (token->next)
 	{
 		token->next->prev = tail;
 		tail->next = token->next;
 	}
-	free(token->val);
-	free(token);
+	if (token->val)
+		free(token->val);
+	if (token)
+		free(token);
 	return (head);
 }
 
@@ -42,8 +46,11 @@ t_token *set_quoted(t_token *token, t_token *head)
 			curr->was_quoted = 2;
 		if (!curr->next)
 			break;
+		curr->touches_next = 1;
 		curr = curr->next;
 	}
+	if (token->touches_next == 1)
+		curr->touches_next = 1;
 	return (curr);
 }
 
@@ -78,21 +85,6 @@ void clear_quote_tokens(t_data *data)
 	}
 }
 
-int	is_delim(t_token *token)
-{
-	t_token	*curr;
-
-	curr = token;
-	while (curr && (curr->type == WORD || curr->type == VAR || \
-	curr->type == D_QUOTE || curr->type == S_QUOTE || curr->was_quoted))
-		curr = curr->prev;
-	if (curr && curr->prev && curr->prev->type == HEREDOC)
-		return (1);
-	else if (curr && curr->type == HEREDOC)
-		return (1);
-	return (0);
-}
-
 t_token *check_expansion(t_token *token, t_data *data)
 {
 	t_var *var;
@@ -101,15 +93,10 @@ t_token *check_expansion(t_token *token, t_data *data)
 
 	head = NULL;
 	curr = NULL;
-	if (is_delim(token))
-	{
-		token->type = WORD;
-		return (token);
-	}
 	if (token->was_quoted != 1)
 	{
 		var = get_env_var(data, token->val + 1);
-		if (!var)
+		if (!var || (var && var->is_valid == 0) || (var && var->is_valid == 1 && !ft_strlen(var->val)))
 		{
 			token->ogVal = token->val;
 			token->val = ft_strdup("");
@@ -125,8 +112,13 @@ t_token *check_expansion(t_token *token, t_data *data)
 		}
 		head = tokenize_quotes_vars(var->val);
 		curr = head;
-		while (curr->next)
+		if (token->touches_next == 1)
+			head->touches_next = 1;
+		while (curr->next){
+			if (token->touches_next == 1)
+				curr->touches_next = 1;
 			curr = curr->next;
+		}
 		// curr = set_quoted(token, head);
 		return link_tokens(token, head, curr);
 	}
@@ -162,7 +154,7 @@ void	find_error(t_data *data)
 	curr = data->tokens;
 	while (curr)
 	{
-		if (curr->type == ERROR)
+		if (curr->type == ERROR && curr->was_quoted != 1)
 		{
 			curr->ogVal = curr->val;
 			curr->val = ft_itoa(data->err_no);
@@ -172,16 +164,62 @@ void	find_error(t_data *data)
 	}
 }
 
+void	mark_merges(t_data *data)
+{
+	t_token *curr;
+	
+	curr = NULL;
+	if (data->tokens)
+		curr = data->tokens;
+	while (curr)
+	{
+		if ((curr->type == WORD || curr->type == D_QUOTE || curr->type == S_QUOTE || curr->type == VAR || curr->type == ERROR) && curr->next \
+		&& (curr->next->type == WORD || curr->next->type == D_QUOTE || curr->next->type == S_QUOTE || curr->next->type == VAR || curr->next->type == ERROR))
+		{
+			curr->touches_next = 1;
+		}
+		curr = curr->next;
+	}
+}
+
+void	mark_vars(t_data *data)
+{
+	t_token	*curr;
+
+	curr = NULL;
+	if (data->tokens)
+		curr = data->tokens;
+	while (curr)
+	{
+		if (curr->type == HEREDOC)
+		{
+			curr = curr->next;
+			while (curr)
+			{
+				curr->type = WORD;
+				curr->is_delim = 1;
+				if (curr->touches_next)
+					curr = curr->next;
+				else
+					break ;
+			}
+		}
+		curr = curr->next;
+	}
+}
+
 void reorder_tokens(t_data *data)
 {
-	find_error(data);
-	//merge_tokens(data);
-	clear_quote_tokens(data);
-	expand_vars(data);
-	find_error(data);
-	merge_tokens(data);
+	//FIRST STEP
+	mark_merges(data);
 	delete_spaces(data);
-	check_pipes(data);
 	check_redirs(data);
+	check_pipes(data);
 	syntax_check(data);
+	//SECOND STEP
+	mark_vars(data);
+	clear_quote_tokens(data);
+	find_error(data);
+	expand_vars(data);
+ 	merge_tokens(data);
 }

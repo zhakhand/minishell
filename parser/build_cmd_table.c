@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_cmd_table.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:41:58 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/11 12:09:17 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/21 15:37:38 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ t_redir	*init_redir()
 	if (!new)
 		exit(2);
 	new->type = 0;
+	new->expands = 1;
 	new->val = NULL;
 	new->next = NULL;
 	new->prev = NULL;
@@ -102,10 +103,13 @@ t_redir	*redir_list(t_token *token)
 			}
 			tail->type = token->prev->type;
 			tail->val = token->val;
+			if (token->prev->type == HEREDOC && token->was_quoted == 2)
+				tail->expands = 0;
 			if (token->prev->type == HEREDOC && token->was_quoted == 2 && token->ogVal)
 				tail->val = token->ogVal;
 			token->val = NULL;
-			free(token->prev->val);
+			if (token->prev->val)
+				free(token->prev->val);
 			token->prev->val = NULL;
 			prev = tail;
 		}
@@ -124,6 +128,7 @@ t_token *put_cmds(t_token *token, t_cmd *cmd)
 	tail = count_args(&count, token);
 	cmd->args = ft_calloc(count, sizeof(char *));
 	fill_args(cmd, token);
+	cmd->args_count = count;
 	cmd->cmd = cmd->args[0];
 	if (tail)
 		return tail->next;

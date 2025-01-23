@@ -66,6 +66,9 @@ typedef struct s_token
 	char *ogVal;
 	int type;
 	int was_quoted;
+	int	touches_next;
+	int	is_delim;
+	int	error;
 	struct s_token *next;
 	struct s_token *prev;
 } t_token;
@@ -74,6 +77,7 @@ typedef struct s_redir
 {
 	char *val;
 	int type;
+	int	expands;
 	struct s_redir	*next;
 	struct s_redir	*prev;
 } t_redir;
@@ -83,6 +87,7 @@ typedef struct s_cmd
 	int	in;
 	int	out;
 	int abs_path;
+	int	args_count;
 	char 			*cmd;
 	char 			**args;
 	t_redir			*redir;
@@ -129,7 +134,7 @@ t_data *init_data(int ac, char **av, char **ev);
 void copy_env(t_data *data, char **envp);
 t_var *create_env_var(char *key, char *val);
 t_var *get_env_var(t_data *data, char *key);
-void set_env_var(t_data *data, char *key, char *val);
+t_var *set_env_var(t_data *data, char *key, char *val);
 void unset_var(t_data *data, char *key);
 void reorder_tokens(t_data *data);
 void merge_tokens(t_data *data);
@@ -146,6 +151,7 @@ void	check_built_in(t_data *data);
 void	error_msg(char *error, t_token *token, t_data *data);
 void	free_tokens(t_token *token);
 void	free_cmds(t_cmd *cmds);
+void	free_args(char	**args);
 void	clean_data(t_data *data);
 
 #endif

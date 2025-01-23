@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 14:39:05 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/09 19:47:54 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/21 15:39:14 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ t_token *relink_tokens(t_token *empty, t_token *current, t_data *data)
 		if (!empty->prev)
 			data->tokens = current;
 		current->prev = NULL;
+	}
+	else
+	{
+		if (!empty->prev)
+			data->tokens = NULL;
 	}
 	empty->next = NULL;
 	if (empty->prev)
@@ -34,7 +39,8 @@ t_token *relink_tokens(t_token *empty, t_token *current, t_data *data)
 			free(empty->val);
 			empty->val = NULL;
 		}
-		free(empty);
+		if (empty)
+			free(empty);
 		empty = NULL;
 	}
 	return current;
@@ -49,7 +55,7 @@ void clear_out_es(t_data *data)
 	empty = NULL;
 	while (current)
 	{
-		if (current->type == ES && current->was_quoted == 0)
+		if ((current->type == ES) && current->was_quoted == 0)
 		{
 			empty = current;
 			current = current->next;
@@ -66,14 +72,17 @@ void join_tokens(t_data *data)
 	t_token *current;
 
 	current = NULL;
-	if (!data->tokens)
-		exit(1);
-	current = data->tokens;
+	if (data->tokens)
+		current = data->tokens;
 	while (current)
 	{
-		if ((current->was_quoted || current->type == WORD) && current->next \
-		&& (current->next->was_quoted || (current->next->type == WORD || current->next->type == VAR)))
+		if (current->touches_next == 1 && current->next)
 		{
+			if (current->is_delim && (current->was_quoted != 0 || current->next->was_quoted != 0))
+			{
+				current->was_quoted = 2;
+				current->next->was_quoted = 2;
+			}
 			merged = ft_strjoin(current->val, current->next->val);
 			current = relink_tokens(current, current->next, data);
 			current->val = merged;

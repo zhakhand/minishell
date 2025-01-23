@@ -59,10 +59,14 @@ void handle_redir(t_token *tok, char *line, int *start, int *end)
 void handle_var(t_token *tok, char *line, int *start, int *end)
 {
     *end = *start + 1;
-    while (line[*end] != 32 && line[*end] != '?' && !is_sep(line[*end]) && line[*end] != 0)
+    while (line[*end] != 32 && line[*end] != '?' && line[*end] != '/' && !is_sep(line[*end]) && line[*end] != 0)
         (*end)++;
     if (*end - *start == 1)
     {
+        if (line[*end] == '/'){
+            tok->val = ft_strdup("$");
+            tok->type = WORD;
+        }
         if (line[*end] == 32 || line[*end] == 0 || line[*end] == '$')
         {
             tok->val = ft_strndup(line + *start, *end - *start);
@@ -72,6 +76,7 @@ void handle_var(t_token *tok, char *line, int *start, int *end)
         {
             tok->val = ft_strndup(line + *start, ++(*end) - *start);
             tok->type = ERROR;
+            tok->error = 1;
         }
         *start = *end;
 //        printf("%s\n", tok->val); 
@@ -95,7 +100,7 @@ void handle_quotes(t_token *tok, char *line, int *start, int *end)
         exit(1);
     if (*end - *start == 0)
     {
-        tok->type = ES;
+        tok->type = WORD;
         tok->val = ft_strdup("");
         tok->was_quoted = 1;
         *start = ++(*end);
@@ -147,6 +152,9 @@ t_token *init_token(void)
     if (!new)
         exit(2);
     new->was_quoted = 0;
+    new->touches_next = 0;
+    new->error = 0;
+    new->is_delim = 0;
     new->next = NULL;
     new->prev = NULL;
     new->ogVal = NULL;

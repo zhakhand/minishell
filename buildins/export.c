@@ -127,7 +127,7 @@ char **sort_env(char **arr)
 
 int add_to_env(char *str, t_data *data)
 {
-	// t_var *new_var;
+	t_var *new_var;
 	// t_var *temp;
 	int i;
 
@@ -152,7 +152,24 @@ int add_to_env(char *str, t_data *data)
 	// while (temp->next)
 	// 	temp = temp->next;
 	// temp->next = new_var;
-	set_env_var(data, ft_substr(str, 0, i), ft_substr(str, i + 1, ft_strlen(str) - i - 1));
+	if (str[i] == 0)
+	{
+		new_var = get_env_var(data, str);
+		if (!new_var)
+		{
+			new_var = set_env_var(data, str, "");
+			new_var->is_valid = 0;
+		}
+		return (0);
+	}
+	else if (str[i] == '=' && !str[i + 1])
+	{
+		new_var = set_env_var(data, ft_substr(str, 0, i), "");
+		new_var->is_valid = 1;
+		return (0);
+	}
+	new_var = set_env_var(data, ft_substr(str, 0, i), str + i + 1);
+	new_var->is_valid = 1;
 	return (0);
 	// int i;
 	// int len;
@@ -204,9 +221,9 @@ int check_symbols(char *str)
 		if (flag == 1)
 		{
 //			printf("str[i]   %c\n", str[i]);
-			if (ft_isalnum(str[i]) == 0 && str[i] != '_' && str[i] != ' '
-			&& str[i] != '"' && str[i] != '$' && str[i] != '-' && str[i] != '+')
-			return (1);
+			// if (ft_isalnum(str[i]) == 0 && str[i] != '_' && str[i] != ' '
+			// && str[i] != '"' && str[i] != '$' && str[i] != '-' && str[i] != '+')
+			// return (1);
 		}
 		i++;
 	}

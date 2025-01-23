@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 13:55:49 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/19 10:56:21 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/23 11:34:14 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,19 @@ void	error_msg(char *error, t_token *token, t_data *data)
 	if (ft_strcmp(error, UNEXPECTED_TOKEN) == 0)
 		ft_putstr_fd(error, 2);
 	if (token == NULL)
-		ft_putstr_fd("\'newline\'\n", 2);
+		ft_putstr_fd("`newline'\n", 2);
 	else
 	{
 		if (token->type == PIPE)
-			ft_putstr_fd("\'|\'\n", 2);
+			ft_putstr_fd("`|'\n", 2);
 		else if (token->type == IN)
-			ft_putstr_fd("\'<\'\n", 2);
+			ft_putstr_fd("`<'\n", 2);
 		else if (token->type == OUT)
-			ft_putstr_fd("\'>\'\n", 2);
+			ft_putstr_fd("`>'\n", 2);
 		else if (token->type == HEREDOC)
-			ft_putstr_fd("\'<<\'\n", 2);
+			ft_putstr_fd("`<<'\n", 2);
 		else if (token->type == APPEND)
-			ft_putstr_fd("\'>>\'\n", 2);
+			ft_putstr_fd("`>>'\n", 2);
 		else 
 			ft_putstr_fd(token->val, 2);
 	}

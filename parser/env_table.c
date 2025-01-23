@@ -27,7 +27,7 @@ t_var	*get_env_var(t_data *data, char *key)
 	return (curr);
 }
 
-void	set_env_var(t_data *data, char *key, char *val)
+t_var	*set_env_var(t_data *data, char *key, char *val)
 {
 	t_var	*new;
 
@@ -37,10 +37,11 @@ void	set_env_var(t_data *data, char *key, char *val)
 		new = create_env_var(key, val);
 		new->next = data->env_var;
 		data->env_var = new;
-		return ;
+		return (new);
 	}
 	free(new->val);
 	new->val = ft_strndup(val, str_len(val));
+	return (new);
 }
 
 void	unset_var(t_data *data, char *key)
@@ -72,7 +73,7 @@ t_var	*create_env_var(char *key, char *val)
 	if (!var)
 		exit(2);
 	var->key = ft_strndup(key, str_len(key));
-	if (key)
+	if (key && *key)
 		free(key);
 	key = NULL;
 	var->is_valid = 1;
