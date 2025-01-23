@@ -100,6 +100,8 @@ typedef struct s_data
 {
 	int 	argc;
 	int		err_no;
+	int		last_err;
+	int		last_pid;
 	char 	**args;
 	char 	**path_arr;
 	char	*path;

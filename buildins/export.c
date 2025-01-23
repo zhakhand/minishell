@@ -1,6 +1,42 @@
 
 #include "../minishell.h"
 
+int add_to_env_end(t_data *data, char *str)
+{
+	t_var *new_var;
+	t_var *temp;
+
+	new_var = malloc(sizeof(t_var));
+	if (!new_var)
+		panic("malloc");
+	if (ft_strchr(str, '=') != NULL)
+	{
+		new_var->key = ft_substr(str, 0, ft_strchr(str, '=') - str);
+		if (ft_strchr(str, '=') + 1 != NULL)
+			new_var->val = ft_strdup(ft_strchr(str, '=') + 1);
+		else
+			new_var->val = ft_strdup("");
+	}
+	else
+	{
+		new_var->key = ft_strdup(str);
+		new_var->val = ft_strdup("");
+	}
+	if (!new_var->key || !new_var->val)
+		panic("strdup");
+	new_var->next = NULL;
+	if (!data->env_var)
+	{
+		data->env_var = new_var;
+		return (0);
+	}
+	temp = data->env_var;
+	while (temp->next)
+		temp = temp->next;
+	temp->next = new_var;
+	return (0);
+}
+
 char *add_quotes(char *str)
 {
 	char *new_str;
@@ -87,13 +123,16 @@ char **make_env_arr(t_data *data)
 			if (!res[i])
 				panic("strjoin");
 			free(tmp_val);
+			tmp_val = NULL;
+			i++;
 		}
 		// res[i] = ft_strjoin(res[i], temp->val);
 		// if (!res[i])
 		// 	panic("strjoin");
 		// if (res[i][ft_strlen(res[i]) - 1] == '=')
 		// 	res[i] = add_quotes(res[i]);
-		i++;
+		//
+		//i++;// fix Katya
 		temp = temp->next;
 	}
 	res[i] = NULL;
@@ -292,9 +331,11 @@ char *if_one_quote(char *str)
 		if (!new_str)
 			panic("strjoin");
 		free(str);
+		str = NULL;
 		str = new_str;
 		open_quotes = check_open_quotes(str);
 		free(buffer);
+		buffer = NULL;
 	}
 	return (str);
 }
@@ -312,9 +353,11 @@ void export_no_args(t_data *data)
 	{
 		printf("declare -x %s\n", tmp[i]);
 		free(tmp[i]);
+		tmp[i] = NULL;
 		i++;
 	}
 	free(tmp);
+	tmp = NULL;
 
 //	sort_env(data);
 	// temp = data->env_var;
@@ -369,10 +412,10 @@ int ft_export(t_data *data, t_cmd *node)
 			remove_quotes_in_the_middle(node->args[i]);
 	//		node->cmd_args[i] = add_quotes(node->cmd_args[i]);
 			}
-	  if (node->next == NULL)
-	  {
-			add_to_env(node->args[i], data);
-	  }	
+	//   if (node->next == NULL)
+	//   {
+			add_to_env_end(data, node->args[i]);
+	//   }	
 			i++;
 		}
 //	}
