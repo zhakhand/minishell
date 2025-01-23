@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/01/21 16:08:10 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/23 12:26:40 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ void	find_error(t_data *data)
 	curr = data->tokens;
 	while (curr)
 	{
-		if (curr->type == ERROR)
+		if (curr->type == ERROR && curr->was_quoted != 1)
 		{
 			curr->ogVal = curr->val;
 			curr->val = ft_itoa(data->err_no);
@@ -213,9 +213,9 @@ void reorder_tokens(t_data *data)
 	//FIRST STEP
 	mark_merges(data);
 	delete_spaces(data);
-	check_pipes(data);
 	check_redirs(data);
-	//syntax_check(data);
+	check_pipes(data);
+	syntax_check(data);
 	//SECOND STEP
 	mark_vars(data);
 	clear_quote_tokens(data);

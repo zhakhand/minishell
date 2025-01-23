@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 13:40:06 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/21 15:25:01 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/23 12:23:36 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,8 @@ void delete_spaces(t_data *data)
 
 void	syntax_check(t_data *data)
 {
-	t_token *curr;
-
-	curr = data->tokens;
-	while (curr)
-	{
-		if (curr->was_quoted && ft_strlen(curr->val) == 0)
-		{
-			if (curr->next && curr->next->type == PIPE)
-				error_msg(CMD_NOT_FOUND, curr, data);
-		}
-		curr = curr->next;
+	if (data->tokens && ft_strcmp(data->tokens->val, ".") == 0){
+		ft_putstr_fd(".: usage: .filename [arguments]\n", 2);
+		exit(2);
 	}
 }

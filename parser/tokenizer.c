@@ -59,10 +59,14 @@ void handle_redir(t_token *tok, char *line, int *start, int *end)
 void handle_var(t_token *tok, char *line, int *start, int *end)
 {
     *end = *start + 1;
-    while (line[*end] != 32 && line[*end] != '?' && !is_sep(line[*end]) && line[*end] != 0)
+    while (line[*end] != 32 && line[*end] != '?' && line[*end] != '/' && !is_sep(line[*end]) && line[*end] != 0)
         (*end)++;
     if (*end - *start == 1)
     {
+        if (line[*end] == '/'){
+            tok->val = ft_strdup("$");
+            tok->type = WORD;
+        }
         if (line[*end] == 32 || line[*end] == 0 || line[*end] == '$')
         {
             tok->val = ft_strndup(line + *start, *end - *start);
