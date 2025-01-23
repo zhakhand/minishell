@@ -99,17 +99,13 @@ int main(int ac, char **av, char **ev)
 //	char *prompt;
 	t_data *data;
 	int err_no;
-	char **env;
 	
 
 	// t_cmd	*cmd;
 
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, sighandler);
+//printf("1\n");
 	data = init_data(ac, av, ev);
 	data->err_no = 0;
-	increase_shell_lvl(data);
-	env = NULL;
 	while (1)
 	{
 		// if (isatty(fileno(stdin)))
@@ -133,10 +129,7 @@ int main(int ac, char **av, char **ev)
 		data->path_arr = get_path_arr(ev);
 		reorder_tokens(data);
 		set_cmd_table(data);
-		//print_tokens(data);
-		//print_cmd_table(data->cmds);
-		env = make_env(data);
-		run_pipe(data, data->cmds, env);
+		run_pipe(data, data->cmds, ev);
 		//data->err_no = run_pipe(data, data->cmds, ev);
 		// free_tokens(data->tokens);
 		// free_cmds(data->cmds);
@@ -151,7 +144,6 @@ int main(int ac, char **av, char **ev)
 //	print_cmd_table(data->cmds);
 	err_no = data->err_no;
 	clean_data(data);
-	free_args(env);
 	return (err_no);
 
 }

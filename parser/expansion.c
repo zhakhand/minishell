@@ -49,6 +49,8 @@ t_token *set_quoted(t_token *token, t_token *head)
 		curr->touches_next = 1;
 		curr = curr->next;
 	}
+	if (token->touches_next == 1)
+		curr->touches_next = 1;
 	return (curr);
 }
 
@@ -110,8 +112,13 @@ t_token *check_expansion(t_token *token, t_data *data)
 		}
 		head = tokenize_quotes_vars(var->val);
 		curr = head;
-		while (curr->next)
+		if (token->touches_next == 1)
+			head->touches_next = 1;
+		while (curr->next){
+			if (token->touches_next == 1)
+				curr->touches_next = 1;
 			curr = curr->next;
+		}
 		// curr = set_quoted(token, head);
 		return link_tokens(token, head, curr);
 	}

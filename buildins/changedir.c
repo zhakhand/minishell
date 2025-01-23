@@ -13,12 +13,12 @@ int change_pwd_in_env(t_data *data, char *pwd)
 			temp->val = ft_strdup(pwd);
 			if (!temp->val)
 				return (EXIT_FAILURE);
-//			return (EXIT_SUCCESS);
-//			break
+			//			return (EXIT_SUCCESS);
+			//			break
 		}
 		temp = temp->next;
 	}
-//	data->env_var = temp;
+	//	data->env_var = temp;
 	free(data->pwd);
 	data->pwd = ft_strdup(pwd);
 	return (0);
@@ -37,12 +37,11 @@ int change_old_pwd_in_env(t_data *data, char *pwd)
 			temp->val = ft_strdup(pwd);
 			if (!temp->val)
 				return (EXIT_FAILURE);
-//			return (EXIT_SUCCESS);
-
+			//			return (EXIT_SUCCESS);
 		}
 		temp = temp->next;
 	}
-//	data->env_var = temp;
+	//	data->env_var = temp;
 	free(data->old_pwd);
 	data->old_pwd = ft_strdup(pwd);
 	return (0);
@@ -63,9 +62,6 @@ char *get_home(t_data *data)
 	}
 	return (NULL);
 }
-
-
-
 
 void check_abs_path(t_cmd *node)
 {
@@ -88,9 +84,9 @@ int cd_home(t_data *data)
 	if (chdir(home) == -1)
 		perror("home: No such file or directory");
 	change_old_pwd_in_env(data, data->pwd);
-	change_pwd_in_env(data, home);
-//	printf(" > %s\n", "~");
-//	free(home);
+	change_pwd_in_env(data, getcwd(NULL, 0));
+	//	printf(" > %s\n", "~");
+	//	free(home);
 	return (0);
 }
 
@@ -107,8 +103,8 @@ int cd_prev(t_data *data)
 	if (chdir(old_pwd) == -1)
 		perror("cd");
 	change_old_pwd_in_env(data, pwd);
-	change_pwd_in_env(data, old_pwd);
-//	printf(" > %s\n", data->old_pwd);
+	change_pwd_in_env(data, getcwd(NULL, 0));
+	//	printf(" > %s\n", data->old_pwd);
 	free(pwd);
 	free(old_pwd);
 	return (0);
@@ -126,7 +122,7 @@ int cd_up(t_data *data)
 	char *pwd;
 	char *old_pwd;
 	char *tmp;
-	char *tmp2;
+	//	char *tmp2;
 	int i;
 
 	pwd = ft_strdup(data->pwd);
@@ -137,21 +133,23 @@ int cd_up(t_data *data)
 	while (pwd[i] != '/')
 		i--;
 	tmp = ft_substr(pwd, 0, i);
-	tmp2 = ft_strjoin(tmp, "/");
-	if (!tmp || !tmp2 || !data->old_pwd)
+	//	tmp2 = ft_strjoin(tmp, "/");
+	if (!tmp || !data->old_pwd)
 		panic("strdup");
-	data->old_pwd = ft_strdup(data->pwd);
-	data->pwd = ft_strdup(tmp2);
-	if (!data->old_pwd || !data->pwd)
-		panic("strdup");
-//	printf("tmp %s\n", tmp2);
-	if(chdir(tmp2) == -1)
+	if (chdir(tmp) == -1)
 	{
 		perror("cd err");
 		return (EXIT_FAILURE);
 	}
+	// data->old_pwd = ft_strdup(data->pwd);
+	// data->pwd = getcwd(NULL, 0);
+	// if (!data->old_pwd || !data->pwd)
+	// 	panic("strdup");
+	change_old_pwd_in_env(data, pwd);
+	change_pwd_in_env(data, getcwd(NULL, 0));
+	//	printf("tmp %s\n", tmp2);
 	free(tmp);
-	free(tmp2);
+	//	free(tmp2);
 
 	return (0);
 }
@@ -160,28 +158,29 @@ int cd_dir(t_data *data, t_cmd *node)
 {
 	char *pwd;
 	char *old_pwd;
-	
-	pwd = ft_strjoin(data->pwd, node->args[1]);
 
+	//	printf(" aaaa> %s\n", node->args[1]);
+	pwd = ft_strjoin(data->pwd, node->args[1]);
 	old_pwd = ft_strdup(data->old_pwd);
 	if (!pwd || !old_pwd)
 		panic("pwd error!");
 	check_abs_path(node);
 	// if(node->abs_path == 1)
 	// {
-		if (chdir(node->args[1]) == -1)
-		{
-			ft_putstr_fd(" cd: ", STDERR_FILENO);
-			ft_putstr_fd(node->args[1], STDERR_FILENO);
-			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-			return (1);
-		}
-		else
-		{
-			change_old_pwd_in_env(data, data->pwd);
-			change_pwd_in_env(data, pwd);
-//			printf(" > %s\n", data->pwd);
-		}
+	if (chdir(node->args[1]) == -1)
+	{
+		ft_putstr_fd("cd: ", STDERR_FILENO);
+		ft_putstr_fd("cd: ", STDERR_FILENO);
+		ft_putstr_fd(node->args[1], STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		return (1);
+	}
+	else
+	{
+		change_old_pwd_in_env(data, data->pwd);
+		change_pwd_in_env(data, getcwd(NULL, 0));
+		//			printf(" > %s\n", data->pwd);
+	}
 	// }
 	free(old_pwd);
 	free(pwd);
@@ -201,8 +200,8 @@ int changedir(t_data *data, t_cmd *node)
 	}
 	// if (check_cd(node))
 	// {
-			// if (!node->next)
-			// {
+	// if (!node->next)
+	// {
 	if (node->args[1] == NULL || ft_strncmp(node->args[1], "~", 2) == 0)
 		res = cd_home(data);
 
@@ -214,7 +213,7 @@ int changedir(t_data *data, t_cmd *node)
 		res = cd_prev(data);
 	else
 		res = cd_dir(data, node);
-//			}
-		// }	
+	//			}
+	// }
 	return (res);
 }

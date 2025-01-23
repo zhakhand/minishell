@@ -45,6 +45,10 @@ void check_pipes(t_data *data)
 		{
 			if (!current->prev)
 				error_msg(UNEXPECTED_TOKEN, current, data);
+			else{
+				if (is_redir(current->prev->type))
+					error_msg(UNEXPECTED_TOKEN, current, data);
+			}
 			if (current->next)
 			{
 				if (current->next->type == PIPE)

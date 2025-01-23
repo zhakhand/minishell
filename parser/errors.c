@@ -37,5 +37,6 @@ void	error_msg(char *error, t_token *token, t_data *data)
 		ft_putstr_fd(error, 2);
 	data->err_no = 2;
 	clean_data(data);
+	exit(2);
 }
 
