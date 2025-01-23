@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 13:40:06 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/23 12:23:36 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:05:56 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,8 @@ void delete_spaces(t_data *data)
 void	syntax_check(t_data *data)
 {
 	if (data->tokens && ft_strcmp(data->tokens->val, ".") == 0){
-		ft_putstr_fd(".: usage: .filename [arguments]\n", 2);
-		exit(2);
+		//ft_putstr_fd(".: usage: .filename [arguments]\n", 2);
+		ft_putstr_fd(".: command not found\n", 2);
+		exit(127);
 	}
 }

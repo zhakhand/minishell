@@ -258,7 +258,6 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
         ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
         return 126;
     }
-
     // Check if the command exists
     if (!full_path || access(full_path, F_OK) == -1) {
 //        ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -266,6 +265,7 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
         ft_putstr_fd(": command not found\n", STDERR_FILENO);
         return 127;
     }
+
 
     // Check if the command is executable
     if (access(full_path, X_OK) == -1) {
