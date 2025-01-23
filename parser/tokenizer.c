@@ -56,14 +56,16 @@ void handle_redir(t_token *tok, char *line, int *start, int *end)
     }
 }
 
+
 void handle_var(t_token *tok, char *line, int *start, int *end)
 {
     *end = *start + 1;
-    while (line[*end] != 32 && line[*end] != '?' && line[*end] != '/' && !is_sep(line[*end]) && line[*end] != 0)
+    while (line[*end] != 32 && (ft_isalnum(line[*end]) || line[*end] == '_') && line[*end] != 0)
         (*end)++;
     if (*end - *start == 1)
     {
-        if (line[*end] == '/'){
+        if (!ft_isalnum(line[*end]) || line[*end] != '_')
+        {
             tok->val = ft_strdup("$");
             tok->type = WORD;
         }
@@ -79,7 +81,6 @@ void handle_var(t_token *tok, char *line, int *start, int *end)
             tok->error = 1;
         }
         *start = *end;
-//        printf("%s\n", tok->val); 
         return ;
     }
     tok->val = ft_strndup(line + *start, *end - *start);

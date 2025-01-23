@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/01/23 12:26:40 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/23 14:01:26 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ t_token *check_expansion(t_token *token, t_data *data)
 		curr = head;
 		if (token->touches_next == 1)
 			head->touches_next = 1;
-		while (curr->next){
+		while (curr && curr->next){
 			if (token->touches_next == 1)
 				curr->touches_next = 1;
 			curr = curr->next;
@@ -215,7 +215,7 @@ void reorder_tokens(t_data *data)
 	delete_spaces(data);
 	check_redirs(data);
 	check_pipes(data);
-	syntax_check(data);
+	//syntax_check(data);
 	//SECOND STEP
 	mark_vars(data);
 	clear_quote_tokens(data);
