@@ -1,5 +1,6 @@
 
 #include "../minishell.h"
+#include <unistd.h>
 
 int show_pwd(t_data *data)
 {
@@ -8,7 +9,8 @@ int show_pwd(t_data *data)
 	// i = 0;
 	if (data->pwd != NULL)
 	{
-		printf("%s\n", data->pwd);
+		ft_putstr_fd(data->pwd, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
 		return (0);
 	}
 	else
