@@ -406,7 +406,7 @@ int ft_export(t_data *data, t_cmd *node)
 					if (!node->args[i])
 						return (0);
 				}
-			remove_quotes_in_the_middle(node->args[i]);
+			//remove_quotes_in_the_middle(node->args[i]);
 	//		node->cmd_args[i] = add_quotes(node->cmd_args[i]);
 			}
 	//   if (node->next == NULL)
