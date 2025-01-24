@@ -74,10 +74,9 @@ void	sighandler(int signal)
 {
 	if (signal == SIGINT)
 	{
-		write(STDIN_FILENO, "\n", 2);
+		ioctl(STDIN_FILENO, TIOCSTI, "\n");
 		rl_on_new_line();
-		//rl_replace_line("", 0);
-		//rl_redisplay();
+		rl_replace_line("", 0);
 		g_signal = signal;
 	}
 }
@@ -110,6 +109,8 @@ int main(int ac, char **av, char **ev)
 	// t_cmd	*cmd;
 
 //printf("1\n");
+	signal(SIGINT, sighandler);
+	signal(SIGQUIT, SIG_IGN);
 	data = init_data(ac, av, ev);
 	data->err_no = 0;
 	while (1)
