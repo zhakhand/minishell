@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/23 19:27:09 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/01/24 13:48:12 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,12 @@ void	increase_shell_lvl(t_data *data)
 char **make_env(t_data *data)
 {
 	char **res;
+	char *tmp;
 	t_var *temp;
 	int i;
 
 	temp = data->env_var;
-
+	tmp = NULL;
 	i = 0;
 	while (temp)
 	{
@@ -52,10 +53,13 @@ char **make_env(t_data *data)
 	temp = data->env_var;
 	while (temp)
 	{
+		tmp = NULL;
 		if (temp->is_valid == 1)
 		{
-			res[i] = ft_strjoin(temp->key, "=");
-			res[i] = ft_strjoin(res[i], temp->val);
+			tmp = ft_strjoin(temp->key, "=");
+			res[i] = ft_strjoin(tmp, temp->val);
+			if (tmp)
+				free(tmp);
 			if (!res[i])
 				panic("strjoin");
 		}
@@ -96,6 +100,7 @@ int main(int ac, char **av, char **ev)
 {
 	char *line;
 	char *prompt;
+	t_cmd *cmd;
 //	char *prompt;
 	t_data *data;
 	int err_no;
@@ -117,24 +122,32 @@ int main(int ac, char **av, char **ev)
 		// 	line = ft_strtrim(pr, "\n");
 		// 	free(pr);
 		// }
+		cmd = NULL;
 		prompt = ft_strjoin(data->pwd, " $ ");
 		if (!prompt)
 			panic("strjoin");
 		line = readline(prompt);
+		free(prompt);
+		prompt = NULL;
 		if (line == 0)
 			break ;
 		if (ft_strlen(line) == 0)
 			continue ;
 		data->tokens = tokenize(line);
-		data->path_arr = get_path_arr(ev);
 		reorder_tokens(data);
 		set_cmd_table(data);
-		run_pipe(data, data->cmds, ev);
+		//data->env_arr = make_env(data);
+		// if (!data->env_arr)
+		// 	panic("malloc");
+		data->path_arr = get_path_arr(ev);
+		cmd = data->cmds;
+		run_pipe(data, cmd, ev);
 		//data->err_no = run_pipe(data, data->cmds, ev);
 		// free_tokens(data->tokens);
 		// free_cmds(data->cmds);
 		add_history(line);
 		free(line);
+		reset_data(data);
 //		clean_data(data);
 	
 	//	break;

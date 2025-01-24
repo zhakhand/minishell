@@ -15,12 +15,9 @@ int add_to_env_end(t_data *data, char *str)
 		new_var = get_env_var(data, str);
 		if (!new_var)
 		{
-			new_var = set_env_var(data, str, "");
+			new_var = set_env_var(data, ft_strdup(str), "");
 			new_var->is_valid = 0;
 		}
-		if (new_var->val)
-			free(new_var->val);
-		new_var->val = ft_strdup("");
 		return (0);
 	}
 	else if (str[i] == '=' && !str[i + 1])
@@ -117,12 +114,15 @@ char **make_env_arr(t_data *data)
 		{
 			tmp_val = add_quotes_to_val(temp->val);
 			res[i] = ft_strjoin(temp->key, tmp_val);
-			if (!res[i])
-				panic("strjoin");
-			free(tmp_val);
-			tmp_val = NULL;
-			i++;
 		}
+		else
+			res[i] = ft_strdup(temp->key);
+		if (!res[i])
+			panic("strjoin");
+		if (tmp_val)
+			free(tmp_val);
+		tmp_val = NULL;
+		i++;
 		// res[i] = ft_strjoin(res[i], temp->val);
 		// if (!res[i])
 		// 	panic("strjoin");
@@ -349,11 +349,11 @@ void export_no_args(t_data *data)
 	while (tmp[i] != NULL)
 	{
 		printf("declare -x %s\n", tmp[i]);
-		free(tmp[i]);
-		tmp[i] = NULL;
+		//free(tmp[i]);
+		//tmp[i] = NULL;
 		i++;
 	}
-	free(tmp);
+	free_args(tmp);
 	tmp = NULL;
 
 //	sort_env(data);
