@@ -86,7 +86,6 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
 
 int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 {
-//    printf("begin  %d\n", cmd->built_in);
 	int fds[2];
 	int prev_fd = STDIN_FILENO;
 	int status;
@@ -94,6 +93,8 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 
 	while (cmd != NULL)
 	{
+		data->redir_err = 0;
+    // printf("begin  %s  %s\n", cmd->args[0], cmd->redir->val);
 
 		if (!check_parent_buildin(cmd))
 		{
@@ -137,6 +138,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 			if (handle_redirects(cmd) == -1)
 			{
 				data->err_no = 1;
+				data->redir_err = 1;
 //            	panic("minishell: ");
 				// return (0);
 			}
@@ -151,14 +153,15 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 					panic("dup2 fds[1]");
 				close(fds[1]);
 			}
-			if (!check_child_buildin(cmd))
+			if (!check_child_buildin(cmd) && data->redir_err == 0)
 			{
 			    data->err_no = exec_buildin(data, cmd);
 			}
 //			if (check_child_buildin(cmd))
 //			
-			else
+			else if (data->redir_err == 0)
 			{
+				data->path_arr = get_path_arr(envp);
 				char *full_path = find_path(cmd->args[0], data->path_arr);
 				data->err_no = run_execve(cmd, envp, full_path);
 				free(full_path);
