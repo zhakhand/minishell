@@ -65,6 +65,7 @@ typedef struct s_token
 	char *val;
 	char *ogVal;
 	int type;
+	int is_ambiguous;
 	int was_quoted;
 	int	touches_next;
 	int	is_delim;
@@ -78,6 +79,7 @@ typedef struct s_redir
 	char *val;
 	int type;
 	int	expands;
+	int ambig;
 	struct s_redir	*next;
 	struct s_redir	*prev;
 } t_redir;
