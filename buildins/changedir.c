@@ -99,9 +99,10 @@ int cd_prev(t_data *data)
 	old_pwd = ft_strdup(data->old_pwd);
 	if (!pwd || !old_pwd)
 		panic("pwd error!");
-
 	if (chdir(old_pwd) == -1)
 		perror("cd");
+	ft_putstr_fd(old_pwd, 1);
+	ft_putstr_fd("\n", 1);
 	change_old_pwd_in_env(data, pwd);
 	change_pwd_in_env(data, getcwd(NULL, 0));
 	//	printf(" > %s\n", data->old_pwd);

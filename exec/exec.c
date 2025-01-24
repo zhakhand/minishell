@@ -47,11 +47,23 @@ void run_fork(t_cmd_node *list, char **envp)
 
 }
 
-int run_execve(t_cmd *cmd, char **envp, char *full_path) {
+int run_execve(t_data *data, t_cmd *cmd, char **envp) {
 //    printf("full_path: %s\n", full_path);
 
 	// Check if the command is a directory
 	struct stat sb;
+	char *full_path;
+	int status;
+
+	status = 0;
+	data->path_arr = get_path_arr(envp);
+	if (data->path_arr)
+		full_path = find_path(cmd->args[0], data->path_arr);
+	else
+	{
+		full_path = cmd->args[0];
+		status = 1;
+	}
 	if (stat(full_path, &sb) == 0 && S_ISDIR(sb.st_mode)) {
 //        ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
@@ -59,10 +71,16 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
 		return 126;
 	}
 	// Check if the command exists
-	if (!full_path || access(full_path, F_OK) == -1) {
+	if (status == 0 && access(full_path, F_OK) == -1) {
 //        ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		return 127;
+	}
+	else if (status == 1 && access(full_path, F_OK))
+	{
+		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		return 127;
 	}
 
@@ -71,7 +89,7 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
 	if (access(full_path, X_OK) == -1) {
 //        ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-		ft_putstr_fd(": Permission denied!\n", STDERR_FILENO);
+		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 		return 126;
 	}
 //execve(full_path, cmd->args, envp);
@@ -86,7 +104,6 @@ int run_execve(t_cmd *cmd, char **envp, char *full_path) {
 
 int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 {
-//    printf("begin  %d\n", cmd->built_in);
 	int fds[2];
 	int prev_fd = STDIN_FILENO;
 	int status;
@@ -94,6 +111,8 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 
 	while (cmd != NULL)
 	{
+		data->redir_err = 0;
+    // printf("begin  %s  %s\n", cmd->args[0], cmd->redir->val);
 
 		if (!check_parent_buildin(cmd))
 		{
@@ -137,6 +156,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 			if (handle_redirects(cmd) == -1)
 			{
 				data->err_no = 1;
+				data->redir_err = 1;
 //            	panic("minishell: ");
 				// return (0);
 			}
@@ -151,17 +171,16 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 					panic("dup2 fds[1]");
 				close(fds[1]);
 			}
-			if (!check_child_buildin(cmd))
+			if (!check_child_buildin(cmd) && data->redir_err == 0)
 			{
 			    data->err_no = exec_buildin(data, cmd);
 			}
 //			if (check_child_buildin(cmd))
 //			
-			else
+			else if (data->redir_err == 0)
 			{
-				char *full_path = find_path(cmd->args[0], data->path_arr);
-				data->err_no = run_execve(cmd, envp, full_path);
-				free(full_path);
+				data->err_no = run_execve(data, cmd, envp);
+//				free(full_path);
 			}
 			exit(data->err_no);
 		}

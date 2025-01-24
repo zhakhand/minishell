@@ -28,19 +28,28 @@ char **get_path_arr(char **envp)
 	char *trimmed_path0;
 
 	i = 0;
+	path_arr = NULL;
+	trimmed_path0 = NULL;
 	while (envp[i] != NULL)
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 		{
-//			printf("%s\n", envp[i]);
+			if (envp[i][5] == '\0')	// if PATH is empty
+				return (NULL);
 			path_arr = ft_split(envp[i], ':');
 			if (!path_arr)
 				return (NULL);
 //			*path_arr[0] = *path_arr[0] + 5;
+			break;
 		}
 	i++;
+
 	}
-	trimmed_path0 = ft_strdup(path_arr[0] + 5);
+	if (!path_arr)
+		return (NULL);
+
+	if (envp[i][5] != '\0')
+		trimmed_path0 = ft_strdup(path_arr[0] + 5);
 	if (trimmed_path0)
 	{
 		free(path_arr[0]);

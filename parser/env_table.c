@@ -75,8 +75,11 @@ void	unset_var(t_data *data, char *key)
 	next = var->next;
 	prev->next = next;
 	free(var->key);
+	var->key = NULL;
 	free(var->val);
+	var->val = NULL;
 	free(var);
+	var = NULL;
 }
 
 t_var	*create_env_var(char *key, char *val)

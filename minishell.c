@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/24 15:20:35 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:30:28 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ char **make_env(t_data *data)
 		i++;
 		temp = temp->next;
 	}
-	res = malloc((i + 1) * sizeof(char *));
+	res = ft_calloc((i + 1), sizeof(char *));
 	if (!res)
 		panic("malloc");
 	i = 0;
@@ -103,6 +103,7 @@ int main(int ac, char **av, char **ev)
 //	char *prompt;
 	t_data *data;
 	int err_no;
+	char **env;
 	
 
 	// t_cmd	*cmd;
@@ -124,6 +125,7 @@ int main(int ac, char **av, char **ev)
 		// 	free(pr);
 		// }
 		cmd = NULL;
+		env = NULL;
 		prompt = ft_strjoin(data->pwd, " $ ");
 		if (!prompt)
 			panic("strjoin");
@@ -137,17 +139,20 @@ int main(int ac, char **av, char **ev)
 		data->tokens = tokenize(line);
 		reorder_tokens(data);
 		set_cmd_table(data);
+		env = make_env(data);
 		//data->env_arr = make_env(data);
 		// if (!data->env_arr)
 		// 	panic("malloc");
-		data->path_arr = get_path_arr(ev);
+		data->path_arr = get_path_arr(env);
 		cmd = data->cmds;
-		run_pipe(data, cmd, ev);
+		run_pipe(data, cmd, env);
 		//data->err_no = run_pipe(data, data->cmds, ev);
 		// free_tokens(data->tokens);
 		// free_cmds(data->cmds);
 		add_history(line);
 		free(line);
+		if (env)
+			free_args(env);
 		reset_data(data);
 //		clean_data(data);
 	
