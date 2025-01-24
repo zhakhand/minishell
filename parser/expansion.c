@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/01/23 14:01:26 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/24 00:52:29 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,14 +112,15 @@ t_token *check_expansion(t_token *token, t_data *data)
 		}
 		head = tokenize_quotes_vars(var->val);
 		curr = head;
-		if (token->touches_next == 1)
-			head->touches_next = 1;
 		while (curr && curr->next){
-			if (token->touches_next == 1)
-				curr->touches_next = 1;
 			curr = curr->next;
 		}
 		// curr = set_quoted(token, head);
+		if (token->prev && token->prev->touches_next == 1 && head->type == WS)
+			token->prev->touches_next = 0;
+		mark_merges(head);
+		if (token->touches_next && curr->type != WS)
+			curr->touches_next = 1;
 		return link_tokens(token, head, curr);
 	}
 	token->type = WORD;
@@ -164,13 +165,13 @@ void	find_error(t_data *data)
 	}
 }
 
-void	mark_merges(t_data *data)
+void	mark_merges(t_token *tokens)
 {
 	t_token *curr;
 	
 	curr = NULL;
-	if (data->tokens)
-		curr = data->tokens;
+	if (tokens)
+		curr = tokens;
 	while (curr)
 	{
 		if ((curr->type == WORD || curr->type == D_QUOTE || curr->type == S_QUOTE || curr->type == VAR || curr->type == ERROR) && curr->next \
@@ -211,7 +212,7 @@ void	mark_vars(t_data *data)
 void reorder_tokens(t_data *data)
 {
 	//FIRST STEP
-	mark_merges(data);
+	mark_merges(data->tokens);
 	delete_spaces(data);
 	check_redirs(data);
 	check_pipes(data);
@@ -221,5 +222,6 @@ void reorder_tokens(t_data *data)
 	clear_quote_tokens(data);
 	find_error(data);
 	expand_vars(data);
+	delete_spaces(data);
  	merge_tokens(data);
 }

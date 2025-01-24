@@ -68,3 +68,35 @@ cat minishell.h | grep ");"$
                           TOTAL FAILED AND PASSED CASES:
                                       ❌ 639 
                                       ✅ 2334 
+
+
+
+
+parent
+cd
+export with args
+unset
+exit
+
+child
+export without args
+pwd
+env
+echo
+
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 613
+              STD_OUT: 125  STD_ERR: 162  EXIT_CODE: 249  CRASHING: 1
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 537 
+                                      ✅ 2422 
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 740
+              STD_OUT: 123  STD_ERR: 161  EXIT_CODE: 111  CRASHING: 1
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 396 
+                                      ✅ 2563 

@@ -100,6 +100,8 @@ typedef struct s_data
 {
 	int 	argc;
 	int		err_no;
+	int		last_err;
+	int		last_pid;
 	char 	**args;
 	char 	**path_arr;
 	char	*path;
@@ -137,6 +139,7 @@ t_var *get_env_var(t_data *data, char *key);
 t_var *set_env_var(t_data *data, char *key, char *val);
 void unset_var(t_data *data, char *key);
 void reorder_tokens(t_data *data);
+void	mark_merges(t_token *tokens);
 void merge_tokens(t_data *data);
 void clear_out_es(t_data *data);
 void delete_spaces(t_data *data);
@@ -153,5 +156,6 @@ void	free_tokens(t_token *token);
 void	free_cmds(t_cmd *cmds);
 void	free_args(char	**args);
 void	clean_data(t_data *data);
+void	reset_data(t_data *data);
 
 #endif

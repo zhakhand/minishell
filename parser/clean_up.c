@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 14:11:46 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/20 12:09:37 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/24 13:51:30 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ void	free_args(char	**args)
 	int	i;
 
 	i = 0;
-	while (args[i] != 0)
+	if (!args || !(*args))
+		return ;
+	while (args[i] != NULL)
 	{
 		free(args[i]);
 		args[i] = NULL;
@@ -139,4 +141,19 @@ void	clean_data(t_data *data)
 		free(data->path);
 	free(data);
 	data = NULL;	
+}
+
+void reset_data(t_data *data)
+{
+	if (!data)
+		return ;
+	if (data->tokens)
+		free_tokens(data->tokens);
+	if (data->cmds)
+		free_cmds(data->cmds);
+	if (data->path_arr)
+		free_args(data->path_arr);
+	data->path_arr = NULL;
+	data->tokens = NULL;
+	data->cmds = NULL;
 }
