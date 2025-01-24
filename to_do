@@ -110,3 +110,15 @@ echo
                           TOTAL FAILED AND PASSED CASES:
                                       ❌ 281 
                                       ✅ 2678 
+
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 810
+               STD_OUT: 54  STD_ERR: 145  EXIT_CODE: 69  CRASHING: 0
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 268 
+                                      ✅ 2690 
+                        
+
+TODO: Use 'ambig' flag in redir to throw error "arg: ambiguous redirect"
