@@ -63,7 +63,9 @@ int ft_exit(t_data *data, t_cmd *node);
 
 void free_array(char ***arr);
 void free_data(t_data *data);
-int check_if_buildin(t_cmd *node);
+int check_parent_buildin(t_cmd *node);
+int check_child_buildin(t_cmd *node);
+// int check_if_buildin(t_cmd *node);
 int show_pwd(t_data *data);
 void panic(char *msg);
 void find_env_in_cmd(t_cmd_node **node, t_data *data);
