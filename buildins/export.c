@@ -4,36 +4,30 @@
 int add_to_env_end(t_data *data, char *str)
 {
 	t_var *new_var;
-	t_var *temp;
+	int		i;
 
-	new_var = malloc(sizeof(t_var));
-	if (!new_var)
-		panic("malloc");
-	if (ft_strchr(str, '=') != NULL)
+	i = 0;
+	new_var = NULL;
+	while (str[i] != '=' && str[i] != '\0')
+		i++;
+	if (str[i] == 0)
 	{
-		new_var->key = ft_substr(str, 0, ft_strchr(str, '=') - str);
-		if (ft_strchr(str, '=') + 1 != NULL)
-			new_var->val = ft_strdup(ft_strchr(str, '=') + 1);
-		else
-			new_var->val = ft_strdup("");
-	}
-	else
-	{
-		new_var->key = ft_strdup(str);
-		new_var->val = ft_strdup("");
-	}
-	if (!new_var->key || !new_var->val)
-		panic("strdup");
-	new_var->next = NULL;
-	if (!data->env_var)
-	{
-		data->env_var = new_var;
+		new_var = get_env_var(data, str);
+		if (!new_var)
+		{
+			new_var = set_env_var(data, ft_strdup(str), "");
+			new_var->is_valid = 0;
+		}
 		return (0);
 	}
-	temp = data->env_var;
-	while (temp->next)
-		temp = temp->next;
-	temp->next = new_var;
+	else if (str[i] == '=' && !str[i + 1])
+	{
+		new_var = set_env_var(data, ft_substr(str, 0, i), "");
+		new_var->is_valid = 1;
+		return (0);
+	}
+	new_var = set_env_var(data, ft_substr(str, 0, i), str + i + 1);
+	new_var->is_valid = 1;
 	return (0);
 }
 
@@ -120,12 +114,15 @@ char **make_env_arr(t_data *data)
 		{
 			tmp_val = add_quotes_to_val(temp->val);
 			res[i] = ft_strjoin(temp->key, tmp_val);
-			if (!res[i])
-				panic("strjoin");
-			free(tmp_val);
-			tmp_val = NULL;
-			i++;
 		}
+		else
+			res[i] = ft_strdup(temp->key);
+		if (!res[i])
+			panic("strjoin");
+		if (tmp_val)
+			free(tmp_val);
+		tmp_val = NULL;
+		i++;
 		// res[i] = ft_strjoin(res[i], temp->val);
 		// if (!res[i])
 		// 	panic("strjoin");
@@ -352,11 +349,11 @@ void export_no_args(t_data *data)
 	while (tmp[i] != NULL)
 	{
 		printf("declare -x %s\n", tmp[i]);
-		free(tmp[i]);
-		tmp[i] = NULL;
+		//free(tmp[i]);
+		//tmp[i] = NULL;
 		i++;
 	}
-	free(tmp);
+	free_args(tmp);
 	tmp = NULL;
 
 //	sort_env(data);

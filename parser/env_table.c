@@ -27,6 +27,22 @@ t_var	*get_env_var(t_data *data, char *key)
 	return (curr);
 }
 
+t_var	*push_back(t_data *data, t_var *new)
+{
+	t_var	*temp;
+
+	temp = NULL;
+	if (data->env_var)
+		temp = data->env_var;
+	while (temp){
+		if (!temp->next)
+			break;
+		temp = temp->next;
+	}
+	temp->next = new;
+	return (new);
+}
+
 t_var	*set_env_var(t_data *data, char *key, char *val)
 {
 	t_var	*new;
@@ -35,9 +51,7 @@ t_var	*set_env_var(t_data *data, char *key, char *val)
 	if (!new)
 	{
 		new = create_env_var(key, val);
-		new->next = data->env_var;
-		data->env_var = new;
-		return (new);
+		return push_back(data, new);
 	}
 	free(new->val);
 	new->val = ft_strndup(val, str_len(val));
@@ -61,8 +75,11 @@ void	unset_var(t_data *data, char *key)
 	next = var->next;
 	prev->next = next;
 	free(var->key);
+	var->key = NULL;
 	free(var->val);
+	var->val = NULL;
 	free(var);
+	var = NULL;
 }
 
 t_var	*create_env_var(char *key, char *val)

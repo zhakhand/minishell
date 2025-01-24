@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 16:24:46 by dzhakhan          #+#    #+#             */
-/*   Updated: 2024/04/24 16:27:28 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/24 13:21:27 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static size_t	len(char const *src)
 	size_t	lngth;
 
 	lngth = 0;
+	if (!src)
+		return (0);
 	while (src[lngth] != '\0')
 		lngth++;
 	return (lngth);
