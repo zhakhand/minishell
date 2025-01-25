@@ -86,6 +86,71 @@ int open_and_close(t_redir *redir)
 	return (0);
 }
 
+int check_directory(char *file)
+{
+	struct stat sb;
+
+	char *temp;
+	int i;
+
+	i = ft_strlen(file);
+	while (i > 0)
+	{
+		if (file[i] == '/')
+			break;
+		i--;
+	}
+	if (i == 0)
+		temp = ft_strdup(file);
+	else
+		temp = ft_substr(file, 0, i);
+//	printf("temp %s %d\n", temp, i);
+	// if (i == 0 && chdir(temp))
+	// {
+	// printf("temp %s\n", temp);
+	// 	chdir("..");
+	// 	ft_putstr_fd("minishell: Is a directory", 2);
+	// 	ft_putstr_fd(file, 2);
+	// 	ft_putstr_fd("\n", 2);
+	// 	free(temp);
+	// 	return (-1);
+	// }
+	if (stat(file, &sb) == 0 && S_ISDIR(sb.st_mode)) 
+	{
+			printf("temp %s\n", temp);
+		if ( i == 0)
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(file, STDERR_FILENO);
+			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+			free(temp);
+			return (-1);
+		}
+	}
+	// else
+	// 	{
+	// 		ft_putstr_fd("minishell: ", STDERR_FILENO);
+	// 		ft_putstr_fd(file, STDERR_FILENO);
+	// 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+	// 		free(temp);
+	// 		return (-1);
+	if (chdir(temp) == -1 && i != 0)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(file, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		free(temp);
+		return (-1);
+	}
+	else {
+		chdir("..");
+	}
+		
+	// 	}
+	free(temp);
+	return (0);
+}
+
 int handle_output_redirects(t_redir *redirects)
 {
 	int out_fd;
@@ -93,11 +158,10 @@ int handle_output_redirects(t_redir *redirects)
 	t_redir *redir;
 
 	redir = redirects;
+	if (check_directory(redirects->val) == -1)
+		return (-1);
 	while (redir)
 	{
-//	printf("acc out %d %s\n", access(redir->val, O_WRONLY), redir->val);
-
-// //		printf("from red %s\n", redir->file);
 		if (redir->next)
 			open_and_close(redir);
 		else
@@ -119,7 +183,6 @@ int handle_output_redirects(t_redir *redirects)
 		}
 		redir = redir->next;
 	}
-// free(redir);
 	return (0);
 }
 
@@ -148,16 +211,16 @@ int handle_redirects(t_cmd *node)
 		}
 		else if (temp->type == OUT || temp->type == APPEND)
 		{
-           if (output_redirects == NULL)
-            {
-                output_redirects = temp;
-                last_output = temp; // Инициализация последнего элемента
-            }
-            else
-            {
-                last_output->next = temp; // Добавление в конец списка
-                last_output = temp;      // Обновляем указатель на последний элемент
-            }
+			if (output_redirects == NULL)
+			{
+				output_redirects = temp;
+				last_output = temp; // Инициализация последнего элемента
+			}
+			else
+			{
+				last_output->next = temp; // Добавление в конец списка
+				last_output = temp;      // Обновляем указатель на последний элемент
+			}
 		}
 		temp = temp->next;
 	}

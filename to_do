@@ -110,3 +110,23 @@ echo
                           TOTAL FAILED AND PASSED CASES:
                                       ❌ 281 
                                       ✅ 2678 
+
+export done
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 834
+               STD_OUT: 50  STD_ERR: 123  EXIT_CODE: 54  CRASHING: 0
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 227 
+                                      ✅ 2731 
+
+echo done
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 842
+               STD_OUT: 44  STD_ERR: 128  EXIT_CODE: 60  CRASHING: 0
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 232 
+                                      ✅ 2726 
