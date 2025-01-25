@@ -243,10 +243,14 @@ int check_symbols(char *str)
 		return (1);
 	if (str[i] == '=')
 		return (1);
-	if (str[i] >= '0' && str[i] <='9' )
+	if (str[i] == '_' && str[i + 1] == '\0')
+		return (1);
+	if (str[i] >= '0' && str[i] <='9')
 		return (1);
 	while (str[i] != '\0')
 	{
+		if (i == 0 && str[i] == '_')
+			i++;
 		if (str[i] == '=')
 		{
 			flag = 1;
@@ -254,12 +258,13 @@ int check_symbols(char *str)
 		}
 		if (flag == 0 && str[i] == '-')
 			return (1);
-		if (flag == 1)
+		if (flag == 0)
 		{
 //			printf("str[i]   %c\n", str[i]);
-			// if (ft_isalnum(str[i]) == 0 && str[i] != '_' && str[i] != ' '
-			// && str[i] != '"' && str[i] != '$' && str[i] != '-' && str[i] != '+')
-			// return (1);
+			if (ft_isalnum(str[i]) == 0 && (str[i] != ' '
+			&& str[i] != '"' && str[i] != '$'
+			&& str[i] != '_'))
+			return (1);
 		}
 		i++;
 	}
@@ -381,6 +386,8 @@ int ft_export(t_data *data, t_cmd *node)
 {
 	int i;
 
+		if (node->next != NULL)
+			return (0);
 	//  if (node->next == NULL)
 	//  {
 		if(node->args[1] == NULL)

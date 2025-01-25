@@ -1,4 +1,5 @@
 #include "../minishell.h"
+#include <time.h>
 
 int change_pwd_in_env(t_data *data, char *pwd)
 {
@@ -118,14 +119,18 @@ int cd_prev(t_data *data)
 
 // }
 
-int cd_up(t_data *data)
+int cd_up(t_data *data, t_cmd *node)
 {
 	char *pwd;
 	char *old_pwd;
 	char *tmp;
-	//	char *tmp2;
+	char *tmp2;
 	int i;
+	// printf(" p> %s\n", data->pwd);
 
+	if (ft_strcmp(data->pwd, "/") == 0 || ft_strcmp(data->pwd, "/home") == 0)
+		return (0);
+	tmp2 = NULL;
 	pwd = ft_strdup(data->pwd);
 	i = ft_strlen(pwd);
 	old_pwd = ft_strdup(data->old_pwd);
@@ -134,12 +139,16 @@ int cd_up(t_data *data)
 	while (pwd[i] != '/')
 		i--;
 	tmp = ft_substr(pwd, 0, i);
-	//	tmp2 = ft_strjoin(tmp, "/");
+	if (!tmp)
+		panic("strdup");
+	if (node->args[1][2] == '/' && ft_strlen(node->args[1]) > 2)	
+		tmp2 = ft_substr(node->args[1], 3, ft_strlen(node->args[1]));
 	if (!tmp || !data->old_pwd)
 		panic("strdup");
+	// printf(" > %s\n", tmp);
 	if (chdir(tmp) == -1)
 	{
-		perror("cd err");
+		perror("cd errrr");
 		return (EXIT_FAILURE);
 	}
 	// data->old_pwd = ft_strdup(data->pwd);
@@ -148,8 +157,15 @@ int cd_up(t_data *data)
 	// 	panic("strdup");
 	change_old_pwd_in_env(data, pwd);
 	change_pwd_in_env(data, getcwd(NULL, 0));
-	//	printf("tmp %s\n", tmp2);
+
 	free(tmp);
+	if (tmp2)
+	{
+		free(node->args[1]);
+		node->args[1] = ft_strdup(tmp2);
+		// printf("tmp %s\n", tmp2);
+		changedir(data, node);
+	}
 	//	free(tmp2);
 
 	return (0);
@@ -170,7 +186,7 @@ int cd_dir(t_data *data, t_cmd *node)
 	// {
 	if (chdir(node->args[1]) == -1)
 	{
-		ft_putstr_fd("cd: ", STDERR_FILENO);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd("cd: ", STDERR_FILENO);
 		ft_putstr_fd(node->args[1], STDERR_FILENO);
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
@@ -196,7 +212,9 @@ int changedir(t_data *data, t_cmd *node)
 
 	if (node->args && node->args[1] && node->args[2])
 	{
-		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd("cd: ", STDERR_FILENO);
+		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	// if (check_cd(node))
@@ -206,8 +224,9 @@ int changedir(t_data *data, t_cmd *node)
 	if (node->args[1] == NULL || ft_strncmp(node->args[1], "~", 2) == 0)
 		res = cd_home(data);
 
-	else if (ft_strncmp(node->args[1], "..", 2) == 0)
-		res = cd_up(data);
+	else if (ft_strncmp(node->args[1], "..", 2) == 0
+		|| (ft_strncmp(node->args[1], "../", 3) == 0))
+		res = cd_up(data, node);
 	else if (ft_strncmp(node->args[1], ".", 1) == 0)
 		res = 0;
 	else if (ft_strncmp(node->args[1], "-", 1) == 0)

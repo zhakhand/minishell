@@ -13,7 +13,13 @@ int if_no_newline(t_cmd *node)
 	j = 2;
 	flag = 0;
 	no_newline = 0;
-	while (ft_strncmp(node->args[i], "-n", 2) == 0)
+	while (node->args[i] != NULL && ft_strncmp(node->args[i], "-n", 3) == 0)
+	{
+		//if(ft_strcmp(node->args[i], "-n") == 0)
+			flag++;
+		i++;
+	}
+	while (node->args[i] != NULL && ft_strncmp(node->args[i], "-n", 2) == 0)
 	{
 		while(node->args[i][j] != '\0')
 		{
