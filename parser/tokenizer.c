@@ -153,6 +153,7 @@ t_token *init_token(void)
     if (!new)
         exit(2);
     new->was_quoted = 0;
+    new->is_ambiguous = 0;
     new->touches_next = 0;
     new->error = 0;
     new->is_delim = 0;

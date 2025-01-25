@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 14:41:58 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/21 15:37:38 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:05:17 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ t_redir	*init_redir()
 		exit(2);
 	new->type = 0;
 	new->expands = 1;
+	new->ambig = 0;
 	new->val = NULL;
 	new->next = NULL;
 	new->prev = NULL;
@@ -107,6 +108,8 @@ t_redir	*redir_list(t_token *token)
 				tail->expands = 0;
 			if (token->prev->type == HEREDOC && token->was_quoted == 2 && token->ogVal)
 				tail->val = token->ogVal;
+			if (token->is_ambiguous)
+				tail->ambig = 1;
 			token->val = NULL;
 			if (token->prev->val)
 				free(token->prev->val);

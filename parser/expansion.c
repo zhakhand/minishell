@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/01/24 00:52:29 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:08:00 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,12 @@ t_token *check_expansion(t_token *token, t_data *data)
 		var = get_env_var(data, token->val + 1);
 		if (!var || (var && var->is_valid == 0) || (var && var->is_valid == 1 && !ft_strlen(var->val)))
 		{
+			if (!var && token->prev && is_redir(token->prev->type))
+			{
+				token->is_ambiguous = 1;
+				token->type = WORD;
+				return (token);
+			}
 			token->ogVal = token->val;
 			token->val = ft_strdup("");
 			token->type = ES;
