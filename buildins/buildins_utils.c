@@ -39,7 +39,7 @@ int check_child_buildin(t_cmd *node)
 		return (-1);
 	if (node->built_in == ECH || 
 		node->built_in == PWD || 
-		(node->built_in == EXPORT && !node->args[1])|| 
+		node->built_in == EXPORT || 
 		node->built_in == ENV)
 	{	
 		return (0);
