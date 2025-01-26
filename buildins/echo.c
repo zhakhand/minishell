@@ -21,6 +21,7 @@ int if_no_newline(t_cmd *node)
 	}
 	while (node->args[i] != NULL && ft_strncmp(node->args[i], "-n", 2) == 0)
 	{
+		j = 2;
 		while(node->args[i][j] != '\0')
 		{
 			no_newline = 0;
