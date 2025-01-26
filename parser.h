@@ -49,6 +49,10 @@
 #define ENV 906
 #define EXIT 907
 
+#define PARENT 40001
+#define CHILD 40002
+#define WAIT 40003
+
 #define UNEXPECTED_TOKEN "syntax error near unexpected token "
 #define CMD_NOT_FOUND ": command not found\n"
 
@@ -141,24 +145,27 @@ t_var *create_env_var(char *key, char *val);
 t_var *get_env_var(t_data *data, char *key);
 t_var *set_env_var(t_data *data, char *key, char *val);
 void unset_var(t_data *data, char *key);
-void reorder_tokens(t_data *data);
+int reorder_tokens(t_data *data);
 void	mark_merges(t_token *tokens);
 void merge_tokens(t_data *data);
 void clear_out_es(t_data *data);
 void delete_spaces(t_data *data);
-void check_pipes(t_data *data);
-void	check_redirs(t_data *data);
+int check_pipes(t_data *data);
+int	pipe_check(t_data *data, t_token *current);
+int	check_redirs(t_data *data);
 void	syntax_check(t_data *data);
 t_token *relink_tokens(t_token *empty, t_token *current, t_data *data);
 
 void	set_cmd_table(t_data *data);
 int	is_redir(int type);
 void	check_built_in(t_data *data);
-void	error_msg(char *error, t_token *token, t_data *data);
+int	error_msg(char *error, t_token *token, t_data *data);
 void	free_tokens(t_token *token);
 void	free_cmds(t_cmd *cmds);
 void	free_args(char	**args);
 void	clean_data(t_data *data);
 void	reset_data(t_data *data);
+
+void	set_signals(int mode);
 
 #endif

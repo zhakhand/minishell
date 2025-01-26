@@ -1,6 +1,8 @@
 
 #include "../minishell.h"
 
+extern sig_atomic_t g_signal;
+
 int handle_heredoc(char *file)
 {
 	int temp_fd;
@@ -52,6 +54,7 @@ int handle_input_redirects(t_redir *redir)
 		}
 		else if (redirects->type == HEREDOC)
 		{
+			set_signals(HEREDOC);
 			temp_fd = handle_heredoc(redirects->val);
 			if (dup2(temp_fd, STDIN_FILENO) == -1)
 				return (-1);

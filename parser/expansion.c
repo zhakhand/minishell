@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/01/24 16:08:00 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:47:46 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void	find_error(t_data *data)
 
 void	mark_merges(t_token *tokens)
 {
-	t_token *curr;
+	t_token	*curr;
 	
 	curr = NULL;
 	if (tokens)
@@ -215,14 +215,15 @@ void	mark_vars(t_data *data)
 	}
 }
 
-void reorder_tokens(t_data *data)
+int reorder_tokens(t_data *data)
 {
 	//FIRST STEP
 	mark_merges(data->tokens);
 	delete_spaces(data);
-	check_redirs(data);
-	check_pipes(data);
-	//syntax_check(data);
+	if (check_redirs(data))
+		return ERROR;
+	if (check_pipes(data))
+		return ERROR;
 	//SECOND STEP
 	mark_vars(data);
 	clear_quote_tokens(data);
@@ -230,4 +231,5 @@ void reorder_tokens(t_data *data)
 	expand_vars(data);
 	delete_spaces(data);
  	merge_tokens(data);
+	return (0);
 }

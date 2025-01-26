@@ -6,13 +6,13 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 13:40:06 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/23 13:05:56 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:40:39 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../parser.h"
 
-void	check_redirs(t_data *data)
+int	check_redirs(t_data *data)
 {
 	t_token	*current;
 
@@ -24,15 +24,16 @@ void	check_redirs(t_data *data)
 		if (is_redir(current->type))
 		{
 			if (current->next && is_redir(current->next->type))
-				error_msg(UNEXPECTED_TOKEN, current->next, data);
+				return (error_msg(UNEXPECTED_TOKEN, current->next, data));
 			else if (!current->next)
-				error_msg(UNEXPECTED_TOKEN, NULL, data);
+				return (error_msg(UNEXPECTED_TOKEN, NULL, data));
 		}
 		current = current->next;
 	}
+	return (0);
 }
 
-void check_pipes(t_data *data)
+int check_pipes(t_data *data)
 {
 	t_token *current;
 
@@ -43,22 +44,12 @@ void check_pipes(t_data *data)
 	{
 		if (current && current->type == PIPE)
 		{
-			if (!current->prev)
-				error_msg(UNEXPECTED_TOKEN, current, data);
-			else{
-				if (is_redir(current->prev->type))
-					error_msg(UNEXPECTED_TOKEN, current, data);
-			}
-			if (current->next)
-			{
-				if (current->next->type == PIPE)
-					error_msg(UNEXPECTED_TOKEN, current->next, data);
-			}
-			else
-				error_msg(UNEXPECTED_TOKEN, NULL, data);
+			if (pipe_check(data, current) != 0)
+				return (ERROR);
 		}
 		current = current->next;
 	}
+	return (0);
 }
 
 void delete_spaces(t_data *data)
