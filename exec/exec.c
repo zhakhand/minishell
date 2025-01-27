@@ -115,7 +115,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	while (cmd != NULL)
 	{
 		data->redir_err = 0;
-    // printf("begin  %s  %s\n", cmd->args[0], cmd->redir->val);
+//    printf("begin  0 %s 1 %s 2 %s r %s\n", cmd->args[0], cmd->args[1], cmd->args[2], cmd->redir->val);
 
 		if (!check_parent_buildin(cmd))
 		{
@@ -161,6 +161,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 			{
 				data->err_no = 1;
 				data->redir_err = 1;
+//				printf("minishell: %s\n", cmd->args[0]);
 //            	panic("minishell: ");
 				// return (0);
 			}

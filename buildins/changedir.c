@@ -122,7 +122,7 @@ int cd_prev(t_data *data)
 int cd_up(t_data *data, t_cmd *node)
 {
 	char *pwd;
-	char *old_pwd;
+//	char *old_pwd;
 	char *tmp;
 	char *tmp2;
 	int i;
@@ -133,19 +133,22 @@ int cd_up(t_data *data, t_cmd *node)
 	tmp2 = NULL;
 	pwd = ft_strdup(data->pwd);
 	i = ft_strlen(pwd);
-	old_pwd = ft_strdup(data->old_pwd);
-	if (!pwd || !old_pwd)
+	// if(data->old_pwd)
+	// 	old_pwd = ft_strdup(data->old_pwd);
+	if (!pwd)
 		panic("pwd error!");
 	while (pwd[i] != '/')
 		i--;
 	tmp = ft_substr(pwd, 0, i);
 	if (!tmp)
-		panic("strdup");
-	if (node->args[1][2] == '/' && ft_strlen(node->args[1]) > 2)	
+		panic("strdup1");
+//	 printf(" > %s\n", node->args[1]);
+	if (node->args[1][2] && node->args[1][2] == '/' && ft_strlen(node->args[1]) > 2)	
+	{
 		tmp2 = ft_substr(node->args[1], 3, ft_strlen(node->args[1]));
-	if (!tmp || !data->old_pwd)
-		panic("strdup");
-	// printf(" > %s\n", tmp);
+		if (!tmp2)
+			panic("strdup2");
+	}
 	if (chdir(tmp) == -1)
 	{
 		perror("cd errrr");
@@ -174,12 +177,13 @@ int cd_up(t_data *data, t_cmd *node)
 int cd_dir(t_data *data, t_cmd *node)
 {
 	char *pwd;
-	char *old_pwd;
+	//char *old_pwd;
 
 	//	printf(" aaaa> %s\n", node->args[1]);
 	pwd = ft_strjoin(data->pwd, node->args[1]);
-	old_pwd = ft_strdup(data->old_pwd);
-	if (!pwd || !old_pwd)
+	// if(data->old_pwd)
+	// 	old_pwd = ft_strdup(data->old_pwd);
+	if (!pwd)
 		panic("pwd error!");
 	check_abs_path(node);
 	// if(node->abs_path == 1)
@@ -199,7 +203,6 @@ int cd_dir(t_data *data, t_cmd *node)
 		//			printf(" > %s\n", data->pwd);
 	}
 	// }
-	free(old_pwd);
 	free(pwd);
 	return (0);
 }
