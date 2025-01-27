@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 13:40:06 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/26 23:40:39 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:38:42 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ int	check_redirs(t_data *data)
 	return (0);
 }
 
-int check_pipes(t_data *data)
+int	check_pipes(t_data *data)
 {
-	t_token *current;
+	t_token	*current;
 
 	current = NULL;
 	if (data->tokens)
@@ -52,9 +52,9 @@ int check_pipes(t_data *data)
 	return (0);
 }
 
-void delete_spaces(t_data *data)
+void	delete_spaces(t_data *data)
 {
-	t_token *current;
+	t_token	*current;
 
 	current = NULL;
 	if (data->tokens)
@@ -65,14 +65,5 @@ void delete_spaces(t_data *data)
 			current = relink_tokens(current, current->next, data);
 		else
 			current = current->next;
-	}
-}
-
-void	syntax_check(t_data *data)
-{
-	if (data->tokens && ft_strcmp(data->tokens->val, ".") == 0){
-		//ft_putstr_fd(".: usage: .filename [arguments]\n", 2);
-		ft_putstr_fd(".: command not found\n", 2);
-		exit(127);
 	}
 }

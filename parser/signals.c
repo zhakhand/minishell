@@ -13,9 +13,9 @@
 #include "../parser.h"
 #include "../minishell.h"
 
-extern sig_atomic_t g_signal;
+extern sig_atomic_t	g_signal;
 
-void ctrl_slash(int signal)
+void	ctrl_slash(int signal)
 {
 	(void)signal;
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
@@ -23,14 +23,14 @@ void ctrl_slash(int signal)
 	rl_replace_line("", 0);
 }
 
-void ctrl_c_child(int signal)
+void	ctrl_c_child(int signal)
 {
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	g_signal = signal;
 }
 
-void ctrl_c(int signal)
+void	ctrl_c(int signal)
 {
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
@@ -38,7 +38,7 @@ void ctrl_c(int signal)
 	g_signal = signal;
 }
 
-void set_signals(int mode)
+void	set_signals(int mode)
 {
 	if (mode == PARENT)
 	{

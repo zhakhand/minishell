@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 13:55:49 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/26 23:44:27 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/27 14:04:09 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	error_msg(char *error, t_token *token, t_data *data)
 			ft_putstr_fd("`<<'\n", 2);
 		else if (token->type == APPEND)
 			ft_putstr_fd("`>>'\n", 2);
-		else 
+		else
 			ft_putstr_fd(token->val, 2);
 	}
 	if (ft_strcmp(error, CMD_NOT_FOUND) == 0)
@@ -54,7 +54,6 @@ int	pipe_check(t_data *data, t_token *current)
 			return (error_msg(UNEXPECTED_TOKEN, current->next, data));
 	}
 	else
-		return (error_msg(UNEXPECTED_TOKEN, NULL, data));	
+		return (error_msg(UNEXPECTED_TOKEN, NULL, data));
 	return (0);
 }
-

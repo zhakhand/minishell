@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/26 23:43:46 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:15:17 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int main(int ac, char **av, char **ev)
 		env = make_env(data);
 		data->path_arr = get_path_arr(env);
 		data->tokens = tokenize(line);
-		if (reorder_tokens(data) == 0)
+		if (data->tokens && reorder_tokens(data) == 0)
 		{
 			set_cmd_table(data);
 			cmd = data->cmds;

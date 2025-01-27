@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 13:38:09 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/09 19:46:23 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:56:20 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ void	set_built_in(t_cmd *cmd)
 void	check_built_in(t_data *data)
 {
 	t_cmd	*curr;
-	
+
 	if (!data->cmds)
-		return;
+		return ;
 	curr = data->cmds;
 	while (curr)
 	{
