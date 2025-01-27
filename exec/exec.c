@@ -1,6 +1,9 @@
 #include "../minishell.h"
+#include "../parser.h"
 //#include <cerrno>
 #include <unistd.h>
+
+extern sig_atomic_t g_signal;
 
 void clear_path_arr(t_data *data)
 {
@@ -144,6 +147,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 			panic("fork err");
 		else if (pid == 0) // Дочерний процесс
 		{
+			set_signals(CHILD);
 			// Перенаправляем ввод из предыдущей команды
 			if (prev_fd != STDIN_FILENO)
 			{
@@ -198,6 +202,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	}
 
 	// Ожидание завершения дочерних процессов
+	set_signals(WAIT);
 	while (waitpid(-1, &status, 0) > 0)
 	{
 		if (WIFEXITED(status))
