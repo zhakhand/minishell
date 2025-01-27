@@ -11,12 +11,13 @@
 /* ************************************************************************** */
 
 #include "../parser.h"
+#include "../minishell.h"
 
 int	str_len(char *str)
 {
 	int	i;
 
-	i = 0;			
+	i = 0;
 	while (str[i] != '\0')
 		i++;
 	return (i);
@@ -34,22 +35,23 @@ int	ft_strcmp(char *str1, char *str2)
 
 int	is_sep(char c)
 {
-	if (c == '|' || c == '$' || c == '<' || c == '>' || c == '\'' || c == '\"' || c == 32)
+	if (c == '|' || c == '$' || c == '<' \
+	|| c == '>' || c == '\'' || c == '\"' || c == 32 || c == 9)
 		return (1);
 	return (0);
 }
 
 char	*ft_strndup(char *str, int len)
 {
-	char	*retStr;
+	char	*ret_str;
 	int		i;
 
 	i = -1;
-	retStr = malloc(sizeof(char *) * len + 1);
-	if (!retStr)
-		exit(2);
+	ret_str = malloc(sizeof(char *) * len + 1);
+	if (!ret_str)
+		panic("malloc");
 	while (++i < len && str[i] != '\0')
-		retStr[i] = str[i];
-	retStr[i] = '\0';
-	return (retStr);
+		ret_str[i] = str[i];
+	ret_str[i] = '\0';
+	return (ret_str);
 }

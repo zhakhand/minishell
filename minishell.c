@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 19:41:26 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/24 15:30:28 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:15:17 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,17 +70,6 @@ char **make_env(t_data *data)
 	return (res);
 }
 
-void	sighandler(int signal)
-{
-	if (signal == SIGINT)
-	{
-		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		g_signal = signal;
-	}
-}
-
 void	print_tokens(t_data *data)
 {
 	t_token *curr;
@@ -109,12 +98,12 @@ int main(int ac, char **av, char **ev)
 	// t_cmd	*cmd;
 
 //printf("1\n");
-	signal(SIGINT, sighandler);
-	signal(SIGQUIT, SIG_IGN);
 	data = init_data(ac, av, ev);
 	data->err_no = 0;
+	increase_shell_lvl(data);
 	while (1)
 	{
+		set_signals(PARENT);
 		// if (isatty(fileno(stdin)))
 		// 	line = readline("> ");
 		// else
@@ -136,16 +125,18 @@ int main(int ac, char **av, char **ev)
 			break ;
 		if (ft_strlen(line) == 0)
 			continue ;
-		data->tokens = tokenize(line);
-		reorder_tokens(data);
-		set_cmd_table(data);
 		env = make_env(data);
+		data->path_arr = get_path_arr(env);
+		data->tokens = tokenize(line);
+		if (data->tokens && reorder_tokens(data) == 0)
+		{
+			set_cmd_table(data);
+			cmd = data->cmds;
+			run_pipe(data, cmd, env);
+		}
 		//data->env_arr = make_env(data);
 		// if (!data->env_arr)
 		// 	panic("malloc");
-		data->path_arr = get_path_arr(env);
-		cmd = data->cmds;
-		run_pipe(data, cmd, env);
 		//data->err_no = run_pipe(data, data->cmds, ev);
 		// free_tokens(data->tokens);
 		// free_cmds(data->cmds);

@@ -132,3 +132,14 @@ echo done
                                       ❌ 232 
                                       ✅ 2726 
 
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 854
+               STD_OUT: 39  STD_ERR: 123  EXIT_CODE: 61  CRASHING: 0
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 223 
+                                      ✅ 2735
+Ambiguous Redirects is only +1 test, can be left for later. Need to make executor
+more easy to moderate and find a way to make panic clear out memory before exiting.
+Basic signals implemented, can be implemented better after everything is done.

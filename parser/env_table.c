@@ -18,29 +18,13 @@ t_var	*get_env_var(t_data *data, char *key)
 
 	curr = NULL;
 	if (!data->env_var)
-		return NULL;
+		return (NULL);
 	curr = data->env_var;
 	while (curr && ft_strcmp(curr->key, key) != 0)
 		curr = curr->next;
 	if (!curr)
 		return (NULL);
 	return (curr);
-}
-
-t_var	*push_back(t_data *data, t_var *new)
-{
-	t_var	*temp;
-
-	temp = NULL;
-	if (data->env_var)
-		temp = data->env_var;
-	while (temp){
-		if (!temp->next)
-			break;
-		temp = temp->next;
-	}
-	temp->next = new;
-	return (new);
 }
 
 t_var	*set_env_var(t_data *data, char *key, char *val)
@@ -51,35 +35,11 @@ t_var	*set_env_var(t_data *data, char *key, char *val)
 	if (!new)
 	{
 		new = create_env_var(key, val);
-		return push_back(data, new);
+		return (push_back(data, new));
 	}
 	free(new->val);
 	new->val = ft_strndup(val, str_len(val));
 	return (new);
-}
-
-void	unset_var(t_data *data, char *key)
-{
-	t_var	*var;
-	t_var	*next;
-	t_var	*prev;
-
-	var = NULL;
-	next = NULL;
-	prev = data->env_var;
-	while (prev->next && ft_strcmp(prev->next->key, key) != 0)
-		prev = prev->next;
-	if (!prev->next)
-		return ;
-	var = prev->next;
-	next = var->next;
-	prev->next = next;
-	free(var->key);
-	var->key = NULL;
-	free(var->val);
-	var->val = NULL;
-	free(var);
-	var = NULL;
 }
 
 t_var	*create_env_var(char *key, char *val)
@@ -99,31 +59,40 @@ t_var	*create_env_var(char *key, char *val)
 	return (var);
 }
 
+int	move_index(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i] != '=')
+		;
+	return (i);
+}
+
 void	copy_env(t_data *data, char **envp)
 {
-    int		i;
+	int		i;
 	int		j;
 	t_var	*new;
 	t_var	*head;
 	t_var	*tail;
-	
+
 	i = -1;
 	head = NULL;
 	tail = NULL;
 	new = NULL;
-    while (envp[++i] != 0)
-    {
-		j = -1;
-		while (envp[i][++j] != '=');
+	while (envp[++i] != 0)
+	{
+		j = move_index(envp[i]);
 		new = create_env_var(ft_strndup(envp[i], j), envp[i] + j + 1);
-		if (!head) 
+		if (!head)
 		{
-            head = new;
-            tail = new;
-			continue;
-        }
-        tail->next = new;
-        tail = new;
-    }
+			head = new;
+			tail = new;
+			continue ;
+		}
+		tail->next = new;
+		tail = new;
+	}
 	data->env_var = head;
 }
