@@ -1,73 +1,137 @@
 
 #include "../minishell.h"
 
-int handle_heredoc(char *file)
+int handle_heredoc(char *delimiter)
 {
-	int temp_fd;
-	char *line;
-	
-	temp_fd = open("temp", O_WRONLY | O_CREAT | O_TRUNC, 0666);
-	line = readline("> ");
+    char *line;
+    int temp_fd;
 
-	while(1)
-	{
-		if (ft_strncmp(line, file, ft_strlen(file)) == 0)
-			break;
-		write(temp_fd, line, ft_strlen(line));
-		write(temp_fd, "\n", 1);
-		free(line);
-		line = readline("> ");
-	}
-	lseek(temp_fd, 0, SEEK_SET);
-	return (temp_fd);
+    // Create a unique temporary file
+    temp_fd = open("temp", O_RDWR | O_CREAT | O_TRUNC, 0666);
+    // Read lines until the delimiter is entered
+    while (1)
+    {
+//		printf("DEBUG: Line read: [%s]\n", line);
+
+        line = readline("> ");
+        if (!line)
+        {
+            ft_putstr_fd("minishell: warning: heredoc delimited by EOF\n", STDERR_FILENO);
+            break;
+        }
+        if (ft_strcmp(line, delimiter) == 0)
+        {
+            free(line);
+            break;
+        }
+
+        write(temp_fd, line, ft_strlen(line));
+        write(temp_fd, "\n", 1);
+        free(line);
+//        line = readline("> ");
+    }
+
+    // Reset file pointer and unlink the temporary file
+    if (lseek(temp_fd, 0, SEEK_SET) == -1)
+    {
+        perror("Error seeking in temp file");
+        close(temp_fd);
+        return -1;
+    }
+//system("ls -l temp");
+//    system("cat temp");
+
+	// close(temp_fd);
+	// temp_fd = open("temp", O_RDONLY);
+    return temp_fd;
 }
+
+
+// int handle_heredoc(char *delimiter)
+// {
+// 	int temp_fd;
+// 	char *line;
+
+// 	// Create a unique temporary file
+// 	temp_fd = open("temp", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+// 	if (temp_fd == -1)
+// 		return (-1);
+
+// 	while (1)
+// 	{
+// 		line = readline("> ");
+// 		if (!line)
+// 		{
+// 			// Handle Ctrl+D or unexpected EOF
+// 			ft_putstr_fd("minishell: warning: heredoc delimited by EOF\n", STDERR_FILENO);
+// 			break;
+// 		}
+// 		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0 && line[ft_strlen(delimiter)] == '\0')
+// 		{
+// 			free(line);
+// 			break;
+// 		}
+// 		write(temp_fd, line, ft_strlen(line));
+// 		write(temp_fd, "\n", 1);
+// 		free(line);
+// 	}
+// 	close(temp_fd);
+
+// 	// Reopen the temporary file for reading
+// 	temp_fd = open("temp", O_RDONLY);
+// 	if (temp_fd == -1)
+// 		return (-1);
+
+// 	return temp_fd;
+// }
+
 int handle_input_redirects(t_redir *redir)
 {
-	t_redir *redirects;
+	t_redir *redirects = redir;
 	int in_fd;
 	int temp_fd;
 
-	redirects = redir;
-//	printf("from handle input %s\n", redirects->val);
 	// while (redirects)
 	// {
 		if (redirects->type == IN)
 		{
-// 			if (access(redirects->val, F_OK) == -1)
-// 			{
-// //				panic("No such file or directory");
-// 				return (-1);
-// 			}
 			in_fd = open(redirects->val, O_RDONLY);
 			if (in_fd == -1)
 			{
-				// ft_putstr_fd("minishell: ", 2);
-				ft_putstr_fd(redirects->val, 2);
-				ft_putstr_fd(": No such file or directory\n", 2);
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(redirects->val, STDERR_FILENO);
+				ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 				return (-1);
 			}
 			if (dup2(in_fd, STDIN_FILENO) == -1)
-				return(-1);
+				return (-1);
 			close(in_fd);
 		}
 		else if (redirects->type == HEREDOC)
 		{
 			temp_fd = handle_heredoc(redirects->val);
+//			printf("temp_fd %d\n", temp_fd);
+			if (temp_fd == -1)
+			{
+				ft_putstr_fd("minishell: error handling heredoc\n", STDERR_FILENO);
+				return (-1);
+			}
 			if (dup2(temp_fd, STDIN_FILENO) == -1)
 				return (-1);
 			close(temp_fd);
 		}
-//		redirects = redirects->next;
+	// 	redirects = redirects->next; // Move to the next redirect
 	// }
 	return (0);
 }
+
 
 int open_and_close(t_redir *redir)
 {
 	int out_fd;
 	out_fd = -1;
 
-	// printf("acc %d %s\n", access(redir->val, O_WRONLY), redir->val);
+//	printf("acc %d %s\n", access(redir->val, O_WRONLY), redir->val);
 	// if (access(redir->val, O_WRONLY) == -1)
 	// {
 	// 	panic("No such file or directory");
@@ -142,9 +206,9 @@ int check_directory(char *file)
 		free(temp);
 		return (-1);
 	}
-	else {
-		chdir("..");
-	}
+	// else {
+	// 	chdir("..");
+	// }
 		
 	// 	}
 	free(temp);
@@ -157,7 +221,9 @@ int handle_output_redirects(t_redir *redirects)
 	out_fd = -1;
 	t_redir *redir;
 
+
 	redir = redirects;
+	// out_fd = open(redir->val, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (check_directory(redirects->val) == -1)
 		return (-1);
 	while (redir)
@@ -166,10 +232,13 @@ int handle_output_redirects(t_redir *redirects)
 			open_and_close(redir);
 		else
 		{
-			if (redir->type == OUT || redir->type == APPEND)
-			{
+			// if (redir->type == OUT || redir->type == APPEND)
+			// {
 				if (redir->type == OUT)
+				{
+//				printf("from handle output  %s\n", redir->val);
 					out_fd = open(redir->val, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+				}
 				else
 				{
 					out_fd = open(redir->val, O_WRONLY | O_CREAT | O_APPEND, 0666);
@@ -178,11 +247,13 @@ int handle_output_redirects(t_redir *redirects)
 					return (-1);
 				if (dup2(out_fd, STDOUT_FILENO) == -1)
 					return (-1);
+//				ft_putstr_fd("from handle output  ", 2);
+//	printf("from handle output  %d %s\n", out_fd, redirects->val);
 				close(out_fd);
 				}
-		}
 		redir = redir->next;
-	}
+		}
+	// }
 	return (0);
 }
 
@@ -205,9 +276,6 @@ int handle_redirects(t_cmd *node)
 		if (temp->type == IN || temp->type == HEREDOC)
 		{
 			input_redirects = temp;
-			err = handle_input_redirects(input_redirects);
-			if (err == -1)
-				return (-1);
 		}
 		else if (temp->type == OUT || temp->type == APPEND)
 		{
@@ -237,9 +305,9 @@ int handle_redirects(t_cmd *node)
 		if (handle_input_redirects(input_redirects) == -1)
 		{
 
-//			write(2, "minishell: ", 11);
-			ft_putstr_fd(input_redirects->val, 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
+// //			write(2, "minishell: ", 11);
+// 			ft_putstr_fd(input_redirects->val, 2);
+// 			ft_putstr_fd(": ddNo such file or directory\n", 2);
 			err = -1;
 		}
 
