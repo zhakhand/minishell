@@ -42,7 +42,7 @@ t_redir	*init_redir(void)
 	return (new);
 }
 
-void	add_to_list(t_token *token, t_redir *tail, t_redir *prev)
+void	add_to_list(t_token *token, t_redir *tail)
 {
 	tail->type = token->prev->type;
 	tail->val = token->val;
@@ -56,7 +56,6 @@ void	add_to_list(t_token *token, t_redir *tail, t_redir *prev)
 	if (token->prev->val)
 		free(token->prev->val);
 	token->prev->val = NULL;
-	prev = tail;
 }
 
 t_redir	*redir_list(t_token *token)
@@ -79,7 +78,8 @@ t_redir	*redir_list(t_token *token)
 				prev->next = tail;
 				tail->prev = prev;
 			}
-			add_to_list(token, tail, prev);
+			add_to_list(token, tail);
+			prev = tail;
 		}
 		token = token->next;
 	}
