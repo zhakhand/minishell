@@ -37,11 +37,14 @@ int check_child_buildin(t_cmd *node)
 {
 	if (node == NULL || node->cmd == NULL)
 		return (-1);
-	if (node->built_in == ECH || 
+	if (
+		node->built_in == CD || 
+		node->built_in == ECH || 
 		node->built_in == PWD || 
 		node->built_in == EXPORT || 
 		node->built_in == ENV)
 	{	
+//		printf("check_child_buildin, %d\n", node->built_in);
 		return (0);
 	}
 	return (1);
@@ -51,10 +54,11 @@ int exec_buildin(t_data *data, t_cmd *node)
 {
 	int res;
 
+//	printf("exec_buildin, %d\n", node->prev->built_in);
 	res = 0;
-	if (node == NULL || node->cmd == NULL || node->cmd == NULL)
+	if (node == NULL || node->cmd == NULL)
 		return (-1);
-	if (node->built_in == CD)
+	if (node->built_in == CD && !node->prev)
 		res = changedir(data, node);
 	if (node->built_in == PWD)
 		res = show_pwd(data);

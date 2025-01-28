@@ -151,7 +151,7 @@ int cd_up(t_data *data, t_cmd *node)
 	}
 	if (chdir(tmp) == -1)
 	{
-		perror("cd errrr");
+		perror("cd err");
 		return (EXIT_FAILURE);
 	}
 	// data->old_pwd = ft_strdup(data->pwd);
@@ -211,19 +211,23 @@ int changedir(t_data *data, t_cmd *node)
 {
 	int res;
 	res = -1;
+	if (node->prev)
+	{
+		return (0);
+	}
 	check_abs_path(node);
-
 	if (node->args && node->args[1] && node->args[2])
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd("cd: ", STDERR_FILENO);
-		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
+		ft_putmsg_fd(MSH, "cd", T_M_A, STDERR_FILENO);
+		// ft_putstr_fd("minishell: ", STDERR_FILENO);
+		// ft_putstr_fd("cd: ", STDERR_FILENO);
+		// ft_putstr_fd("too many arguments\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	// if (check_cd(node))
 	// {
-	// if (!node->next)
-	// {
+	if (!node->next)
+	{
 	if (node->args[1] == NULL || ft_strncmp(node->args[1], "~", 2) == 0)
 		res = cd_home(data);
 
@@ -237,6 +241,6 @@ int changedir(t_data *data, t_cmd *node)
 	else
 		res = cd_dir(data, node);
 	//			}
-	// }
+	}
 	return (res);
 }
