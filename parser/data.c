@@ -11,6 +11,28 @@
 /* ************************************************************************** */
 
 #include "../parser.h"
+#include "../minishell.h"
+
+void	create_env(t_data *data)
+{
+	char	*pwd;
+	t_var	*new;
+
+	pwd = getcwd(NULL, 0);
+	data->env_var = create_env_var(ft_strdup("PWD"), pwd);
+	new = set_env_var(data, ft_strdup("OLDPWD"), "");
+	new->is_valid = 0;
+	if (pwd)
+		free(pwd);
+}
+
+void	set_env(t_data *data, char **ev)
+{
+	if (!ev[0])
+		create_env(data);
+	else
+		copy_env(data, ev);
+}
 
 t_data	*init_data(int ac, char **av, char **ev)
 {
@@ -19,14 +41,14 @@ t_data	*init_data(int ac, char **av, char **ev)
 
 	new = malloc(sizeof(t_data));
 	if (!new)
-		exit(2);
+		panic("malloc");
 	ft_bzero(new, sizeof(t_data));
 	new->argc = ac;
 	new->args = av;
 	new->err_no = 0;
 	new->last_err = 0;
 	new->redir_err = 0;
-	copy_env(new, ev);
+	set_env(new, ev);
 	temp = get_env_var(new, "PATH");
 	if (temp)
 		new->path = ft_strdup(temp->val);

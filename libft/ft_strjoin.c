@@ -49,11 +49,11 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!s1 || !s2)
 	{
 		if (s1 && !s2)
-			return ft_strdup(s1);
+			return (ft_strdup(s1));
 		if (!s1 && s2)
-			return ft_strdup(s2);
+			return (ft_strdup(s2));
 		if (!s1 && !s2)
-			return NULL;
+			return (NULL);
 	}
 	res = new_str(str_len(s1) + str_len(s2));
 	if (!res)
