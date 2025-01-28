@@ -44,7 +44,7 @@ int ft_edge_cases(t_data *data, t_cmd *cmd)
 	if (ft_strcmp(cmd->args[0], "") == 0 ||
 		ft_strcmp(cmd->args[0], ".") == 0 ||
 		ft_strcmp(cmd->args[0], "..") == 0 ||
-		ft_strcmp(cmd->args[0], "/") == 0 ||
+		// ft_strcmp(cmd->args[0], "/") == 0 ||
 		ft_strcmp(cmd->args[0], "//") == 0 ||
 		ft_strcmp(cmd->args[0], "~") == 0)
 	{

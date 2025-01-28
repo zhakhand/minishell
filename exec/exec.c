@@ -83,7 +83,7 @@ int run_execve(t_data *data, t_cmd *cmd, char **envp) {
 	else if (status == 1 && access(full_path, F_OK) == -1)
 	{
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-		ft_putstr_fd(": 77No such file or directory\n", STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		return 127;
 	}
 

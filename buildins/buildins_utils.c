@@ -38,6 +38,7 @@ int check_child_buildin(t_cmd *node)
 	if (node == NULL || node->cmd == NULL)
 		return (-1);
 	if (
+		node->built_in == UNSET || 
 		node->built_in == CD || 
 		node->built_in == ECH || 
 		node->built_in == PWD || 
