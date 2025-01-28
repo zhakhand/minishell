@@ -22,6 +22,7 @@ int change_pwd_in_env(t_data *data, char *pwd)
 	//	data->env_var = temp;
 	free(data->pwd);
 	data->pwd = ft_strdup(pwd);
+	free(pwd);
 	return (0);
 }
 
@@ -36,6 +37,7 @@ int change_old_pwd_in_env(t_data *data, char *pwd)
 		{
 			free(temp->val);
 			temp->val = ft_strdup(pwd);
+			temp->is_valid = 1;
 			if (!temp->val)
 				return (EXIT_FAILURE);
 			//			return (EXIT_SUCCESS);

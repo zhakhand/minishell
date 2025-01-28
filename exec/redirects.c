@@ -11,10 +11,12 @@ int handle_heredoc(char *delimiter)
     // Create a unique temporary file
     temp_fd = open("temp", O_RDWR | O_CREAT | O_TRUNC, 0666);
     // Read lines until the delimiter is entered
+	set_signals(HEREDOC);
     while (1)
     {
 //		printf("DEBUG: Line read: [%s]\n", line);
-
+		if (g_signal == SIGINT)
+			break ;
         line = readline("> ");
         if (!line)
         {
@@ -37,9 +39,12 @@ int handle_heredoc(char *delimiter)
     if (lseek(temp_fd, 0, SEEK_SET) == -1)
     {
         perror("Error seeking in temp file");
+		set_signals(PARENT);
         close(temp_fd);
         return -1;
     }
+	set_signals(PARENT);
+
 //system("ls -l temp");
 //    system("cat temp");
 

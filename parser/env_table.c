@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../parser.h"
+#include "../minishell.h"
 
 t_var	*get_env_var(t_data *data, char *key)
 {
@@ -38,6 +39,7 @@ t_var	*set_env_var(t_data *data, char *key, char *val)
 		return (push_back(data, new));
 	}
 	free(new->val);
+	new->val = NULL;
 	new->val = ft_strndup(val, str_len(val));
 	return (new);
 }
@@ -48,7 +50,7 @@ t_var	*create_env_var(char *key, char *val)
 
 	var = malloc(sizeof(t_var));
 	if (!var)
-		exit(2);
+		panic("malloc");
 	var->key = ft_strndup(key, str_len(key));
 	if (key && *key)
 		free(key);
