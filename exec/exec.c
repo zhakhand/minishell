@@ -80,7 +80,7 @@ int run_execve(t_data *data, t_cmd *cmd, char **envp) {
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		return 127;
 	}
-	else if (status == 1 && access(full_path, F_OK))
+	else if (status == 1 && access(full_path, F_OK) == -1)
 	{
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
@@ -115,31 +115,14 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	while (cmd != NULL)
 	{
 		data->redir_err = 0;
-//    printf("begin  0 %s 1 %s 2 %s r %s\n", cmd->args[0], cmd->args[1], cmd->args[2], cmd->redir->val);
-
 		if (!check_parent_buildin(cmd))
 		{
 			data->err_no = exec_buildin(data, cmd);
 			if (cmd->next == NULL)
 				return (0);
 		}
-		// if(cmd->next != NULL)
-		// {
-		// 	printf("cmd->next->cmd %s\n", cmd->next->cmd);
-		// 	return (data->err_no);
-		// }
-//         if (cmd->built_in == CD)
-//         {
-//             data->err_no = changedir(data, cmd);
-// //            return data->err_no;
-//             if(cmd->next != NULL)
-//                 return (0);
-//        }
-//printf("err_no %d  %s\n", data->err_no, cmd->args[0]);
-		// Создание пайпа
 		if (cmd->next != NULL && pipe(fds) == -1)
 			panic("pipe err");
-
 		pid = fork();
 		if (!cmd->next)
 			data->last_pid = pid;
@@ -148,24 +131,17 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 		else if (pid == 0) // Дочерний процесс
 		{
 			set_signals(CHILD);
-			// Перенаправляем ввод из предыдущей команды
 			if (prev_fd != STDIN_FILENO)
 			{
 				if (dup2(prev_fd, STDIN_FILENO) == -1)
 					panic("dup2 prev_fd");
 				close(prev_fd);
 			}
-
-			// Обрабатываем редиректы (ввод и вывод)
 			if (handle_redirects(cmd) == -1)
 			{
 				data->err_no = 1;
 				data->redir_err = 1;
-//				printf("minishell: %s\n", cmd->args[0]);
-//            	panic("minishell: ");
-				// return (0);
 			}
-
 			int check_redir = 0;
 			if (cmd->redir && (cmd->redir->type == OUT || cmd->redir->type == APPEND))
 				check_redir = 1;
@@ -180,13 +156,13 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 			{
 			    data->err_no = exec_buildin(data, cmd);
 			}
-//			if (check_child_buildin(cmd))
-//			
-			else if (data->redir_err == 0)
+			else if (data->redir_err == 0 
+			&& !ft_edge_cases(data, cmd) && check_child_buildin(cmd) == 1)
 			{
 				data->err_no = run_execve(data, cmd, envp);
 //				free(full_path);
 			}
+			
 			exit(data->err_no);
 		}
 

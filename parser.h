@@ -55,6 +55,11 @@
 
 #define UNEXPECTED_TOKEN "syntax error near unexpected token "
 #define CMD_NOT_FOUND ": command not found\n"
+#define MSH "minishell: "
+#define T_M_A ": too many arguments\n"
+#define C_N_F ": command not found\n"
+#define I_A_D ": Is a directory\n"
+#define N_F_D ": No such file or directory\n"
 
 typedef struct s_var
 {
