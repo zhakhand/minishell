@@ -1,0 +1,6 @@
+total 16
+-rw-r--r--  1 archie archie   41 Jan 29 20:56 $notexists
+drwx------  2 archie archie 4096 Jan 29 20:57 .
+drwxrwxrwt 12 root   root   4096 Jan 29 20:56 ..
+-rw-r--r--  1 archie archie    0 Jan 29 20:56 echo
+-rw-r--r--  1 archie archie   21 Jan 29 20:57 temp

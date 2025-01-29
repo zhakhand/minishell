@@ -1,0 +1,6 @@
+cc1: fatal error: tmp_path_test1/test1.c: No such file or directory
+compilation terminated.
+cc1: fatal error: tmp_path_test2/test2.c: No such file or directory
+compilation terminated.
+a.out: command not found
+a.out: command not found
