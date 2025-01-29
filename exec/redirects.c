@@ -11,18 +11,21 @@ int handle_heredoc(char *delimiter)
     // Create a unique temporary file
     temp_fd = open("temp", O_RDWR | O_CREAT | O_TRUNC, 0666);
     // Read lines until the delimiter is entered
-	set_signals(HEREDOC);
+	//set_signals(HEREDOC);
     while (1)
     {
 //		printf("DEBUG: Line read: [%s]\n", line);
-		if (g_signal == SIGINT)
-			break ;
         line = readline("> ");
         if (!line)
         {
             ft_putstr_fd("minishell: warning: heredoc delimited by EOF\n", STDERR_FILENO);
             break;
         }
+		if (g_signal == SIGINT)
+		{
+			free(line);
+			break ;
+		}
         if (ft_strcmp(line, delimiter) == 0)
         {
             free(line);
