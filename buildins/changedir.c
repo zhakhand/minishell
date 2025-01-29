@@ -125,35 +125,38 @@ int cd_up(t_data *data, t_cmd *node)
 {
 	char *pwd;
 //	char *old_pwd;
-	char *tmp;
-	char *tmp2;
-	int i;
+	// char *tmp;
+	// char *tmp2;
+//	int i;
 	// printf(" p> %s\n", data->pwd);
 
-	if (ft_strcmp(data->pwd, "/") == 0 || ft_strcmp(data->pwd, "/home") == 0)
+	if (ft_strcmp(data->pwd, "/") == 0)
 		return (0);
-	tmp2 = NULL;
+//	tmp2 = NULL;
+//	printf(" > %s\n", data->pwd);
 	pwd = ft_strdup(data->pwd);
-	i = ft_strlen(pwd);
-	// if(data->old_pwd)
-	// 	old_pwd = ft_strdup(data->old_pwd);
-	if (!pwd)
-		panic("pwd error!");
-	while (pwd[i] != '/')
-		i--;
-	tmp = ft_substr(pwd, 0, i);
-	if (!tmp)
-		panic("strdup1");
-//	 printf(" > %s\n", node->args[1]);
-	if (node->args[1][2] && node->args[1][2] == '/' && ft_strlen(node->args[1]) > 2)	
+// 	i = ft_strlen(pwd);
+// 	// if(data->old_pwd)
+// 	// 	old_pwd = ft_strdup(data->old_pwd);
+// 	if (!pwd)
+// 		panic("pwd error!");
+// 	while (pwd[i] != '/')
+// 		i--;
+// 	tmp = ft_substr(pwd, 0, i);
+// 	if (!tmp)
+// 		panic("strdup1");
+// //	printf(" > %s\n", tmp);
+// 	if (node->args[1][2] && node->args[1][2] == '/' && ft_strlen(node->args[1]) > 2)	
+// 	{
+// 		tmp2 = ft_substr(node->args[1], 3, ft_strlen(node->args[1]));
+// 		if (!tmp2)
+// 			panic("strdup2");
+// 	}
+// 	if (ft_strcmp(tmp, "") == 0)
+// 		tmp = ft_strdup("/");
+	if (chdir(node->args[1]) == -1)
 	{
-		tmp2 = ft_substr(node->args[1], 3, ft_strlen(node->args[1]));
-		if (!tmp2)
-			panic("strdup2");
-	}
-	if (chdir(tmp) == -1)
-	{
-		perror("cd err");
+		ft_putmsg_fd("cd: ", node->args[1], N_F_D, STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	// data->old_pwd = ft_strdup(data->pwd);
@@ -163,14 +166,15 @@ int cd_up(t_data *data, t_cmd *node)
 	change_old_pwd_in_env(data, pwd);
 	change_pwd_in_env(data, getcwd(NULL, 0));
 
-	free(tmp);
-	if (tmp2)
-	{
-		free(node->args[1]);
-		node->args[1] = ft_strdup(tmp2);
-		// printf("tmp %s\n", tmp2);
-		changedir(data, node);
-	}
+	// free(tmp);
+	// if (tmp2)
+	// {
+	// 	free(node->args[1]);
+	// 	node->args[1] = ft_strdup(tmp2);
+	// 	// printf("tmp %s\n", tmp2);
+	// 	if (ft_strcmp (tmp2, "") != 0)
+	// 		changedir(data, node);
+	// }
 	//	free(tmp2);
 
 	return (0);

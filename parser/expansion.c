@@ -14,7 +14,8 @@
 
 t_token	*handle_nonex_invalid(t_token *token, t_var *var)
 {
-	if (!var && token->prev && is_redir(token->prev->type))
+	if (!var && token->prev && is_redir(token->prev->type) \
+	&& !token->touches_next)
 	{
 		token->is_ambiguous = 1;
 		token->type = WORD;
