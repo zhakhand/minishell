@@ -24,7 +24,7 @@ void	fbi_open_up(t_token *new, char *line, int *start, int *end)
 
 void	set_space_var(t_token *new, char *line, int *start, int *end)
 {
-	if (line[*start] == 32)
+	if (line[*start] == 32 || line[*start] == 9)
 		return (set_space(new, line, start, end));
 	else if (line[*start] == '$')
 		return (handle_var(new, line, start, end));

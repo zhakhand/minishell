@@ -27,8 +27,13 @@ t_token	*link_tokens(t_token *token, t_token *head, t_token *tail)
 	}
 	if (token->val)
 		free(token->val);
+	token->val = NULL;
+	if (token->ogVal)
+		free(token->ogVal);
+	token->ogVal = NULL;
 	if (token)
 		free(token);
+	token = NULL;
 	return (head);
 }
 
@@ -58,6 +63,8 @@ t_token	*break_down_tokens(t_token *token)
 	t_token	*head;
 	t_token	*curr;
 
+	head = NULL;
+	curr = NULL;
 	head = tokenize_quotes_vars(token->val);
 	curr = set_quoted(token, head);
 	return (link_tokens(token, head, curr));
