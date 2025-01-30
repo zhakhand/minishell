@@ -191,7 +191,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 					panic("dup2 prev_fd");
 				close(prev_fd);
 			}
-			if (handle_redirects(cmd) == -1)
+			if (handle_redirects(data, cmd) == -1)
 			{
 				data->err_no = 1;
 				data->redir_err = 1;
@@ -216,7 +216,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 				data->err_no = run_execve(data, cmd, envp);
 //				free(full_path);
 			}
-			
+//			system("ls -l /proc/self/fd"); // List open file descriptors
 			exit(data->err_no);
 		}
 

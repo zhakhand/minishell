@@ -79,6 +79,9 @@ void	clean_data(t_data *data)
 		free(data->pwd);
 	if (data->path)
 		free(data->path);
+	if (data->temp_name)
+		free(data->temp_name);
+
 	free(data);
 	data = NULL;
 }

@@ -154,6 +154,7 @@ int main(int ac, char **av, char **ev)
 //	print_cmd_table(data->cmds);
 	err_no = data->err_no;
 	clean_data(data);
+
 	return (err_no);
 
 }

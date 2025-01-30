@@ -114,6 +114,7 @@ typedef struct s_data
 	int		last_err;
 	int		last_pid;
 	int		redir_err;
+	char 	*temp_name;
 	char 	**args;
 	char 	**path_arr;
 	char	*path;
