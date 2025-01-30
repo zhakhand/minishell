@@ -54,3 +54,45 @@ int ft_edge_cases(t_data *data, t_cmd *cmd)
 	}
 	return (0);
 }
+
+int get_random_fd(t_data *data)
+{
+//	int fd;
+	int fd[2];
+	int pid;
+	int temp_fd;
+	char *temp;
+
+	if (pipe(fd) == -1)
+		panic("pipe");
+	pid = fork();
+	if (pid == -1)
+		panic("fork");
+	if (pid == 0)
+	{
+		close(fd[0]);
+		close(fd[1]);
+//		system("ls -l /proc/self/fd"); // List open file descriptors
+		exit (0);	
+	}
+	else
+	{
+		close(fd[1]);
+		temp = ft_strjoin("/tmp/", ft_itoa(pid));
+		temp_fd = open(temp, O_RDWR | O_CREAT | O_TRUNC, 0666);
+		if (temp_fd == -1)
+			panic("open");
+		
+		free(temp);
+	}
+	data->temp_name = ft_strjoin("/tmp/", ft_itoa(pid));
+	return (temp_fd);
+}
+
+char *get_temp_name(int pid)
+{
+	char *temp;
+
+	temp = ft_strjoin("/tmp/", ft_itoa(pid));
+	return (temp);
+}

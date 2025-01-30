@@ -95,6 +95,8 @@ int ft_exit(t_data *data, t_cmd *node)
 	if (node->args[1] == NULL)
 	{
 		clean_data(data);
+//		system("ls -l /proc/self/fd"); // List open file descriptors
+
 		exit(0);
 	}
 		if (handle_signs(node->args[1]) != 0)

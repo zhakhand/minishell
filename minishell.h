@@ -44,6 +44,8 @@ typedef struct s_redirects
 
 
 
+int get_random_fd(t_data *data);
+char *get_temp_name(int pid);
 
 void free_node(t_cmd_node *node);
 void free_node_2(t_cmd_node *node);
@@ -52,7 +54,7 @@ void ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd);
 int ft_edge_cases(t_data *data, t_cmd *cmd);
 
 int exec_buildin(t_data *data, t_cmd *node);
-int handle_redirects(t_cmd *node);
+int handle_redirects(t_data *data, t_cmd *node);
 
 int ft_env_no_args(t_data *data);
 char **sort_env(char **arr);
