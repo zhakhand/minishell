@@ -157,7 +157,7 @@ int handle_input_redirects(t_data *data, t_redir *redir)
         if (dup2(last_fd, STDIN_FILENO) == -1)
             return (-1);
         close(last_fd);
-		printf("temp_name %s\n", data->temp_name);
+		//printf("temp_name %s\n", data->temp_name);
 		unlink(data->temp_name);
     }
     return (0);

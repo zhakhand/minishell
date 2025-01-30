@@ -63,7 +63,8 @@ void	find_error(t_data *data)
 	{
 		if (curr->type == ERROR && curr->was_quoted != 1)
 		{
-			curr->ogVal = curr->val;
+			free(curr->val);
+			curr->val = NULL;
 			curr->val = ft_itoa(data->err_no);
 			curr->type = WORD;
 		}

@@ -20,7 +20,8 @@ void panic(char *msg)
 
 void ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd)
 {
-	char *msg;
+	char	*msg;
+	char	*temp;
 //	int len;
 //	len = ft_strlen(msg1) + ft_strlen(msg2)
 //		+ ft_strlen(msg3) + 1;
@@ -28,10 +29,14 @@ void ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd)
 	msg = ft_strdup(msg1);
 	if (!msg)
 		panic("strdup");
-	msg = ft_strjoin(msg, msg2);
-	if (!msg)
+	temp = ft_strjoin(msg, msg2);
+	free(msg);
+	msg = NULL;
+	if (!temp)
 		panic("strjoin");
-	msg = ft_strjoin(msg, msg3);
+	msg = ft_strjoin(temp, msg3);
+	free(temp);
+	temp = NULL;
 	if (!msg)
 		panic("strjoin"); 
 	ft_putstr_fd(msg, fd);
