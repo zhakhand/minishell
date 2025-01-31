@@ -21,7 +21,9 @@ t_token	*handle_nonex_invalid(t_token *token, t_var *var)
 		token->type = WORD;
 		return (token);
 	}
-	token->ogVal = token->val;
+	if (token->val)
+		free(token->val);
+	token->val = NULL;
 	token->val = ft_strdup("");
 	token->type = ES;
 	return (token);

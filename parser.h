@@ -177,7 +177,7 @@ int		error_msg(char *error, t_token *token, t_data *data);
 
 void	free_tokens(t_token *token);
 void	free_cmds(t_cmd *cmds);
-void	free_args(char	**args);
+void	free_args(char	***args);
 void	clean_data(t_data *data);
 void	reset_data(t_data *data);
 

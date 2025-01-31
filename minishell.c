@@ -126,7 +126,7 @@ int main(int ac, char **av, char **ev)
 		if (ft_strlen(line) == 0)
 			continue ;
 		env = make_env(data);
-		data->path_arr = get_path_arr(env);
+		//data->path_arr = get_path_arr(env);
 		data->tokens = tokenize(line);
 		if (data->tokens && reorder_tokens(data) == 0)
 		{
@@ -143,7 +143,7 @@ int main(int ac, char **av, char **ev)
 		add_history(line);
 		free(line);
 		if (env)
-			free_args(env);
+			free_args(&env);
 		reset_data(data);
 //		clean_data(data);
 	
