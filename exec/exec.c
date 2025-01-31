@@ -220,7 +220,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 			int err = data->err_no;
 			clean_data(data);
 			if (envp)
-				free_args(envp);
+				free_args(&envp);
 			exit(err);
 		}
 

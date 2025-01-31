@@ -21,6 +21,7 @@ t_cmd	*create_cmd_table(void)
 	if (!cmd_table)
 		panic("malloc");
 	ft_bzero(cmd_table, sizeof(t_cmd));
+	cmd_table->args = NULL;
 	cmd_table->in = -1;
 	cmd_table->out = -1;
 	return (cmd_table);

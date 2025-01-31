@@ -12,21 +12,21 @@
 
 #include "../parser.h"
 
-void	free_args(char	**args)
+void	free_args(char ***args)
 {
 	int	i;
 
 	i = 0;
-	if (!args || !(*args))
-		return ;
-	while (args[i] != NULL)
+	if (!args || !*args)
+		return;
+	while ((*args)[i] != NULL)
 	{
-		free(args[i]);
-		args[i] = NULL;
+		free((*args)[i]);
+		(*args)[i] = NULL;
 		i++;
 	}
-	free(args);
-	args = NULL;
+	free(*args);
+	*args = NULL;
 }
 
 void	free_redirs(t_redir *redir)
@@ -60,7 +60,7 @@ void	free_cmds(t_cmd *cmd)
 		to_free = curr;
 		curr = curr->next;
 		if (to_free->args)
-			free_args(to_free->args);
+			free_args(&to_free->args);
 		to_free->args = NULL;
 		to_free->cmd = NULL;
 		if (to_free->redir)
