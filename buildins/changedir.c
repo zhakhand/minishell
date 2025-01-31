@@ -217,7 +217,9 @@ int changedir(t_data *data, t_cmd *node)
 {
 	int res;
 	res = -1;
-	if (node->prev)
+
+//	printf(" > %d\n", data->child_start);
+	if (data->child_start == 1)
 	{
 		return (0);
 	}

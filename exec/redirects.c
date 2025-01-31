@@ -123,6 +123,11 @@ int handle_input_redirects(t_data *data, t_redir *redir)
     {
         if (redirects->type == IN)
         {
+			if (redirects->ambig == 1)
+            {
+                ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
+                return (-1);
+            }
             in_fd = open(redirects->val, O_RDONLY);
             if (in_fd == -1)
             {
@@ -157,7 +162,7 @@ int handle_input_redirects(t_data *data, t_redir *redir)
         if (dup2(last_fd, STDIN_FILENO) == -1)
             return (-1);
         close(last_fd);
-		printf("temp_name %s\n", data->temp_name);
+//		printf("temp_name %s\n", data->temp_name);
 		unlink(data->temp_name);
     }
     return (0);
@@ -260,6 +265,11 @@ int handle_output_redirects(t_redir *redirects)
 		return (-1);
 	while (redir)
 	{
+		if (redirects->ambig == 1)
+		{
+			ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
+			return (-1);
+		}
 		if (redir->next)
 		{
 			res = open_and_close(redir);

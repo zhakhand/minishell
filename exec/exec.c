@@ -50,83 +50,37 @@ void run_fork(t_cmd_node *list, char **envp)
 
 }
 
-// int run_execve(t_data *data, t_cmd *cmd, char **envp) {
-// //    printf("full_path: %s\n", full_path);
-
-// 	// Check if the command is a directory
-// 	struct stat sb;
-// 	char *full_path;
-// 	int status;
-
-// 	status = 0;
-// 	data->path_arr = get_path_arr(envp);
-// 	if (data->path_arr)
-// 		full_path = find_path(cmd->args[0], data->path_arr);
-// 	else
-// 	{
-// 		full_path = cmd->args[0];
-// 		status = 1;
-// 	}
-// 	if (stat(full_path, &sb) == 0 && S_ISDIR(sb.st_mode)) {
-// //        ft_putstr_fd("minishell: ", STDERR_FILENO);
-// 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-// 		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
-// 		return 126;
-// 	}
-// 	// Check if the command exists
-// 	if (status == 0 && access(full_path, F_OK) == -1) {
-// //        ft_putstr_fd("minishell: ", STDERR_FILENO);
-// 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-// 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-// 		return 127;
-// 	}
-// 	else if (status == 1 && access(full_path, F_OK) == -1)
-// 	{
-// 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-// 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-// 		return 127;
-// 	}
-
-
-// 	// Check if the command is executable
-// 	if (access(full_path, X_OK) == -1) {
-// //        ft_putstr_fd("minishell: ", STDERR_FILENO);
-// 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-// 		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
-// 		return 126;
-// 	}
-// //execve(full_path, cmd->args, envp);
-// //    Execute the command
-// 	if (execve(full_path, cmd->args, envp) == -1) {
-// 		perror("execve");
-// 		return 0;
-// 	}
-
-// 	return 0;
-// }
 int run_execve(t_data *data, t_cmd *cmd, char **envp) {
     struct stat sb;
-    char *full_path;
- //   int status = 0;
+    char *full_path = NULL;
+    int is_explicit_path = ft_strchr(cmd->args[0], '/') != NULL;
 
-    // If the command contains a '/', treat it as a path
-    if (ft_strchr(cmd->args[0], '/')) {
+    // If the command contains a '/', treat it as a direct path
+    if (is_explicit_path) 
         full_path = cmd->args[0];
-    } else {
-        // Otherwise, look up the command in PATH
+    else {
+        // Get PATH environment variable and split into an array
         data->path_arr = get_path_arr(envp);
-        if (data->path_arr)
-            full_path = find_path(cmd->args[0], data->path_arr);
-        else {
+        if (!data->path_arr || !data->path_arr[0])  // Handle empty or NULL PATH
             full_path = NULL;
-        }
+        else
+            full_path = find_path(cmd->args[0], data->path_arr);
     }
 
-    // If no valid path was found and it's not an absolute/relative path
+    // If no valid path was found, check if the command exists in the current directory
     if (!full_path) {
-        ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-        ft_putstr_fd(": command not found\n", STDERR_FILENO);
-        return 127;
+        if (stat(cmd->args[0], &sb) == 0) { // Check if file exists in current dir
+            if (access(cmd->args[0], X_OK) == -1) {
+                ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+                ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+                return 126;
+            }
+            full_path = cmd->args[0];
+        } else {
+            ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+            ft_putstr_fd(": command not found\n", STDERR_FILENO);
+            return 127;
+        }
     }
 
     // Check if the file exists
@@ -151,13 +105,179 @@ int run_execve(t_data *data, t_cmd *cmd, char **envp) {
     }
 
     // Execute the command
-    if (execve(full_path, cmd->args, envp) == -1) {
-        perror("execve");
-        return 1;
-    }
-
-    return 0;
+    execve(full_path, cmd->args, envp);
+    perror("execve");
+    return 1;
 }
+int is_path_exist(t_data *data)
+{
+	t_var *temp;
+	temp = data->env_var;
+	while (temp)
+	{
+		if (ft_strcmp(temp->key, "PATH") == 0 
+			&& (temp->val != NULL || temp->val[0] != '\0'))
+			return (1);
+		temp = temp->next;
+	}
+	return (0);
+}
+
+// int run_execve(t_data *data, t_cmd *cmd, char **envp) {
+//     struct stat sb;
+//     char *full_path = NULL;
+
+// 	if (is_path_exist(data) == 1)
+// 	{
+//         full_path = cmd->args[0];
+// //		printf("full_path %s\n", full_path);
+// 		if ((ft_strncmp(cmd->args[0], "./", 2 ) != 0 
+// 		|| ft_strncmp(cmd->args[0], "/", 1 ) != 0)
+// 		&& stat(full_path, &sb) == -1)
+// 		{
+// 			ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+// 			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+// 			return 127;
+// 	    }
+// 		// else {
+// 		// 	ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+// 		// 	ft_putstr_fd(": command not found\n", STDERR_FILENO);
+// 		// 	return 127;
+		
+// 		// }
+// 	}
+//     // If the command contains a '/', treat it as a direct path
+//     if (ft_strchr(cmd->args[0], '/') && is_path_exist(data)) 
+//         full_path = cmd->args[0];
+
+//     else if (is_path_exist(data) == 1)
+// 	{
+//         full_path = cmd->args[0];
+// //		printf("full_path %s\n", full_path);
+// 		if (stat(full_path, &sb) == -1)
+// 		{
+// 			ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+// 			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+// 			return 127;
+// 	    }
+// 	}
+//     else {
+//         // Get PATH environment variable and split into an array
+//         data->path_arr = get_path_arr(envp);
+//         if (!data->path_arr || !data->path_arr[0])  // Handle empty or NULL PATH
+//             full_path = NULL;
+//         else
+//             full_path = find_path(cmd->args[0], data->path_arr);
+//     }
+
+//     // If no valid path was found, return "command not found"
+//     if (!full_path) {
+// 		if(ft_strncmp(cmd->args[0], "/", 1 ) != 0
+// 			|| ft_strncmp(cmd->args[0], "./", 2 ) != 0)
+// 		{
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": command not found\n", STDERR_FILENO);
+//         return 127;
+// 		}
+// 		else {
+// 			ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+// 			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+// 			return 127;
+// 		}
+//     }
+
+//     // Check if the file exists
+//     if (stat(full_path, &sb) == -1) {
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+//         return 127;
+//     }
+
+//     // Check if it's a directory
+//     if (S_ISDIR(sb.st_mode)) {
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+//         return 126;
+//     }
+
+//     // Check execute permissions
+//     if (access(full_path, X_OK) == -1) {
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+//         return 126;
+//     }
+
+//     // Execute the command
+//     if (execve(full_path, cmd->args, envp) == -1) {
+//         perror("execve");
+//         return 1;
+//     }
+
+//     return 0;
+// }
+
+// int run_execve(t_data *data, t_cmd *cmd, char **envp) {
+//     struct stat sb;
+//     char *full_path = NULL;
+//  //   int status = 0;
+//     // If the command contains a '/', treat it as a path
+// 	if (ft_strchr(cmd->args[0], '/') && is_path_exist(data)) 
+// 		full_path = cmd->args[0];
+
+// 	else if (!is_path_exist(data))
+// 		full_path = cmd->args[0];
+// 	else
+// 	{      // Otherwise, look up the command in PATH
+// 		data->path_arr = get_path_arr(envp);
+// 		if (data->path_arr)
+// 			full_path = find_path(cmd->args[0], data->path_arr);
+// 		else
+// 		{
+// 			full_path = NULL;
+// 		}
+// 	}
+//     // If no valid path was found and it's not an absolute/relative path
+//     if (!*full_path && ft_strncmp(cmd->args[0], "/", 1) != 0) {
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": command not found\n", STDERR_FILENO);
+//         return 127;
+//     }
+//     else if (!*full_path && ft_strncmp(cmd->args[0], "/", 1) == 0) {
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+//         return 127;
+//     }
+
+
+//     // Check if the file exists
+//     if (stat(full_path, &sb) == -1) {
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+//         return 127;
+//     }
+
+//     // Check if it's a directory
+//     if (S_ISDIR(sb.st_mode)) {
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+//         return 126;
+//     }
+
+//     // Check execute permissions
+//     if (access(full_path, X_OK) == -1) {
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+//         return 126;
+//     }
+
+//     // Execute the command
+//     if (execve(full_path, cmd->args, envp) == -1) {
+//         perror("execve");
+//         return 1;
+//     }
+
+//     return 0;
+// }
 
 int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 {
@@ -165,6 +285,8 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 	int prev_fd = STDIN_FILENO;
 	int status;
 	pid_t pid;
+
+	data->child_start = 0;
 
 	while (cmd != NULL)
 	{
@@ -177,6 +299,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 		}
 		if (cmd->next != NULL && pipe(fds) == -1)
 			panic("pipe err");
+		data->child_start = 1;
 		pid = fork();
 		if (!cmd->next)
 			data->last_pid = pid;
