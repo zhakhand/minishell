@@ -56,6 +56,7 @@
 #define UNEXPECTED_TOKEN "syntax error near unexpected token "
 #define CMD_NOT_FOUND ": command not found\n"
 #define MSH "minishell: "
+#define AMB ": ambiguous redirect\n"
 #define T_M_A ": too many arguments\n"
 #define C_N_F ": command not found\n"
 #define I_A_D ": Is a directory\n"
@@ -114,6 +115,7 @@ typedef struct s_data
 	int		last_err;
 	int		last_pid;
 	int		redir_err;
+	int		child_start;
 	char 	*temp_name;
 	char 	**args;
 	char 	**path_arr;
