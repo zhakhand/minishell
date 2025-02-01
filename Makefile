@@ -15,6 +15,7 @@ SRCS = minishell.c parser/parser.c parser/utils.c parser/tokenizer.c parser/quot
 		buildins/buildins_utils.c buildins/echo.c buildins/pwd.c buildins/env.c \
 		buildins/unset.c buildins/export.c buildins/ft_exit.c\
 		buildins/changedir.c \
+		heredoc/heredoc.c heredoc/heredoc_clean.c heredoc/heredoc_expansion.c
 		 
 		
 HEAD = parser.h minishell.h

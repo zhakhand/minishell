@@ -86,20 +86,22 @@ typedef struct s_token
 
 typedef struct s_redir
 {
-	char *val;
-	int type;
-	int	expands;
-	int ambig;
+	char 			*val;
+	char			*heredoc;
+	int 			type;
+	int				expands;
+	int 			ambig;
 	struct s_redir	*next;
 	struct s_redir	*prev;
 } t_redir;
 
+
 typedef struct s_cmd
 {
-	int	in;
-	int	out;
-	int abs_path;
-	int	args_count;
+	int				in;
+	int				out;
+	int 			abs_path;
+	int				args_count;
 	char 			*cmd;
 	char 			**args;
 	t_redir			*redir;
@@ -184,5 +186,10 @@ void	clean_data(t_data *data);
 void	reset_data(t_data *data);
 
 void	set_signals(int mode);
+
+void	end_it(t_data *data);
+char	*expand_heredoc(char *line, t_data *data);
+void	add_to_line(char c, char *line, t_data *data);
+int	heredoc(t_data *data);
 
 #endif

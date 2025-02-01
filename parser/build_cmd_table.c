@@ -38,6 +38,7 @@ t_redir	*init_redir(void)
 	new->expands = 1;
 	new->ambig = 0;
 	new->val = NULL;
+	new->heredoc = NULL;
 	new->next = NULL;
 	new->prev = NULL;
 	return (new);

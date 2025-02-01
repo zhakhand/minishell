@@ -40,6 +40,12 @@ void	free_redirs(t_redir *redir)
 	{
 		to_free = curr;
 		curr = curr->next;
+		if (to_free->heredoc)
+		{
+			unlink(to_free->heredoc);
+			free(to_free->heredoc);
+			to_free->heredoc = NULL;
+		}
 		if (to_free->val)
 			free(to_free->val);
 		to_free->val = NULL;
