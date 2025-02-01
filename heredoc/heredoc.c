@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/31 16:13:14 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/01/31 17:52:52 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,72 @@ char	*random_name(t_data *data, int i)
 		return ft_strjoin("BROUGHT_TO_YOU_BY_CARLSJR_", ft_itoa(i));	
 }
 
+char	*get_key(t_data *data, char *line, int *index)
+{
+	int		end;
+	char	*key;
+
+	key = NULL;
+	end = *index + 1;
+	while (ft_isalnum(line[end]) || line[end] == '_')
+		end++;
+	if (end - *index == 1 && line[end] == '?')
+	{
+		*index = end;
+		return ft_strdup("?");
+	}
+	key = ft_substr(line, *index, end - *index);
+	if (!key)
+		end_it(data);
+	*index = end;
+	return;
+}
+
+void	expand_variable(char *line, int *index, char **exp_line, t_data *data)
+{
+	t_var	*env_var;
+	char	*key;
+	
+	env_var = NULL;
+	key = get_key(data, line, index);
+}
+
+void	add_to_line(char c, char *line, t_data *data)
+{
+	char	*temp;
+
+	temp = NULL;
+	if (line)
+		temp = line;
+	line = ft_strjoin(temp, &c);
+	if (temp)
+		free(temp);
+	temp = NULL;
+	if (!line)
+		end_it(data);
+}
+
 char	*expand_heredoc(char *line, t_data *data)
 {
 	int		i;
+	char	*expanded_line;
 	t_var	*env_var;
 
 	i = 0;
 	env_var = NULL;
+	expanded_line = 0;
+	while (line[i])
+	{
+		if (line[i] == '$' && line[i + 1] != 32 && line[i + 1] != '\0')
+			expand_variable(line, &i, &expanded_line, data);
+		else
+		{
+			add_to_line(line[i], expanded_line, data);
+			if (!line)
+				return (free(expanded_line), NULL);
+		}
+		++i;
+	}
 }
 
 void	fill_heredoc(int fd, t_redir *redir, t_data *data)
