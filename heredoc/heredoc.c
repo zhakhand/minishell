@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/01 18:56:25 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/01 19:15:36 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,39 +25,41 @@ char	*random_name(t_data *data, int i)
 	if (!num)
 		end_it(data);
 	if (i % 3 == 0)
-		res = ft_strjoin("BROUGHT_TO_YOU_BY_STATEFARM_", num);
+		res = ft_strjoin("/tmp/here", num);
 	else if (i % 3 == 1)
-		res = ft_strjoin("BROUGHT_TO_YOU_BY_CARLSJR_", num);
+		res = ft_strjoin("/tmp/there", num);
 	else
-		res = ft_strjoin("BROUGHT_TO_YOU_BY_ORACLE_", num);
+		res = ft_strjoin("/tmp/nowhere", num);
 	free(num);
 	if (!res)
 		end_it(data);
 	return (res);
 }
 
-void	add_to_line(char c, char *line, t_data *data)
+void	add_to_line(char c, char **line, t_data *data)
 {
 	char	*temp;
 
 	temp = NULL;
-	if (line)
-		temp = line;
-	line = ft_strjoin(temp, &c);
+	if (*line)
+		temp = *line;
+	*line = ft_strjoin(temp, &c);
 	if (temp)
 		free(temp);
 	temp = NULL;
-	if (!line)
+	if (!*line)
 		end_it(data);
 }
 
 int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 {
 	char	*line;
+	int		temp;
 
+	temp = data->err_no;
 	while (1)
 	{
-		line = readline("heredoc-> ");
+		line = readline("> ");
 		if (g_signal == SIGINT)
 			return (close(fd), -1);
 		if (!line)
@@ -70,8 +72,9 @@ int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 			free(line);
 			break;
 		}
-		if (redir->expands)
-			line = expand_heredoc(line, data);
+		// if (redir->expands && ft_strchr(line, '$'))
+		// 	line = expand_heredoc(line, data);
+		// printf("[%s]\n", line);
 		if (line)
 			ft_putendl_fd(line, fd);
 		free(line);

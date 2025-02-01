@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 17:31:25 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/01 17:42:54 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/01 19:04:07 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	*expand_heredoc(char *line, t_data *data)
 			expand_variable(line, &i, &expanded_line, data);
 		else
 		{
-			add_to_line(line[i], expanded_line, data);
+			add_to_line(line[i], &expanded_line, data);
 			if (!line)
 				return (free(expanded_line), NULL);
 		}
