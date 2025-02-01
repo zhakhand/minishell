@@ -132,12 +132,12 @@ int main(int ac, char **av, char **ev)
 		{
 			set_cmd_table(data);
 			set_signals(HEREDOC);
-			//if (data->cmds && heredoc(data) == 0)
-			//{
+			if (data->cmds && heredoc(data) == 0)
+			{
 				set_signals(PARENT);
 				cmd = data->cmds;
 				run_pipe(data, cmd, env);
-			//}
+			}
 		}
 		//data->env_arr = make_env(data);
 		// if (!data->env_arr)
