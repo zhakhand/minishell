@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/01 18:06:32 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:56:25 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 
 	while (1)
 	{
-		line = readline("heredoc->");
+		line = readline("heredoc-> ");
 		if (g_signal == SIGINT)
 			return (close(fd), -1);
 		if (!line)
