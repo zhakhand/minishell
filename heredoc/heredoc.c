@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/01/31 17:52:52 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:06:32 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,48 +15,25 @@
 
 extern sig_atomic_t g_signal;
 
-void	end_it(t_data *data)
-{
-	clean_data(data);
-	panic("malloc");
-}
-
 char	*random_name(t_data *data, int i)
 {
-	if (i % 2 == 0)
-		return ft_strjoin("BROUGHT_TO_YOU_BY_STATEFARM_", ft_itoa(i));
-	else
-		return ft_strjoin("BROUGHT_TO_YOU_BY_CARLSJR_", ft_itoa(i));	
-}
+	char	*res;
+	char	*num;
 
-char	*get_key(t_data *data, char *line, int *index)
-{
-	int		end;
-	char	*key;
-
-	key = NULL;
-	end = *index + 1;
-	while (ft_isalnum(line[end]) || line[end] == '_')
-		end++;
-	if (end - *index == 1 && line[end] == '?')
-	{
-		*index = end;
-		return ft_strdup("?");
-	}
-	key = ft_substr(line, *index, end - *index);
-	if (!key)
+	res = NULL;
+	num = ft_itoa(i);
+	if (!num)
 		end_it(data);
-	*index = end;
-	return;
-}
-
-void	expand_variable(char *line, int *index, char **exp_line, t_data *data)
-{
-	t_var	*env_var;
-	char	*key;
-	
-	env_var = NULL;
-	key = get_key(data, line, index);
+	if (i % 3 == 0)
+		res = ft_strjoin("BROUGHT_TO_YOU_BY_STATEFARM_", num);
+	else if (i % 3 == 1)
+		res = ft_strjoin("BROUGHT_TO_YOU_BY_CARLSJR_", num);
+	else
+		res = ft_strjoin("BROUGHT_TO_YOU_BY_ORACLE_", num);
+	free(num);
+	if (!res)
+		end_it(data);
+	return (res);
 }
 
 void	add_to_line(char c, char *line, t_data *data)
@@ -74,30 +51,7 @@ void	add_to_line(char c, char *line, t_data *data)
 		end_it(data);
 }
 
-char	*expand_heredoc(char *line, t_data *data)
-{
-	int		i;
-	char	*expanded_line;
-	t_var	*env_var;
-
-	i = 0;
-	env_var = NULL;
-	expanded_line = 0;
-	while (line[i])
-	{
-		if (line[i] == '$' && line[i + 1] != 32 && line[i + 1] != '\0')
-			expand_variable(line, &i, &expanded_line, data);
-		else
-		{
-			add_to_line(line[i], expanded_line, data);
-			if (!line)
-				return (free(expanded_line), NULL);
-		}
-		++i;
-	}
-}
-
-void	fill_heredoc(int fd, t_redir *redir, t_data *data)
+int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 {
 	char	*line;
 
@@ -105,7 +59,7 @@ void	fill_heredoc(int fd, t_redir *redir, t_data *data)
 	{
 		line = readline("heredoc->");
 		if (g_signal == SIGINT)
-			break;
+			return (close(fd), -1);
 		if (!line)
 		{
 			ft_putstr_fd("minishell: warning: heredoc delimited by EOF\n", STDERR_FILENO);
@@ -117,14 +71,15 @@ void	fill_heredoc(int fd, t_redir *redir, t_data *data)
 			break;
 		}
 		if (redir->expands)
-			line = expand_heredoc(data, line);
+			line = expand_heredoc(line, data);
 		if (line)
 			ft_putendl_fd(line, fd);
 		free(line);
 	}
+	return (0);
 }
 
-int	open_heredoc(t_data *data, t_cmd *cmd, t_redir *redir, int i)
+int	open_heredoc(t_data *data, t_redir *redir, int i)
 {
 	int		fd;
 	char	*filename;
@@ -135,21 +90,21 @@ int	open_heredoc(t_data *data, t_cmd *cmd, t_redir *redir, int i)
 	redir->heredoc = filename;
 	filename = NULL;
 	fd = open(redir->heredoc, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	fill_heredoc(fd, redir, data);
+	if (fill_heredoc(fd, redir, data) == -1)
+		return (-1);
 	close(fd);
+	return (0);
 }
 
-void	heredoc(t_data *data)
+int	heredoc(t_data *data)
 {
 	int		i;
 	t_cmd	*curr;
 	t_redir	*redir;
 
 	i = 0;
-	curr = NULL;
+	curr = data->cmds;
 	redir = NULL;
-	if (data->cmds)
-		curr = data->cmds;
 	while (curr)
 	{
 		if (curr->redir)
@@ -158,12 +113,13 @@ void	heredoc(t_data *data)
 		{
 			if (redir->type == HEREDOC)
 			{
-				open_heredoc(data, curr, redir, i);
+				if (open_heredoc(data, redir, i) == -1)
+					return (-1);
 				i++;
 			}
 			redir = redir->next;
 		}
 		curr = curr->next;
 	}
-	set_signals(PARENT);
+	return (0);
 }

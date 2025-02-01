@@ -185,4 +185,9 @@ void	reset_data(t_data *data);
 
 void	set_signals(int mode);
 
+void	end_it(t_data *data);
+char	*expand_heredoc(char *line, t_data *data);
+void	add_to_line(char c, char *line, t_data *data);
+int	heredoc(t_data *data);
+
 #endif
