@@ -358,7 +358,7 @@ void export_no_args(t_data *data)
 		//tmp[i] = NULL;
 		i++;
 	}
-	free_args(tmp);
+	free_args(&tmp);
 	tmp = NULL;
 
 //	sort_env(data);

@@ -58,12 +58,8 @@ void	handle_redir(t_token *tok, char *line, int *start, int *end)
 
 void	handle_one(t_token *tok, char *line, int *start, int *end)
 {
-	if (!ft_isalnum(line[*end]) || line[*end] != '_')
-	{
-		tok->val = ft_strdup("$");
-		tok->type = WORD;
-	}
-	if (line[*end] == 32 || line[*end] == 0 || line[*end] == '$')
+	if (line[*end] != '?' && (line[*end] == 32 || line[*end] == 0 || line[*end] == '$' \
+		|| !ft_isalnum(line[*end]) || line[*end] != '_'))
 	{
 		tok->val = ft_strndup(line + *start, *end - *start);
 		tok->type = WORD;
