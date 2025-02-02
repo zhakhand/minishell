@@ -119,10 +119,16 @@ int handle_input_redirects(t_data *data, t_redir *redir)
     int temp_fd;
     int last_fd = -1;
 	
+	temp_fd = data->err_no;
     while (redirects)
     {
         if (redirects->type == IN)
         {
+			if (redirects->ambig == 1)
+            {
+                ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
+                return (-1);
+            }
 			if (redirects->ambig == 1)
             {
                 ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
@@ -141,18 +147,16 @@ int handle_input_redirects(t_data *data, t_redir *redir)
         else if (redirects->type == HEREDOC)
         {
             set_signals(HEREDOC);
-            temp_fd = handle_heredoc(data, redirects->val);
-            if (temp_fd == -1)
+            in_fd = open(redirects->heredoc, O_RDONLY);
+            if (in_fd == -1)
             {
-                ft_putstr_fd("minishell: error handling heredoc\n", STDERR_FILENO);
+                ft_putmsg_fd(MSH, redirects->heredoc, N_F_D, STDERR_FILENO);
                 return (-1);
             }
-            if (last_fd != -1)
-			{
-				close(last_fd);
-			}
-			unlink(data->temp_name);
-            last_fd = temp_fd;
+            if (dup2(in_fd, STDIN_FILENO) == -1)
+                return (-1);
+            close(in_fd);
+            //last_fd = in_fd;
         }
         redirects = redirects->next; // Move to the next redirect
     }
@@ -163,7 +167,7 @@ int handle_input_redirects(t_data *data, t_redir *redir)
             return (-1);
         close(last_fd);
 //		printf("temp_name %s\n", data->temp_name);
-		unlink(data->temp_name);
+		//unlink(data->temp_name);
     }
     return (0);
 }

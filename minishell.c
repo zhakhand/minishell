@@ -131,8 +131,13 @@ int main(int ac, char **av, char **ev)
 		if (data->tokens && reorder_tokens(data) == 0)
 		{
 			set_cmd_table(data);
-			cmd = data->cmds;
-			run_pipe(data, cmd, env);
+			set_signals(HEREDOC);
+			if (data->cmds && heredoc(data) == 0)
+			{
+				set_signals(PARENT);
+				cmd = data->cmds;
+				run_pipe(data, cmd, env);
+			}
 		}
 		//data->env_arr = make_env(data);
 		// if (!data->env_arr)
