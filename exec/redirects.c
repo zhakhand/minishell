@@ -167,7 +167,7 @@ int handle_input_redirects(t_data *data, t_redir *redir)
             return (-1);
         close(last_fd);
 //		printf("temp_name %s\n", data->temp_name);
-		//unlink(data->temp_name);
+		unlink(data->temp_name);
     }
     return (0);
 }
@@ -237,8 +237,11 @@ int check_directory(char *file)
 	// 	return (-1);
 	// }
 //	printf("temp %s\n", temp);
-	int res = chdir(temp);
-	if ( i != 0 && res == -1)
+//	int res = chdir(temp);
+//	if ( i != 0 && res == -1)
+	if (stat(temp, &sb) != 0 && !S_ISDIR(sb.st_mode)
+		&& i != 0)
+
 	{
 		ft_putmsg_fd(MSH, file, N_F_D, STDERR_FILENO);
 		// ft_putstr_fd("minishell: ", 2);
@@ -269,6 +272,11 @@ int handle_output_redirects(t_redir *redirects)
 		return (-1);
 	while (redir)
 	{
+		if (redirects->ambig == 1)
+		{
+			ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
+			return (-1);
+		}
 		if (redirects->ambig == 1)
 		{
 			ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);

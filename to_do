@@ -154,3 +154,13 @@ Basic signals implemented, can be implemented better after everything is done.
                           TOTAL FAILED AND PASSED CASES:
                                       ❌ 101 
                                       ✅ 2857 
+
+after heredoc and fixed directory test
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 960
+                STD_OUT: 11  STD_ERR: 15  EXIT_CODE: 5  CRASHING: 0
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 31 
+                                      ✅ 2927 
