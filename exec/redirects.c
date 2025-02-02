@@ -237,8 +237,11 @@ int check_directory(char *file)
 	// 	return (-1);
 	// }
 //	printf("temp %s\n", temp);
-	int res = chdir(temp);
-	if ( i != 0 && res == -1)
+//	int res = chdir(temp);
+//	if ( i != 0 && res == -1)
+	if (stat(temp, &sb) != 0 && !S_ISDIR(sb.st_mode)
+		&& i != 0)
+
 	{
 		ft_putmsg_fd(MSH, file, N_F_D, STDERR_FILENO);
 		// ft_putstr_fd("minishell: ", 2);
