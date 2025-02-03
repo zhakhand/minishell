@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_expansion.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 17:31:25 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/01 19:04:07 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/03 10:33:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,10 @@ char	*expand_heredoc(char *line, t_data *data)
 {
 	int		i;
 	char	*expanded_line;
-	t_var	*env_var;
+//	t_var	*env_var;
 
 	i = 0;
-	env_var = NULL;
+//	env_var = NULL;
 	expanded_line = NULL;
 	while (line[i])
 	{

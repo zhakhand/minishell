@@ -57,6 +57,7 @@
 #define CMD_NOT_FOUND ": command not found\n"
 #define MSH "minishell: "
 #define AMB ": ambiguous redirect\n"
+#define P_D ": Permission denied\n"
 #define T_M_A ": too many arguments\n"
 #define C_N_F ": command not found\n"
 #define I_A_D ": Is a directory\n"
