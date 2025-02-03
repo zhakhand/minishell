@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/01 19:15:36 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/03 10:33:13 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,9 @@ int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 		if (line)
 			ft_putendl_fd(line, fd);
 		free(line);
+	
 	}
+	data->err_no = temp;
 	return (0);
 }
 

@@ -116,10 +116,10 @@ int handle_input_redirects(t_data *data, t_redir *redir)
 {
     t_redir *redirects = redir;
     int in_fd;
-    int temp_fd;
+//    int temp_fd;
     int last_fd = -1;
 	
-	temp_fd = data->err_no;
+//	temp_fd = data->err_no;
     while (redirects)
     {
         if (redirects->type == IN)
