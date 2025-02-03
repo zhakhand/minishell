@@ -353,7 +353,9 @@ void export_no_args(t_data *data)
 	i = 0;
 	while (tmp[i] != NULL)
 	{
-		printf("declare -x %s\n", tmp[i]);
+		if (tmp[i][0] != '_')
+			ft_putmsg_fd("declare -x ", tmp[i], "\n", STDOUT_FILENO);
+			// printf("declare -x %s\n", tmp[i]);
 		//free(tmp[i]);
 		//tmp[i] = NULL;
 		i++;

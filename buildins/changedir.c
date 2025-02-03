@@ -180,38 +180,90 @@ int cd_up(t_data *data, t_cmd *node)
 	return (0);
 }
 
+// int cd_dir(t_data *data, t_cmd *node)
+// {
+// 	char *pwd;
+// 	//char *old_pwd;
+
+// 	//	printf(" aaaa> %s\n", node->args[1]);
+// 	pwd = ft_strjoin(data->pwd, node->args[1]);
+// 	// if(data->old_pwd)
+// 	// 	old_pwd = ft_strdup(data->old_pwd);
+// 	if (!pwd)
+// 		panic("pwd error!");
+// 	check_abs_path(node);
+// 	// if(node->abs_path == 1)
+// 	// {
+// 	if (chdir(node->args[1]) == -1)
+// 	{
+// 		ft_putstr_fd("minishell: ", STDERR_FILENO);
+// 		ft_putstr_fd("cd: ", STDERR_FILENO);
+// 		ft_putstr_fd(node->args[1], STDERR_FILENO);
+// 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+// 		return (1);
+// 	}
+// 	else
+// 	{
+// 		change_old_pwd_in_env(data, data->pwd);
+// 		change_pwd_in_env(data, getcwd(NULL, 0));
+// 		//			printf(" > %s\n", data->pwd);
+// 	}
+// 	// }
+// 	free(pwd);
+// 	return (0);
+// }
+
 int cd_dir(t_data *data, t_cmd *node)
 {
-	char *pwd;
-	//char *old_pwd;
+    char *pwd;
+    struct stat sb;
 
-	//	printf(" aaaa> %s\n", node->args[1]);
-	pwd = ft_strjoin(data->pwd, node->args[1]);
-	// if(data->old_pwd)
-	// 	old_pwd = ft_strdup(data->old_pwd);
-	if (!pwd)
-		panic("pwd error!");
-	check_abs_path(node);
-	// if(node->abs_path == 1)
-	// {
-	if (chdir(node->args[1]) == -1)
-	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd("cd: ", STDERR_FILENO);
-		ft_putstr_fd(node->args[1], STDERR_FILENO);
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-		return (1);
-	}
-	else
-	{
-		change_old_pwd_in_env(data, data->pwd);
-		change_pwd_in_env(data, getcwd(NULL, 0));
-		//			printf(" > %s\n", data->pwd);
-	}
-	// }
-	free(pwd);
-	return (0);
+    pwd = ft_strjoin(data->pwd, node->args[1]);
+    if (!pwd)
+        panic("pwd error!");
+
+    check_abs_path(node);
+
+    // Check if directory exists
+    if (stat(node->args[1], &sb) == -1)
+    {
+        ft_putmsg_fd(MSH_CD, node->args[1], N_F_D, STDERR_FILENO);
+        free(pwd);
+        return 1; // Exit code 1 for non-existent directory
+    }
+
+    // Check if it's a directory
+    if (!S_ISDIR(sb.st_mode))
+    {
+        ft_putmsg_fd(MSH_CD, node->args[1], N_A_D, STDERR_FILENO);
+        free(pwd);
+        return 1;
+    }
+
+    // Check for read/execute permissions
+    if (access(node->args[1], X_OK) == -1)
+    {
+        ft_putmsg_fd(MSH_CD, node->args[1], P_D, STDERR_FILENO);
+        free(pwd);
+        return 126; // Exit code 126 for permission errors
+    }
+
+    // Change directory
+    if (chdir(node->args[1]) == -1)
+    {
+        ft_putmsg_fd(MSH_CD, node->args[1], F_C_D, STDERR_FILENO);
+        free(pwd);
+        return 1;
+    }
+
+    // Update environment variables
+    change_old_pwd_in_env(data, data->pwd);
+    change_pwd_in_env(data, getcwd(NULL, 0));
+
+    free(pwd);
+    return 0;
 }
+
 
 int changedir(t_data *data, t_cmd *node)
 {

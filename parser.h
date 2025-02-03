@@ -56,12 +56,15 @@
 #define UNEXPECTED_TOKEN "syntax error near unexpected token "
 #define CMD_NOT_FOUND ": command not found\n"
 #define MSH "minishell: "
+#define MSH_CD "minishell: cd: "
 #define AMB ": ambiguous redirect\n"
 #define P_D ": Permission denied\n"
 #define T_M_A ": too many arguments\n"
 #define C_N_F ": command not found\n"
 #define I_A_D ": Is a directory\n"
+#define N_A_D ": Not a directory\n"
 #define N_F_D ": No such file or directory\n"
+#define F_C_D ": Failed to change directory\n"
 
 typedef struct s_var
 {
