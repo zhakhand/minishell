@@ -13,8 +13,8 @@ SRCS = minishell.c parser/parser.c parser/utils.c parser/tokenizer.c parser/quot
 		parser/errors.c parser/clean_up.c parser/signals.c parser/tokenizer_2.c \
 		exec/exec_new.c exec/exec.c exec/exec_utils.c exec/redirects.c exec/envp.c \
 		buildins/buildins_utils.c buildins/echo.c buildins/pwd.c buildins/env.c \
-		buildins/unset.c buildins/export.c buildins/ft_exit.c\
-		buildins/changedir.c \
+		buildins/unset.c buildins/export.c buildins/export_utils.c buildins/export_utils_2.c \
+		buildins/changedir.c buildins/ft_exit.c buildins/cd_utils.c \
 		heredoc/heredoc.c heredoc/heredoc_clean.c heredoc/heredoc_expansion.c
 		 
 		

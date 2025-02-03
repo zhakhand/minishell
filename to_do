@@ -164,3 +164,12 @@ after heredoc and fixed directory test
                           TOTAL FAILED AND PASSED CASES:
                                       ❌ 31 
                                       ✅ 2927 
+fixed some minor errors
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+🏁                                    RESULT                                    🏁
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+                     TOTAL TEST COUNT: 986  TESTS PASSED: 967
+                STD_OUT: 10  STD_ERR: 11  EXIT_CODE: 3  CRASHING: 0
+                          TOTAL FAILED AND PASSED CASES:
+                                      ❌ 24 
+                                      ✅ 2934 
