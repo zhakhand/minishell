@@ -220,15 +220,17 @@ int check_directory(char *file)
 		temp = ft_strdup(file);
 	else
 		temp = ft_substr(file, 0, i);
-	if (stat(file, &sb) == 0 && S_ISDIR(sb.st_mode)
-		&& i != 0) 
+	// printf("temp %s\n", temp);
+	if (stat(file, &sb) == 0 && S_ISDIR(sb.st_mode))
 	{
-		if ( i == 0)
-		{
+	// 	&& i != 0) 
+	// {
+	// 	if ( i == 0)
+	// 	{
 			ft_putmsg_fd(MSH, file, I_A_D, STDERR_FILENO);
 			free(temp);
 			return (-1);
-		}
+		// }
 	}
 	// if (i != 0 && (stat(temp, &sb) != 0 || !S_ISDIR(sb.st_mode)))
 	// {

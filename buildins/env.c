@@ -1,10 +1,9 @@
-
 #include "../minishell.h"
 
-int ft_env_no_args(t_data *data)
+int	ft_env_no_args(t_data *data)
 {
-	t_var *temp;
-//	sort_env(data);
+	t_var	*temp;
+
 	if (!data->env_var)
 		return (EXIT_FAILURE);
 	temp = data->env_var;
@@ -26,11 +25,4 @@ int ft_env_no_args(t_data *data)
 		temp = temp->next;
 	}
 	return (EXIT_SUCCESS);
-
-	// while (data->env[i] != NULL)
-	// {
-	// 	printf("%s\n", data->env[i]);
-	// 	i++;
-	// }
 }
-
