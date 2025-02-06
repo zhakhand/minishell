@@ -63,6 +63,7 @@ int ft_edge_cases(t_data *data, t_cmd *cmd);
 int exec_buildin(t_data *data, t_cmd *node);
 int handle_redirects(t_data *data, t_cmd *node);
 
+int	get_old_pwd(t_data *data);
 int	change_pwd_in_env(t_data *data, char *pwd);
 int	change_old_pwd_in_env(t_data *data, char *pwd);
 char	*get_home(t_data *data);
