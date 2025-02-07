@@ -51,6 +51,8 @@ int	check_symbols(char *str);
 
 void	s_e(t_data *data, int err_no);
 
+int	run_execve(t_data *data, t_cmd *cmd, char **envp);
+
 int get_random_fd(t_data *data);
 char *get_temp_name(int pid);
 

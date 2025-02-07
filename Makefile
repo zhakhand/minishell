@@ -11,7 +11,7 @@ SRCS = minishell.c parser/parser.c parser/utils.c parser/tokenizer.c parser/quot
 		parser/expansion.c parser/vars_tokens_tokenizer.c parser/expansion_2.c parser/clean_up_2.c \
 		parser/expansion_3.c parser/build_cmd_table.c parser/built_in_check.c parser/tokenizer_3.c \
 		parser/errors.c parser/clean_up.c parser/signals.c parser/tokenizer_2.c \
-		exec/exec_new.c exec/exec.c exec/exec_utils.c exec/redirects.c exec/envp.c \
+		exec/exec_new.c exec/exec.c exec/execve.c exec/exec_utils.c exec/redirects.c exec/envp.c \
 		buildins/buildins_utils.c buildins/echo.c buildins/pwd.c buildins/env.c \
 		buildins/unset.c buildins/export.c buildins/export_utils.c buildins/export_utils_2.c \
 		buildins/changedir.c buildins/ft_exit.c buildins/cd_utils.c \

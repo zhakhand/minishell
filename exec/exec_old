@@ -137,3 +137,43 @@ void run_pipe(t_data *data, t_cmd_node *list, char **envp)
 	}
 //	free_data(data);
 }
+
+int	handle_heredoc(t_data *data, char *delimiter)
+{
+    char	*line;
+    int		temp_fd;
+
+    temp_fd = get_random_fd(data);
+    while (1)
+    {
+        line = readline("> ");
+        if (!line)
+        {
+            ft_putstr_fd("minishell: warning: heredoc delimited by EOF\n", STDERR_FILENO);
+            break;
+        }
+		if (g_signal == SIGINT)
+		{
+			free(line);
+			break ;
+		}
+        if (ft_strcmp(line, delimiter) == 0)
+        {
+            free(line);
+            break;
+        }
+
+        write(temp_fd, line, ft_strlen(line));
+        write(temp_fd, "\n", 1);
+        free(line);
+		if (lseek(temp_fd, 0, SEEK_SET) == -1)
+		{
+			perror("Error seeking in temp file");
+			set_signals(PARENT);
+			close(temp_fd);
+			return (-1);
+		}
+	}
+		set_signals(PARENT);
+		return temp_fd;
+}

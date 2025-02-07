@@ -18,82 +18,10 @@ void clear_path_arr(t_data *data)
 	free(data->path_arr);
 }
 
-void run(t_cmd_node *list, char **envp)
+int	is_path_exist(t_data *data)
 {
-	char *full_path;
+	t_var	*temp;
 
-	full_path = find_path(list->cmd_args[0], envp);
-//	printf("aaaaa   %s", full_path);
-	if (execve(full_path, list->cmd_args, envp) == -1)
-	{
-		perror("fail");
-	}
-	
-}
-
-void run_fork(t_cmd_node *list, char **envp)
-{
-	char *full_path;
-	int pid;
-
-	full_path = find_path(list->cmd_args[0], envp);
-	pid = fork();
-	if (pid == 0)
-	{
-		if (execve(full_path, list->cmd_args, envp) == -1)
-			{
-				perror("fail");
-			}
-	}
-	waitpid(pid, NULL, 0);
-//	printf("aaaaa parent   %s", full_path);
-
-}
-
-int run_execve(t_data *data, t_cmd *cmd, char **envp) 
-{
-	struct stat sb;
-	char *full_path = NULL;
-	int is_explicit_path = ft_strchr(cmd->args[0], '/') != NULL;
-
-	// If the command contains a '/', treat it as a direct path
-	if (is_explicit_path)
-		full_path = cmd->args[0];
-	else
-	{
-		data->path_arr = get_path_arr(envp);
-		if (!data->path_arr || !data->path_arr[0])
-		{
-			if (stat(cmd->args[0], &sb) == 0)
-			{
-				if (access(cmd->args[0], X_OK) == -1)
-					return (ft_putmsg_fd("", cmd->args[0], P_D, STDERR_FILENO), 126);
-				full_path = cmd->args[0];
-			}
-			else
-				return (ft_putmsg_fd("", cmd->args[0], N_F_D, STDERR_FILENO), 127);
-		}
-		else 
-		{
-			full_path = find_path(cmd->args[0], data->path_arr);
-			if (!full_path) 
-				return (ft_putmsg_fd("", cmd->args[0], C_N_F, STDERR_FILENO), 127);
-		}
-	}
-	if (stat(full_path, &sb) == -1)
-		return (ft_putmsg_fd("", cmd->args[0], N_F_D, STDERR_FILENO), 127);
-	if (S_ISDIR(sb.st_mode))
-		return (ft_putmsg_fd("", cmd->args[0], I_A_D, STDERR_FILENO), 126);
-	if (access(full_path, X_OK) == -1)
-		return (ft_putmsg_fd("", cmd->args[0], P_D, STDERR_FILENO), 126);
-	if (execve(full_path, cmd->args, envp))
-		return (perror ("execve"), 1);
-	return (0);
-}
-
-int is_path_exist(t_data *data)
-{
-	t_var *temp;
 	temp = data->env_var;
 	while (temp)
 	{
@@ -104,6 +32,9 @@ int is_path_exist(t_data *data)
 	}
 	return (0);
 }
+
+
+
 
 // int run_execve(t_data *data, t_cmd *cmd, char **envp) {
 //     struct stat sb;
