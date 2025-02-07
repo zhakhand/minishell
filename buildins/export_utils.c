@@ -35,6 +35,8 @@ int	add_to_env_end(t_data *data, char *str)
 	}
 	new_var = set_env_var(data, ft_substr(str, 0, i), str + i + 1);
 	new_var->is_valid = 1;
+	//free(str);
+	//free(new_var);
 	return (0);
 }
 

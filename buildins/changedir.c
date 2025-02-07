@@ -19,7 +19,10 @@ int	cd_home(t_data *data)
 
 	home = get_home(data);
 	if (!home)
-		panic("home error!");
+	{
+		ft_putmsg_fd(MSH_CD, "HOME not set", "\n", STDERR_FILENO);
+		return (EXIT_FAILURE);
+	}
 	if (chdir(home) == -1)
 		perror("home: No such file or directory");
 	change_old_pwd_in_env(data, data->pwd);
@@ -57,20 +60,12 @@ int	cd_prev(t_data *data)
 	char	*pwd;
 	char	*old_pwd;
 
-	// If there is no old directory saved, print error and return
 	if (!data->old_pwd || data->old_pwd[0] == '\0')
-	{
-		ft_putmsg_fd("cd: ", "OLDPWD not set", "\n", STDERR_FILENO);
-		return (EXIT_FAILURE);
-	}
-
-	// Save current working directory before changing
+		return (ft_putmsg_fd("cd: ", "OLDPWD not set", "\n", 2), EXIT_FAILURE);
 	pwd = ft_strdup(data->pwd);
 	old_pwd = ft_strdup(data->old_pwd);
 	if (!pwd || !old_pwd)
 		panic("Memory allocation error!");
-
-	// Try to change directory to old_pwd
 	if (chdir(old_pwd) == -1)
 	{
 		perror("cd");
@@ -78,19 +73,12 @@ int	cd_prev(t_data *data)
 		free(old_pwd);
 		return (EXIT_FAILURE);
 	}
-
-	// Print new directory (same behavior as Bash)
 	ft_putstr_fd(old_pwd, STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
-
-	// Update environment variables (even if OLDPWD was unset)
 	change_old_pwd_in_env(data, pwd);
 	change_pwd_in_env(data, getcwd(NULL, 0));
-
-	// Free memory
 	free(pwd);
 	free(old_pwd);
-	
 	return (0);
 }
 
@@ -98,9 +86,27 @@ int	cd_prev(t_data *data)
 int	cd_up(t_data *data, t_cmd *node)
 {
 	char	*pwd;
+	int i;
+	struct stat	sb;
 
+	i = ft_strlen(data->pwd);
+	while (i > 0)
+	{
+		if (data->pwd[i] == '/')
+			break;
+		i--;
+	}
+	if (i == 0)
+		pwd = ft_strdup("/");
+	else
+		pwd = ft_substr(data->pwd, 0, i);
+	if (!pwd)
+		panic("pwd error!");
+	if (stat(node->args[1], &sb) == -1)
+		return (free(pwd), ft_putmsg_fd(MSH_CD, node->args[1], N_F_D, 2), 1);
 	if (ft_strcmp(data->pwd, "/") == 0)
 		return (0);
+	free(pwd);
 	pwd = ft_strdup(data->pwd);
 	if (chdir(node->args[1]) == -1)
 	{
@@ -109,6 +115,7 @@ int	cd_up(t_data *data, t_cmd *node)
 	}
 	change_old_pwd_in_env(data, pwd);
 	change_pwd_in_env(data, getcwd(NULL, 0));
+	free(pwd);
 	return (0);
 }
 

@@ -160,6 +160,8 @@ int main(int ac, char **av, char **ev)
 	err_no = data->err_no;
 	clean_data(data);
 
+    clear_history();
+
 	return (err_no);
 
 }

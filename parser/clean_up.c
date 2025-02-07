@@ -83,6 +83,9 @@ void	clean_data(t_data *data)
 		free(data->temp_name);
 	free(data);
 	data = NULL;
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
 }
 
 void	reset_data(t_data *data)
