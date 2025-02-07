@@ -272,6 +272,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 
 	while (cmd != NULL)
 	{
+//		printf("cmd->cmd %s\n", cmd->cmd);
 		data->redir_err = 0;
 		if (!check_parent_buildin(cmd))
 		{
@@ -301,6 +302,7 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 				data->err_no = 1;
 				data->redir_err = 1;
 			}
+//			printf("child\n");
 			int check_redir = 0;
 			if (cmd->redir && (cmd->redir->type == OUT || cmd->redir->type == APPEND))
 				check_redir = 1;

@@ -44,6 +44,21 @@ int	change_old_pwd_in_env(t_data *data, char *pwd)
 	return (0);
 }
 
+int	get_old_pwd(t_data *data)
+{
+	t_var	*temp;
+
+	temp = data->env_var;
+	while (temp)
+	{
+		if (ft_strncmp(temp->key, "OLDPWD", 6) == 0)
+			return (0);
+		temp = temp->next;
+	}
+	return (1);
+}
+
+
 char	*get_home(t_data *data)
 {
 	t_var	*temp;

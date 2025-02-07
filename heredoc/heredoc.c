@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/03 10:33:13 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/06 16:40:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ char	*random_name(t_data *data, int i)
 	if (!num)
 		end_it(data);
 	if (i % 3 == 0)
-		res = ft_strjoin("/tmp/here", num);
+		res = ft_strjoin("here", num);
 	else if (i % 3 == 1)
-		res = ft_strjoin("/tmp/there", num);
+		res = ft_strjoin("there", num);
 	else
-		res = ft_strjoin("/tmp/nowhere", num);
+		res = ft_strjoin("nowhere", num);
 	free(num);
 	if (!res)
 		end_it(data);
@@ -92,7 +92,7 @@ int	open_heredoc(t_data *data, t_redir *redir, int i)
 	filename = random_name(data, i);
 	if (!filename)
 		end_it(data);
-	redir->heredoc = filename;
+	redir->heredoc = ft_strdup(filename);
 	filename = NULL;
 	fd = open(redir->heredoc, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fill_heredoc(fd, redir, data) == -1)

@@ -173,3 +173,6 @@ fixed some minor errors
                           TOTAL FAILED AND PASSED CASES:
                                       ❌ 24 
                                       ✅ 2934 
+
+
+echo hi > out > out2 << EOF | cat | << HI
