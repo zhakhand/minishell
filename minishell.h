@@ -41,8 +41,15 @@ typedef struct s_redirects
 // //	char 	**pwd;
 
 // }			t_data;
+int	add_to_env_end(t_data *data, char *str);
+char	*add_quotes_to_val(char *str);
+char	*add_quotes(char *str);
+char	**sort_env(char **arr);
+char	**make_env_arr(t_data *data);
+int	add_to_env(char *str, t_data *data);
+int	check_symbols(char *str);
 
-
+void	s_e(t_data *data, int err_no);
 
 int get_random_fd(t_data *data);
 char *get_temp_name(int pid);
@@ -56,10 +63,17 @@ int ft_edge_cases(t_data *data, t_cmd *cmd);
 int exec_buildin(t_data *data, t_cmd *node);
 int handle_redirects(t_data *data, t_cmd *node);
 
+int	get_old_pwd(t_data *data);
+int	change_pwd_in_env(t_data *data, char *pwd);
+int	change_old_pwd_in_env(t_data *data, char *pwd);
+char	*get_home(t_data *data);
+void	check_abs_path(t_cmd *node);
+
+
 int ft_env_no_args(t_data *data);
 char **sort_env(char **arr);
 int ft_echo(t_data *data, t_cmd *node);
-int ft_unset(t_data *data, t_cmd *node);
+void ft_unset(t_data *data, t_cmd *node);
 int ft_export(t_data *data, t_cmd *node);
 int changedir(t_data *data, t_cmd *node);
 char *get_pwd(t_data *data);

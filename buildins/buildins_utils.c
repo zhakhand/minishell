@@ -1,61 +1,39 @@
-
 #include "../minishell.h"
 
-// int check_if_buildin(t_cmd *node)
-// {
-// //	printf("check_if_buildin, %d\n", node->built_in);
-// 	if (node == NULL || node->cmd == NULL || node->cmd == NULL)
-// 		return (-1);
-// 	if (node->built_in == 901 || 
-// 		node->built_in == 902 || 
-// 		node->built_in == 903 || 
-// 		node->built_in == 904 || 
-// 		node->built_in == 905 || 
-// 		node->built_in == 906 || 
-// 		node->built_in == 907)
-// 		return (0);
-// 	return (1);
-// }
-
-int check_parent_buildin(t_cmd *node)
+int	check_parent_buildin(t_cmd *node)
 {
-//	printf("check_if_buildin, %d\n", node->built_in);
 	if (node == NULL || node->cmd == NULL)
 		return (-1);
 	if (
-		node->built_in == CD || 
-		(node->built_in == EXPORT && node->args[1])|| 
-		node->built_in == UNSET || 
-		node->built_in == EXIT)
-	{	
+		node->built_in == CD
+		|| (node->built_in == EXPORT && node->args[1])
+		|| node->built_in == UNSET
+		|| node->built_in == EXIT)
+	{
 		return (0);
 	}
 	return (1);
 }
 
-int check_child_buildin(t_cmd *node)
+int	check_child_buildin(t_cmd *node)
 {
 	if (node == NULL || node->cmd == NULL)
 		return (-1);
 	if (
-		node->built_in == UNSET || 
-		node->built_in == CD || 
-		node->built_in == ECH || 
-		node->built_in == PWD || 
-		node->built_in == EXPORT || 
-		node->built_in == ENV)
-	{	
-//		printf("check_child_buildin, %d\n", node->built_in);
+		node->built_in == UNSET
+		|| node->built_in == CD
+		|| node->built_in == ECH
+		|| node->built_in == PWD
+		|| node->built_in == EXPORT
+		|| node->built_in == ENV)
 		return (0);
-	}
 	return (1);
 }
 
-int exec_buildin(t_data *data, t_cmd *node)
+int	exec_buildin(t_data *data, t_cmd *node)
 {
-	int res;
+	int	res;
 
-//	printf("exec_buildin, %d\n", node->prev->built_in);
 	res = 0;
 	if (node == NULL || node->cmd == NULL)
 		return (-1);
@@ -68,7 +46,7 @@ int exec_buildin(t_data *data, t_cmd *node)
 	if (node->built_in == ENV)
 		res = ft_env_no_args(data);
 	if (node->built_in == UNSET)
-		res = ft_unset(data, node);
+		ft_unset(data, node);
 	if (node->built_in == EXPORT)
 		res = ft_export(data, node);
 	if (node->built_in == EXIT)
@@ -76,4 +54,21 @@ int exec_buildin(t_data *data, t_cmd *node)
 	return (res);
 }
 
+void	s_e(t_data *data, int err_no)
+{
+	data->err_no = err_no;
+}
 
+int	is_valid_exit_code(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (ft_isdigit(str[i]) == 0)
+			return (0);
+		i++;
+	}
+	return (1);
+}

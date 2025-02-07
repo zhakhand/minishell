@@ -8,6 +8,7 @@ int handle_heredoc(t_data *data, char *delimiter)
     char *line;
     int temp_fd;
 
+//	ft_putmsg_fd(, "heredoc", " ", STDERR_FILENO);
     // Create a unique temporary file
     temp_fd = get_random_fd(data);
 	//unlink("temp");
@@ -112,23 +113,19 @@ int handle_heredoc(t_data *data, char *delimiter)
 // 	return (0);
 // }
 
-int handle_input_redirects(t_data *data, t_redir *redir)
+int handle_input_redirects(t_redir *redir)
 {
     t_redir *redirects = redir;
     int in_fd;
 //    int temp_fd;
-    int last_fd = -1;
+//    int last_fd = -1;
 	
 //	temp_fd = data->err_no;
     while (redirects)
     {
+//		printf("from handle input  |%s|  %d\n", redirects->val, redirects->type);
         if (redirects->type == IN)
         {
-			if (redirects->ambig == 1)
-            {
-                ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
-                return (-1);
-            }
 			if (redirects->ambig == 1)
             {
                 ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
@@ -156,19 +153,20 @@ int handle_input_redirects(t_data *data, t_redir *redir)
             if (dup2(in_fd, STDIN_FILENO) == -1)
                 return (-1);
             close(in_fd);
-            //last_fd = in_fd;
+			//unlink(redirects->heredoc);
+//            last_fd = in_fd;
         }
         redirects = redirects->next; // Move to the next redirect
     }
 
-    if (last_fd != -1)
-    {
-        if (dup2(last_fd, STDIN_FILENO) == -1)
-            return (-1);
-        close(last_fd);
+    // if (last_fd != -1)
+    // {
+    //     if (dup2(last_fd, STDIN_FILENO) == -1)
+    //         return (-1);
+    //     close(last_fd);
 //		printf("temp_name %s\n", data->temp_name);
-		unlink(data->temp_name);
-    }
+//		unlink(data->temp_name);
+//    }
     return (0);
 }
 
@@ -193,8 +191,6 @@ int open_and_close(t_redir *redir)
 		ft_putmsg_fd(MSH, redir->val, N_F_D, STDERR_FILENO);
 
 //		panic("minishell");
-		// ft_putstr_fd(redir->val, 2);
-		// ft_putstr_fd(": No such file or directory\n", 2);
 		return (-1);
 	}
 	close(out_fd);
@@ -205,7 +201,6 @@ int open_and_close(t_redir *redir)
 int check_directory(char *file)
 {
 	struct stat sb;
-
 	char *temp;
 	int i;
 
@@ -220,40 +215,22 @@ int check_directory(char *file)
 		temp = ft_strdup(file);
 	else
 		temp = ft_substr(file, 0, i);
-	if (stat(file, &sb) == 0 && S_ISDIR(sb.st_mode)
-		&& i != 0) 
-	{
-		if ( i == 0)
-		{
-			ft_putmsg_fd(MSH, file, I_A_D, STDERR_FILENO);
-			free(temp);
-			return (-1);
-		}
-	}
-	// if (i != 0 && (stat(temp, &sb) != 0 || !S_ISDIR(sb.st_mode)))
-	// {
-	// 	ft_putmsg_fd(MSH, temp, N_F_D, STDERR_FILENO);
-	// 	free(temp);
-	// 	return (-1);
-	// }
-//	printf("temp %s\n", temp);
-//	int res = chdir(temp);
-//	if ( i != 0 && res == -1)
-	if (stat(temp, &sb) != 0 && !S_ISDIR(sb.st_mode)
+	if (!temp)
+		return (-1);
+	// printf("temp %s\n", temp);
+	if (stat(temp, &sb) != 0 //&& !S_ISDIR(sb.st_mode)
 		&& i != 0)
-
 	{
 		ft_putmsg_fd(MSH, file, N_F_D, STDERR_FILENO);
-		// ft_putstr_fd("minishell: ", 2);
-		// ft_putstr_fd(file, 2);
-		// ft_putstr_fd(": No such file or directory\n", 2);
 		free(temp);
 		return (-1);
 	}
-	// else if (res == 0)
-	// 	{
-	// 	chdir("..");
-	// 	}
+	if (stat(file, &sb) == 0 && S_ISDIR(sb.st_mode))
+	{
+			ft_putmsg_fd(MSH, file, I_A_D, STDERR_FILENO);
+			free(temp);
+			return (-1);
+	}
 	free(temp);
 	return (0);
 }
@@ -272,11 +249,7 @@ int handle_output_redirects(t_redir *redirects)
 		return (-1);
 	while (redir)
 	{
-		if (redirects->ambig == 1)
-		{
-			ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
-			return (-1);
-		}
+//		printf("from handle output  |%s|  %d\n", redir->val, redir->type);
 		if (redirects->ambig == 1)
 		{
 			ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO);
@@ -287,7 +260,7 @@ int handle_output_redirects(t_redir *redirects)
 			res = open_and_close(redir);
 			if (res == -1)
 			{
-				ft_putmsg_fd(MSH, redir->val, N_F_D, STDERR_FILENO);
+//				ft_putmsg_fd(MSH, redir->val, "N_F_D2", STDERR_FILENO);
 				return (-1);
 			}
 		}
@@ -298,9 +271,8 @@ int handle_output_redirects(t_redir *redirects)
 				if (redir->type == OUT)
 				{
 					out_fd = open(redir->val, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-//				printf("from handle output  |%s|  %d\n", redir->val, out_fd);
 				}
-				else
+				else if (redir->type == APPEND)
 				{
 					out_fd = open(redir->val, O_WRONLY | O_CREAT | O_APPEND, 0666);
 				}
@@ -333,96 +305,162 @@ int check_access(char *file)
 
 int handle_redirects(t_data *data, t_cmd *node)
 {
-	t_redir *input_redirects;
-	t_redir *output_redirects;
-	t_redir *temp;
-//	t_redir *temp2;
-	t_redir *last_output;
-	t_redir *last_input;
-	int err;
+    t_redir *input_redirects = NULL;
+    t_redir *output_redirects = NULL;
+    t_redir *temp = node->redir;
+    t_redir *last_input = NULL;
+    t_redir *last_output = NULL;
+    int err = 0;
 
-	err = 0;
-	temp = node->redir;
-	input_redirects = NULL;
-	output_redirects = NULL;
-	while (temp)
+//    printf("from start  |%s|  %d\n", temp->val, temp->type);
+    while (temp)
+    {
+
+        if (temp->type == IN && check_access(temp->val) == -1)
+            return (-1);
+        else if ((temp->type == OUT || temp->type == APPEND) && check_directory(temp->val) == -1)
+            return (-1);
+
+        if (temp->type == IN || temp->type == HEREDOC)
+        {
+            if (!input_redirects)
+            {
+                input_redirects = temp;
+                last_input = temp;
+            }
+            else
+            {
+                last_input->next = temp;  // Add to end of list
+                last_input = temp;        // Move tail pointer
+            }
+        }
+        else if (temp->type == OUT || temp->type == APPEND)
+        {
+//            printf("from handle redir out |%s|  %d\n", temp->val, temp->type);
+            if (!output_redirects)
+            {
+                output_redirects = temp;
+                last_output = temp;
+            }
+            else
+            {
+                last_output->next = temp;  // Add to end of list
+                last_output = temp;        // Move tail pointer
+            }
+        }
+        temp = temp->next;
+    }
+
+    // Ensure lists terminate properly
+	if (last_input)
+		last_input->next = NULL;
+	if (last_output)
+		last_output->next = NULL;
+	if (input_redirects)
 	{
-		if(temp->type == IN
-			&& check_access(temp->val) == -1)
-			return (-1);
-		else if (temp->type ==OUT || temp->type == APPEND)
-		{
-			if (check_directory(temp->val) == -1)
-				return (-1);
-		}
-		if (temp->type == IN || temp->type == HEREDOC)
-		{
-			if (input_redirects == NULL)
-			{
-				input_redirects = temp;
-				last_input = temp;
-			}
-			else
-			{
-				last_input->next = temp;
-				last_input = temp;
-			}
-			// {
-			// 	ft_putmsg_fd("11", input_redirects->val, N_F_D, STDERR_FILENO);
-			// 	return (-1);
-			// }
-		}
-		else if (temp->type == OUT || temp->type == APPEND)
-		{
-			if (output_redirects == NULL)
-			{
-				output_redirects = temp;
-				last_output = temp; // Инициализация последнего элемента
-			}
-			else
-			{
-				last_output->next = temp; // Добавление в конец списка
-				last_output = temp;      // Обновляем указатель на последний элемент
-			}
-		}
-		temp = temp->next;
+		if (handle_input_redirects(input_redirects) == -1)
+			return(-1);
 	}
-	// temp2 = output_redirects;
-	// while(temp2)
-	// {
-	// 	printf("outredir222 %d  %s\n", temp2->type, temp2->val);
-	// 	temp2 = temp2->next;
-	// }
-//	output_redirects = temp2;
-//	int in_redir_success = 0;
-	if(input_redirects)
-	{
-		if (handle_input_redirects(data, input_redirects) == -1)
-		{
-
-// //			write(2, "minishell: ", 11);
-// 			ft_putstr_fd(input_redirects->val, 2);
-// 			ft_putstr_fd(": ddNo such file or directory\n", 2);
-			err = -1;
-		}
-
-//	panic("Failed to handle input redirects");
-	}
-//	printf("in redir success %d\n", in_redir_success);
-//				printf("from handle redir %s\n", output_redirects->val);
-//		printf("input redirect success %d\n", in_redir_success); && in_redir_success == 0
 	if (output_redirects)
-	{
 		if (handle_output_redirects(output_redirects) == -1)
-		{
-				// 			ft_putstr_fd("minishell: ", 2);
-				// ft_putstr_fd(input_redirects->val, 2);
-				// ft_putstr_fd(": No such file or directory\n", 2);
+			return(-1);
 
-			err = -1;
-		}
-//			return (-1);
-//			panic("Failed to handle output redirects");
-	}
-	return (err);
+	data->err_no = err;
+	return err;
 }
+
+
+// int handle_redirects(t_data *data, t_cmd *node)
+// {
+// 	t_redir *input_redirects;
+// 	t_redir *output_redirects;
+// 	t_redir *temp;
+// //	t_redir *temp2;
+// //	t_redir *last_output;
+// //	t_redir *last_input;
+// 	int err;
+
+// 	err = 0;
+// 	temp = node->redir;
+// 	input_redirects = NULL;
+// 	output_redirects = NULL;
+// 	while (temp)
+// 	{
+// 		printf("from start  |%s|  %d\n", temp->val, temp->type);
+// 		if(temp->type == IN
+// 			&& check_access(temp->val) == -1)
+// 			return (-1);
+// 		else if (temp->type ==OUT || temp->type == APPEND)
+// 		{
+// 			if (check_directory(temp->val) == -1)
+// 				return (-1);
+// 		}
+// 		if (temp->type == IN || temp->type == HEREDOC)
+// 		{
+// //				printf("from handle redir in |%s|  %d\n", temp->val, temp->type);
+// 			// if (input_redirects == NULL)
+// 			// {
+// 			// 	input_redirects = temp;
+// 			// 	last_input = temp;
+// 			// }
+// 			// else
+// 			// {
+// 			// 	last_input->next = temp;
+// 			// 	last_input = temp;
+// 			// }
+// 			// last_input->next = NULL;
+// 			// {
+// 			// 	ft_putmsg_fd("11", input_redirects->val, N_F_D, STDERR_FILENO);
+// 			// 	return (-1);
+// 			// }
+// 			if (input_redirects == NULL)
+// 			{
+// 				input_redirects = temp;
+// //				last_output = temp; // Инициализация последнего элемента
+// 			}
+// 			else
+// 			{
+// 				while (input_redirects->next)
+// 					input_redirects = input_redirects->next;
+// 				input_redirects->next = temp; // Добавление в конец списка
+// //				last_output = temp;      // Обновляем указатель на последний элемент
+// 			}
+// //
+// 		}
+// 		else if (temp->type == OUT || temp->type == APPEND)
+// 		{
+// 				printf("from handle redir out |%s|  %d\n", temp->val, temp->type);
+// 			if (output_redirects == NULL)
+// 			{
+// 				output_redirects = temp;
+// //				last_output = temp; // Инициализация последнего элемента
+// 			}
+// 			else
+// 			{
+// 				while (output_redirects->next)
+// 					output_redirects = output_redirects->next;
+// 				output_redirects->next = temp; // Добавление в конец списка
+// //				last_output = temp;      // Обновляем указатель на последний элемент
+// 			}
+// 		}
+// 		input_redirects->next = NULL;
+// 		output_redirects->next = NULL;
+// 		temp = temp->next;
+// 	}
+// 	if(input_redirects)
+// 	{
+// 		if (handle_input_redirects(input_redirects) == -1)
+// 		{
+// 			err = -1;
+// 		}
+// 	}
+// 	if (output_redirects)
+// 	{
+// 		if (handle_output_redirects(output_redirects) == -1)
+// 		{
+// 			err = -1;
+// 		}
+// 	}
+// 	data->err_no = err;
+// 	return (err);
+// }
