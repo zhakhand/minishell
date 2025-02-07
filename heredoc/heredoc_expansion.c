@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_expansion.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 17:31:25 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/03 10:33:50 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/04 10:25:10 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ char	*get_key(t_data *data, char *line, int *index)
 	if (end - *index == 1 && line[end] == '?')
 	{
 		*index = end;
-		key = ft_strdup("?");
+		key = ft_strdup("$?");
 		if (!key)
 			end_it(data);
 		return (key);	
 	}
-	key = ft_substr(line, *index, end - *index);
+	key = ft_strndup(line + *index, end - *index);
 	if (!key)
 		end_it(data);
 	*index = end;
@@ -63,6 +63,12 @@ void	expand_variable(char *line, int *index, char **exp_line, t_data *data)
 	
 	env_var = NULL;
 	temp = NULL;
+	temp = *exp_line;
+	if (line[*index + 1] == 32 || line[*index + 1] == '\0')
+	{
+		*exp_line = ft_strjoin(temp, "$");
+		return free(temp);
+	}
 	key = get_key(data, line, index);
 	if (ft_strcmp(key, "$?") == 0)
 	{
@@ -70,14 +76,14 @@ void	expand_variable(char *line, int *index, char **exp_line, t_data *data)
 		key = NULL;
 		return expand_error(data, exp_line);
 	}
-	env_var = get_env_var(data, key);
-	if (!env_var || (env_var && env_var->is_valid == 0))
-		return (free(key));
-	temp = *exp_line;
-	*exp_line = ft_strjoin(temp, env_var->key);
+	env_var = get_env_var(data, key + 1);
+	if (!env_var)
+		*exp_line = ft_strjoin(temp, "");
+	else
+		*exp_line = ft_strjoin(temp, env_var->val);
 	free(temp);
 	free(key);
-	if (*exp_line)
+	if (!*exp_line)
 		end_it(data);
 }
 
@@ -90,9 +96,9 @@ char	*expand_heredoc(char *line, t_data *data)
 	i = 0;
 //	env_var = NULL;
 	expanded_line = NULL;
-	while (line[i])
+	while (line[i] != '\0')
 	{
-		if (line[i] == '$' && line[i + 1] != 32 && line[i + 1] != '\0')
+		if (line[i] == '$')
 			expand_variable(line, &i, &expanded_line, data);
 		else
 		{

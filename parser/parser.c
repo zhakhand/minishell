@@ -107,6 +107,8 @@ void	mark_vars(t_data *data)
 			curr = curr->next;
 			while (curr)
 			{
+				if (curr->type == S_QUOTE || curr->type == D_QUOTE)
+					curr->was_quoted = 1;
 				curr->type = WORD;
 				curr->is_delim = 1;
 				if (curr->touches_next)
