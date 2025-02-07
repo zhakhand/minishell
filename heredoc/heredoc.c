@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/06 16:40:58 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/07 11:42:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int	open_heredoc(t_data *data, t_redir *redir, int i)
 	if (!filename)
 		end_it(data);
 	redir->heredoc = ft_strdup(filename);
+	free(filename);// leaks?
 	filename = NULL;
 	fd = open(redir->heredoc, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fill_heredoc(fd, redir, data) == -1)

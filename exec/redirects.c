@@ -201,7 +201,6 @@ int open_and_close(t_redir *redir)
 int check_directory(char *file)
 {
 	struct stat sb;
-
 	char *temp;
 	int i;
 
@@ -216,42 +215,22 @@ int check_directory(char *file)
 		temp = ft_strdup(file);
 	else
 		temp = ft_substr(file, 0, i);
+	if (!temp)
+		return (-1);
 	// printf("temp %s\n", temp);
-	if (stat(file, &sb) == 0 && S_ISDIR(sb.st_mode))
-	{
-	// 	&& i != 0) 
-	// {
-	// 	if ( i == 0)
-	// 	{
-			ft_putmsg_fd(MSH, file, I_A_D, STDERR_FILENO);
-			free(temp);
-			return (-1);
-		// }
-	}
-	// if (i != 0 && (stat(temp, &sb) != 0 || !S_ISDIR(sb.st_mode)))
-	// {
-	// 	ft_putmsg_fd(MSH, temp, N_F_D, STDERR_FILENO);
-	// 	free(temp);
-	// 	return (-1);
-	// }
-//	printf("temp %s\n", temp);
-//	int res = chdir(temp);
-//	if ( i != 0 && res == -1)
-	if (stat(temp, &sb) != 0 && !S_ISDIR(sb.st_mode)
+	if (stat(temp, &sb) != 0 //&& !S_ISDIR(sb.st_mode)
 		&& i != 0)
-
 	{
 		ft_putmsg_fd(MSH, file, N_F_D, STDERR_FILENO);
-		// ft_putstr_fd("minishell: ", 2);
-		// ft_putstr_fd(file, 2);
-		// ft_putstr_fd(": No such file or directory\n", 2);
 		free(temp);
 		return (-1);
 	}
-	// else if (res == 0)
-	// 	{
-	// 	chdir("..");
-	// 	}
+	if (stat(file, &sb) == 0 && S_ISDIR(sb.st_mode))
+	{
+			ft_putmsg_fd(MSH, file, I_A_D, STDERR_FILENO);
+			free(temp);
+			return (-1);
+	}
 	free(temp);
 	return (0);
 }
@@ -281,7 +260,7 @@ int handle_output_redirects(t_redir *redirects)
 			res = open_and_close(redir);
 			if (res == -1)
 			{
-				ft_putmsg_fd(MSH, redir->val, N_F_D, STDERR_FILENO);
+//				ft_putmsg_fd(MSH, redir->val, "N_F_D2", STDERR_FILENO);
 				return (-1);
 			}
 		}
@@ -380,11 +359,11 @@ int handle_redirects(t_data *data, t_cmd *node)
 	if (input_redirects)
 	{
 		if (handle_input_redirects(input_redirects) == -1)
-			err = -1;
+			return(-1);
 	}
 	if (output_redirects)
 		if (handle_output_redirects(output_redirects) == -1)
-			err = -1;
+			return(-1);
 
 	data->err_no = err;
 	return err;
