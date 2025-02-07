@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/07 11:42:38 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/07 13:03:39 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,7 @@ void	add_to_line(char c, char **line, t_data *data)
 int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 {
 	char	*line;
-	int		temp;
 
-	temp = data->err_no;
 	while (1)
 	{
 		line = readline("> ");
@@ -72,15 +70,13 @@ int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 			free(line);
 			break;
 		}
-		// if (redir->expands && ft_strchr(line, '$'))
-		// 	line = expand_heredoc(line, data);
+		if (redir->expands && ft_strchr(line, '$'))
+			line = expand_heredoc(line, data);
 		// printf("[%s]\n", line);
 		if (line)
 			ft_putendl_fd(line, fd);
 		free(line);
-	
 	}
-	data->err_no = temp;
 	return (0);
 }
 

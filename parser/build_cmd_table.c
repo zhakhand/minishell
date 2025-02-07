@@ -48,10 +48,10 @@ void	add_to_list(t_token *token, t_redir *tail)
 {
 	tail->type = token->prev->type;
 	tail->val = token->val;
-	if (token->prev->type == HEREDOC && token->was_quoted == 2)
+	if (token->prev->type == HEREDOC && token->was_quoted != 0)
 		tail->expands = 0;
-	if (token->prev->type == HEREDOC && token->was_quoted == 2 && token->ogVal)
-		tail->val = token->ogVal;
+	// if (token->prev->type == HEREDOC && token->was_quoted == 2 && token->ogVal)
+	// 	tail->val = token->ogVal;
 	if (token->is_ambiguous)
 		tail->ambig = 1;
 	token->val = NULL;
@@ -70,7 +70,7 @@ t_redir	*redir_list(t_token *token)
 	prev = NULL;
 	while (token && token->type != PIPE)
 	{
-		if (token->prev && is_redir(token->prev->type))
+		if (is_redir(token->type) && token->next->type == WORD)
 		{
 			tail = init_redir();
 			if (!head)
@@ -80,7 +80,7 @@ t_redir	*redir_list(t_token *token)
 				prev->next = tail;
 				tail->prev = prev;
 			}
-			add_to_list(token, tail);
+			add_to_list(token->next, tail);
 			prev = tail;
 		}
 		token = token->next;
