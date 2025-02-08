@@ -73,12 +73,12 @@ int	process_redirects_list(t_redir *temp, t_redir **in, t_redir **out)
 
 int	handle_redirects(t_data *data, t_cmd *node)
 {
-	t_redir	*input_redirects;
-	t_redir	*output_redirects;
+	t_redir	*in;
+	t_redir	*out;
 	int		err;
 
-	input_redirects = NULL;
-	output_redirects = NULL;
+	in = NULL;
+	out = NULL;
 	err = 0;
 	if (process_redirects_list(node->redir, &in, &out) == -1)
 		return (-1);
