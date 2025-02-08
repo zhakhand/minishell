@@ -99,6 +99,7 @@ typedef struct s_redir
 	int 			type;
 	int				expands;
 	int 			ambig;
+	int 			fd;
 	struct s_redir	*next;
 	struct s_redir	*prev;
 } t_redir;

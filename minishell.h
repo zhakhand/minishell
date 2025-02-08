@@ -51,6 +51,14 @@ int	check_symbols(char *str);
 
 void	s_e(t_data *data, int err_no);
 
+int	handle_input_redirects(t_redir *redir);
+int	handle_output_redirects(t_redir *redirects);
+int process_output_list(t_redir *temp, t_redir **out, t_redir **last_output);
+int process_input_list(t_redir *temp, t_redir **in, t_redir **last_input);
+int process_output_redirects(t_redir *output_redirects);
+int process_input_redirects(t_redir *input_redirects);
+int check_directory(char *file);
+
 int	run_execve(t_data *data, t_cmd *cmd, char **envp);
 
 int get_random_fd(t_data *data);
