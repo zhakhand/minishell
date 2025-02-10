@@ -12,19 +12,16 @@
 
 #include "../minishell.h"
 
-void panic(char *msg)
+void	panic(char *msg)
 {
 	perror(msg);
 	exit(EXIT_FAILURE);
 }
 
-void ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd)
+void	ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd)
 {
 	char	*msg;
 	char	*temp;
-//	int len;
-//	len = ft_strlen(msg1) + ft_strlen(msg2)
-//		+ ft_strlen(msg3) + 1;
 
 	msg = ft_strdup(msg1);
 	if (!msg)
@@ -44,12 +41,11 @@ void ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd)
 	msg = NULL;
 }
 
-int ft_edge_cases(t_data *data, t_cmd *cmd)
+int	ft_edge_cases(t_data *data, t_cmd *cmd)
 {
 	if (ft_strcmp(cmd->args[0], "") == 0 ||
 		ft_strcmp(cmd->args[0], ".") == 0 ||
 		ft_strcmp(cmd->args[0], "..") == 0 ||
-		// ft_strcmp(cmd->args[0], "/") == 0 ||
 		ft_strcmp(cmd->args[0], "//") == 0 ||
 		ft_strcmp(cmd->args[0], "~") == 0)
 	{
@@ -60,13 +56,12 @@ int ft_edge_cases(t_data *data, t_cmd *cmd)
 	return (0);
 }
 
-int get_random_fd(t_data *data)
+int	get_random_fd(t_data *data)
 {
-//	int fd;
-	int fd[2];
-	int pid;
-	int temp_fd;
-	char *temp;
+	int	fd[2];
+	int	pid;
+	int	temp_fd;
+	char	*temp;
 
 	if (pipe(fd) == -1)
 		panic("pipe");
@@ -77,7 +72,6 @@ int get_random_fd(t_data *data)
 	{
 		close(fd[0]);
 		close(fd[1]);
-//		system("ls -l /proc/self/fd"); // List open file descriptors
 		exit (0);	
 	}
 	else
@@ -87,14 +81,13 @@ int get_random_fd(t_data *data)
 		temp_fd = open(temp, O_RDWR | O_CREAT | O_TRUNC, 0666);
 		if (temp_fd == -1)
 			panic("open");
-		
 		free(temp);
 	}
 	data->temp_name = ft_strjoin("/tmp/", ft_itoa(pid));
 	return (temp_fd);
 }
 
-char *get_temp_name(int pid)
+char	*get_temp_name(int pid)
 {
 	char *temp;
 

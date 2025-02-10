@@ -137,3 +137,408 @@ void run_pipe(t_data *data, t_cmd_node *list, char **envp)
 	}
 //	free_data(data);
 }
+
+int	handle_heredoc(t_data *data, char *delimiter)
+{
+    char	*line;
+    int		temp_fd;
+
+    temp_fd = get_random_fd(data);
+    while (1)
+    {
+        line = readline("> ");
+        if (!line)
+        {
+            ft_putstr_fd("minishell: warning: heredoc delimited by EOF\n", STDERR_FILENO);
+            break;
+        }
+		if (g_signal == SIGINT)
+		{
+			free(line);
+			break ;
+		}
+        if (ft_strcmp(line, delimiter) == 0)
+        {
+            free(line);
+            break;
+        }
+
+        write(temp_fd, line, ft_strlen(line));
+        write(temp_fd, "\n", 1);
+        free(line);
+		if (lseek(temp_fd, 0, SEEK_SET) == -1)
+		{
+			perror("Error seeking in temp file");
+			set_signals(PARENT);
+			close(temp_fd);
+			return (-1);
+		}
+	}
+		set_signals(PARENT);
+		return temp_fd;
+}
+
+
+
+void split_redirects(t_redir *redir, t_redir **input, t_redir **output)
+{
+	t_redir *last_input;
+	t_redir *last_output;
+
+	last_input = NULL;
+	last_output = NULL;
+	while (redir)
+	{
+		if (redir->type == IN || redir->type == HEREDOC)
+		{
+			if (!*input)
+				*input = redir;
+			else
+				last_input->next = redir;
+			last_input = redir;
+		}
+		else if (redir->type == OUT || redir->type == APPEND)
+		{
+			if (!*output)
+				*output = redir;
+			else
+				last_output->next = redir;
+			last_output = redir;
+		}
+		redir = redir->next;
+	}
+	if (last_input)
+		last_input->next = NULL;
+	if (last_output)
+		last_output->next = NULL;
+}
+void split_redirects(t_redir *redir, t_redir **input, t_redir **output)
+{
+    t_redir *last_input;
+    t_redir *last_output;
+
+    last_input = NULL;
+    last_output = NULL;
+    while (redir)
+    {
+        if (redir->type == IN || redir->type == HEREDOC)
+        {
+            if (!*input)
+                *input = redir;
+            else
+                last_input->next = redir;
+            last_input = redir;
+        }
+        else if (redir->type == OUT || redir->type == APPEND)
+        {
+            if (!*output)
+                *output = redir;
+            else
+                last_output->next = redir;
+            last_output = redir;
+        }
+        redir = redir->next;
+    }
+    if (last_input)
+        last_input->next = NULL;
+    if (last_output)
+        last_output->next = NULL;
+}
+
+
+int handle_redirects(t_data *data, t_cmd *node)
+{
+	t_redir *input_redirects = NULL;
+	t_redir *output_redirects = NULL;
+	t_redir *temp = node->redir;
+	t_redir *last_input = NULL;
+	t_redir *last_output = NULL;
+	int err = 0;
+
+	while (temp)
+	{
+		if(check_redirect(temp) == -1)
+			return (-1);
+		if (temp->type == IN || temp->type == HEREDOC)
+		{
+			if (!input_redirects)
+			{
+				input_redirects = temp;
+				last_input = temp;
+			}
+			else
+			{
+				last_input->next = temp;
+				last_input = temp;
+			}
+		}
+		else if (temp->type == OUT || temp->type == APPEND)
+		{
+			if (!output_redirects)
+			{
+				output_redirects = temp;
+				last_output = temp;
+			}
+			else
+			{
+				last_output->next = temp;
+				last_output = temp;
+			}
+		}
+		temp = temp->next;
+	}
+	if (last_input)
+		last_input->next = NULL;
+	if (last_output)
+		last_output->next = NULL;
+	if (input_redirects)
+		if (handle_input_redirects(input_redirects) == -1)
+			return(-1);
+	if (output_redirects)
+		if (handle_output_redirects(output_redirects) == -1)
+			return(-1);
+	data->err_no = err;
+	return err;
+}
+
+// void split_redirects(t_redir *redir, t_redir **input, t_redir **output)
+// {
+// 	t_redir *last_input;
+// 	t_redir *last_output;
+
+// 	last_input = NULL;
+// 	last_output = NULL;
+// 	while (redir)
+// 	{
+// 		if (redir->type == IN || redir->type == HEREDOC)
+// 		{
+// 			if (!*input)
+// 				*input = redir;
+// 			else
+// 				last_input->next = redir;
+// 			last_input = redir;
+// 		}
+// 		else if (redir->type == OUT || redir->type == APPEND)
+// 		{
+// 			if (!*output)
+// 				*output = redir;
+// 			else
+// 				last_output->next = redir;
+// 			last_output = redir;
+// 		}
+// 		redir = redir->next;
+// 	}
+// 	if (last_input)
+// 		last_input->next = NULL;
+// 	if (last_output)
+// 		last_output->next = NULL;
+// }
+
+
+// int handle_redirects(t_data *data, t_cmd *node)
+// {
+// 	t_redir *input_redirects = NULL;
+// 	t_redir *output_redirects = NULL;
+// 	t_redir *temp = node->redir;
+// 	t_redir *last_input = NULL;
+// 	t_redir *last_output = NULL;
+// 	int err = 0;
+
+// 	while (temp)
+// 	{
+// 		if(check_redirect(temp) == -1)
+// 			return (-1);
+// 		if (temp->type == IN || temp->type == HEREDOC)
+// 		{
+// 			if (!input_redirects)
+// 			{
+// 				input_redirects = temp;
+// 				last_input = temp;
+// 			}
+// 			else
+// 			{
+// 				last_input->next = temp;
+// 				last_input = temp;
+// 			}
+// 		}
+// 		else if (temp->type == OUT || temp->type == APPEND)
+// 		{
+// 			if (!output_redirects)
+// 			{
+// 				output_redirects = temp;
+// 				last_output = temp;
+// 			}
+// 			else
+// 			{
+// 				last_output->next = temp;
+// 				last_output = temp;
+// 			}
+// 		}
+// 		temp = temp->next;
+// 	}
+// 	if (last_input)
+// 		last_input->next = NULL;
+// 	if (last_output)
+// 		last_output->next = NULL;
+// 	if (input_redirects)
+// 		if (handle_input_redirects(input_redirects) == -1)
+// 			return(-1);
+// 	if (output_redirects)
+// 		if (handle_output_redirects(output_redirects) == -1)
+// 			return(-1);
+// 	data->err_no = err;
+// 	return err;
+// }
+
+// t_redir *get_input_redirects(t_redir *redir)
+// {
+// 	t_redir *in_redir;
+// 	t_redir *last_in;
+// 	t_redir *temp;
+
+// 	in_redir = NULL;
+// 	last_in = NULL;
+// 	temp = redir;
+// 	while (temp)
+// 	{
+// 		if (temp->type == IN || temp->type == HEREDOC)
+// 		{
+// 			if(check_redirect(temp) == -1)
+// 	 			return (in_redir);
+// 			if (!in_redir)
+// 				in_redir = temp;
+// 			else
+// 				last_in->next = temp;
+// 			last_in = temp;
+// 		}
+// 		temp = temp->next;
+// 	}
+// 	if (last_in)
+// 		last_in->next = NULL;
+// 	return (in_redir);
+// }
+// t_redir *get_output_redirects(t_redir *redir)
+// {
+// 	t_redir *out_redir;
+// 	t_redir *last_out;
+// 	t_redir *temp;
+
+// 	temp = redir;
+// 	out_redir = NULL;
+// 	last_out = NULL;
+// 	while (temp)
+// 	{
+// 		if(check_redirect(temp) == -1)
+//  			return (out_redir);
+// 		if (temp->type == OUT || temp->type == APPEND)
+// 		{
+// 			if (!out_redir)
+// 				out_redir = temp;
+// 			else
+// 				last_out->next = temp;
+// 			last_out = temp;
+// 		}
+// 		temp = temp->next;
+// 	}
+// 	if (last_out)
+// 		last_out->next = NULL;
+// 	return (out_redir);
+// }
+// int handle_redirects(t_data *data, t_cmd *node)
+// {
+// 	t_redir *input_redirects;
+// 	t_redir *output_redirects;
+// //	t_redir *temp;
+
+// //	temp = node->redir;
+// 	// while (temp)
+// 	// {
+// 	// 	if (check_redirect(temp) == -1)
+// 	// 		return (-1);
+// 	// 	temp = temp->next;
+// 	// }
+// 	input_redirects = get_input_redirects(node->redir);
+// 	output_redirects = get_output_redirects(node->redir);
+// 	if (input_redirects)
+// 		if (handle_input_redirects(input_redirects) == -1)
+// 			return (-1);
+// 	if (output_redirects)
+// 		if (handle_output_redirects(output_redirects) == -1)
+// 			return (-1);
+// 	data->err_no = 0;
+// 	return (0);
+// }
+
+
+
+
+// int process_input_redirects(t_redir *input_redirects)
+// {
+// 	if (input_redirects)
+// 	{
+// 		if (handle_input_redirects(input_redirects) == -1)
+// 			return (-1);
+// 	}
+// 	return (0);
+// }
+
+// int process_output_redirects(t_redir *output_redirects)
+// {
+// 	if (output_redirects)
+// 	{
+// 		if (handle_output_redirects(output_redirects) == -1)
+// 			return (-1);
+// 	}
+// 	return (0);
+// }
+
+// int process_redirects_list(t_redir *temp, t_redir **input_redirects, t_redir **output_redirects)
+// {
+// 	t_redir *last_input = NULL;
+// 	t_redir *last_output = NULL;
+
+// 	while (temp)
+// 	{
+// 		if (check_redirect(temp) == -1)
+// 			return (-1);
+// 		if (temp->type == IN || temp->type == HEREDOC)
+// 		{
+// 			if (!(*input_redirects))
+// 				*input_redirects = temp;
+// 			else
+// 				last_input->next = temp;
+// 			last_input = temp;
+// 		}
+// 		else if (temp->type == OUT || temp->type == APPEND)
+// 		{
+// 			if (!(*output_redirects))
+// 				*output_redirects = temp;
+// 			else
+// 				last_output->next = temp;
+// 			last_output = temp;
+// 		}
+// 		temp = temp->next;
+// 	}
+// 	if (last_input)
+// 		last_input->next = NULL;
+// 	if (last_output)
+// 		last_output->next = NULL;
+// 	return (0);
+// }
+
+// int handle_redirects(t_data *data, t_cmd *node)
+// {
+// 	t_redir *input_redirects = NULL;
+// 	t_redir *output_redirects = NULL;
+// 	int err = 0;
+
+// 	if (process_redirects_list(node->redir, &input_redirects, &output_redirects) == -1)
+// 		return (-1);
+// 	if (process_input_redirects(input_redirects) == -1)
+// 		return (-1);
+// 	if (process_output_redirects(output_redirects) == -1)
+// 		return (-1);
+// 	data->err_no = err;
+// 	return (err);
+// }
+
