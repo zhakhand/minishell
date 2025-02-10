@@ -84,15 +84,16 @@ void	print_tokens(t_data *data)
 	}
 }
 
+
 int main(int ac, char **av, char **ev)
 {
-	char *line;
+//	char *line;
 	char *prompt;
 	t_cmd *cmd;
 //	char *prompt;
 	t_data *data;
 	int err_no;
-	char **env;
+//	char **env;
 	
 
 	// t_cmd	*cmd;
@@ -114,20 +115,20 @@ int main(int ac, char **av, char **ev)
 		// 	free(pr);
 		// }
 		cmd = NULL;
-		env = NULL;
+		data->env = NULL;
 		prompt = ft_strjoin(data->pwd, " $ ");
 		if (!prompt)
 			panic("strjoin");
-		line = readline(prompt);
+		data->line = readline(prompt);
 		free(prompt);
 		prompt = NULL;
-		if (line == 0)
+		if (data->line == 0)
 			break ;
-		if (ft_strlen(line) == 0)
+		if (ft_strlen(data->line) == 0)
 			continue ;
-		env = make_env(data);
+		data->env = make_env(data);
 		//data->path_arr = get_path_arr(env);
-		data->tokens = tokenize(line);
+		data->tokens = tokenize(data->line);
 		if (data->tokens && reorder_tokens(data) == 0)
 		{
 			set_cmd_table(data);
@@ -136,7 +137,7 @@ int main(int ac, char **av, char **ev)
 			{
 				set_signals(PARENT);
 				cmd = data->cmds;
-				run_pipe(data, cmd, env);
+				run_pipe(data, cmd, data->env);
 			}
 		}
 		//data->env_arr = make_env(data);
@@ -145,10 +146,11 @@ int main(int ac, char **av, char **ev)
 		//data->err_no = run_pipe(data, data->cmds, ev);
 		// free_tokens(data->tokens);
 		// free_cmds(data->cmds);
-		add_history(line);
-		free(line);
-		if (env)
-			free_args(&env);
+		add_history(data->line);
+		free(data->line);
+		data->line = NULL;
+		// if (env)
+		// 	free_args(&env);
 		reset_data(data);
 //		clean_data(data);
 	

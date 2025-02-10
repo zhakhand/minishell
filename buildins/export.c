@@ -94,6 +94,7 @@ int	ft_export(t_data *data, t_cmd *node)
 	if (node->args[1] == NULL)
 		return (export_no_args(data), 0);
 	i = 1;
+//	printf("args[1] = %s\n", node->args[1]);
 	if (check_symbols(node->args[1]) == 1)
 		return (ft_putmsg_fd("export: `", node->args[1], NVI, 2), 1);
 	while (node->args[i] != NULL)

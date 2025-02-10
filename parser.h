@@ -128,7 +128,9 @@ typedef struct s_data
 	int		redir_err;
 	int		child_start;
 	char 	*temp_name;
+	char 	*line;
 	char 	**args;
+	char 	**env;
 	char 	**path_arr;
 	char	*path;
 	char	*old_pwd;

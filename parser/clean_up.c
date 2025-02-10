@@ -69,18 +69,22 @@ void	clean_data(t_data *data)
 		free_cmds(data->cmds);
 	if (data->path_arr)
 		free_args(&data->path_arr);
+	if (data->env)
+		free_args(&data->env);
 	data->tokens = NULL;
 	data->cmds = NULL;
 	if (data->env_var)
 		clean_env(data);
 	if (data->old_pwd)
 		free(data->old_pwd);
+//	if (data->line)
 	if (data->pwd)
 		free(data->pwd);
 	if (data->path)
 		free(data->path);
 	if (data->temp_name)
 		free(data->temp_name);
+	free(data->line);
 	free(data);
 	data = NULL;
 	close(STDIN_FILENO);
@@ -98,6 +102,8 @@ void	reset_data(t_data *data)
 		free_cmds(data->cmds);
 	if (data->path_arr)
 		free_args(&data->path_arr);
+	if (data->env)
+		free_args(&data->env);
 	if (data->temp_name)
 		free(data->temp_name);
 	data->temp_name = NULL;
