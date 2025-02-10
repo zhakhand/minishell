@@ -37,7 +37,10 @@ void	ft_unset(t_data *data, t_cmd *n)
 	while (n->args[i] != NULL)
 	{
 		if (ft_strncmp(n->args[i], "OLDPWD", 6) == 0)
+		{
+			free(data->old_pwd);
 			data->old_pwd = NULL;
+		}
 		unset_one(data, n, i);
 		i++;
 	}
