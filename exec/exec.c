@@ -257,19 +257,25 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 //			system("ls -l /proc/self/fd"); // List open file descriptors
 			int err = data->err_no;
 			clean_data(data);
-			if (envp)
-				free_args(&envp);
+			// if (envp)
+			// 	free_args(&envp);
 			exit(err);
 		}
 
 		// Родительский процесс: закрываем дескрипторы
 		if (prev_fd != STDIN_FILENO)
 			close(prev_fd);
+		prev_fd = fds[0];
 		if (cmd->next != NULL)
 		{
 			close(fds[1]);    // Закрываем конец записи
 			prev_fd = fds[0]; // Устанавливаем новый ввод для следующей команды
 		}
+		// else
+		// {
+		// 	close(fds[0]); // ✅ Close read-end when not used
+		// 	close(fds[1]); // ✅ Close write-end when not used
+		// }
 		cmd = cmd->next;
 	}
 
