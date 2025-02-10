@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/07 13:03:39 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/10 06:08:13 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,14 @@ char	*random_name(t_data *data, int i)
 void	add_to_line(char c, char **line, t_data *data)
 {
 	char	*temp;
+	char	str[2];
 
 	temp = NULL;
+	str[0] = c;
+	str[1] = '\0';
 	if (*line)
 		temp = *line;
-	*line = ft_strjoin(temp, &c);
+	*line = ft_strjoin(temp, str);
 	if (temp)
 		free(temp);
 	temp = NULL;
@@ -72,7 +75,6 @@ int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 		}
 		if (redir->expands && ft_strchr(line, '$'))
 			line = expand_heredoc(line, data);
-		// printf("[%s]\n", line);
 		if (line)
 			ft_putendl_fd(line, fd);
 		free(line);
