@@ -29,11 +29,11 @@ int	add_to_env_end(t_data *data, char *str)
 	}
 	else if (str[i] == '=' && !str[i + 1])
 	{
-		new_var = set_env_var(data, ft_substr(str, 0, i), "");
+		new_var = set_env_var(data, ft_strndup(str, i), "");
 		new_var->is_valid = 1;
 		return (0);
 	}
-	new_var = set_env_var(data, ft_substr(str, 0, i), str + i + 1);
+	new_var = set_env_var(data, ft_strndup(str, i), str + i + 1);
 	new_var->is_valid = 1;
 	//free(str);
 	//free(new_var);

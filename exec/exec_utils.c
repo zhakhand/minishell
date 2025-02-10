@@ -43,6 +43,10 @@ void	ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd)
 
 int	ft_edge_cases(t_data *data, t_cmd *cmd)
 {
+	if (cmd->args_count == 0 || !cmd->args)
+		return (0);
+	if (!cmd->args[0])
+		return (0);
 	if (ft_strcmp(cmd->args[0], "") == 0 ||
 		ft_strcmp(cmd->args[0], ".") == 0 ||
 		ft_strcmp(cmd->args[0], "..") == 0 ||

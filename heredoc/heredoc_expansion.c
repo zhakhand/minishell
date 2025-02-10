@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 17:31:25 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/04 10:25:10 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/10 15:00:45 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,28 +85,29 @@ void	expand_variable(char *line, int *index, char **exp_line, t_data *data)
 	free(key);
 	if (!*exp_line)
 		end_it(data);
+	(*index)--;
 }
 
 char	*expand_heredoc(char *line, t_data *data)
 {
 	int		i;
 	char	*expanded_line;
-//	t_var	*env_var;
 
 	i = 0;
-//	env_var = NULL;
-	expanded_line = NULL;
+	expanded_line = ft_strdup("");
+	if (!expanded_line)
+		end_it(data);
 	while (line[i] != '\0')
 	{
-		if (line[i] == '$')
+		if (line[i] == '$' && line[i + 1] != '\0')
 			expand_variable(line, &i, &expanded_line, data);
 		else
 		{
 			add_to_line(line[i], &expanded_line, data);
 			if (!line)
-				return (free(expanded_line), NULL);
+				return (free(expanded_line), free(line), NULL);
 		}
 		++i;
 	}
-	return (expanded_line);
+	return (free(line), expanded_line);
 }
