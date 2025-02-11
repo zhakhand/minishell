@@ -99,6 +99,7 @@ int	ft_export(t_data *data, t_cmd *node)
 		return (ft_putmsg_fd("export: `", node->args[1], NVI, 2), 1);
 	while (node->args[i] != NULL)
 	{
+//		printf("args[i] = %s\n", node->args[i]);
 		if (ft_strchr(node->args[i], '=') != NULL)
 		{
 			if (check_open_quotes(node->args[i]) == 1)
@@ -108,7 +109,7 @@ int	ft_export(t_data *data, t_cmd *node)
 					return (0);
 			}
 		}
-		add_to_env_end(data, node->args[i]);
+		add_to_env_end(node->args[i], data);
 		i++;
 	}
 	return (0);

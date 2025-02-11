@@ -10,7 +10,7 @@ int	add_to_env_end_helper(char *str)
 	return (i);
 }
 
-int	add_to_env_end(t_data *data, char *str)
+int	add_to_env_end(char *str, t_data *data)
 {
 	t_var	*new_var;
 	int		i;
