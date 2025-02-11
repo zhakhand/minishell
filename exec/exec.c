@@ -201,9 +201,11 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 
 	data->child_start = 0;
 
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
 	while (cmd != NULL)
 	{
-//		printf("cmd->cmd %s\n", cmd->cmd);
+		printf("cmd->cmd %s\n", cmd->cmd);
 		data->redir_err = 0;
 		if (!check_parent_buildin(cmd))
 		{
@@ -257,6 +259,10 @@ int run_pipe(t_data *data, t_cmd *cmd, char **envp)
 //			system("ls -l /proc/self/fd"); // List open file descriptors
 			int err = data->err_no;
 			clean_data(data);
+			if (fds[0] != STDIN_FILENO)
+				close(fds[0]);
+			if (fds[1] != STDIN_FILENO)
+				close(fds[1]);
 			// if (envp)
 			// 	free_args(&envp);
 			exit(err);

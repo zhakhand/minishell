@@ -41,7 +41,7 @@ typedef struct s_redirects
 // //	char 	**pwd;
 
 // }			t_data;
-int	add_to_env_end(t_data *data, char *str);
+int	add_to_env_end(char *str, t_data *data);
 char	*add_quotes_to_val(char *str);
 char	*add_quotes(char *str);
 char	**sort_env(char **arr);
