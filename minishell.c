@@ -26,7 +26,7 @@ void	increase_shell_lvl(t_data *data)
 		lvl = set_env_var(data, ft_strdup("SHLVL"), "0");
 	val = ft_atoi(lvl->val) + 1;
 	s = ft_itoa(val);
-	set_env_var(data, "SHLVL", s);
+	set_env_var(data, ft_strdup("SHLVL"), s);
 	free(s);
 	//printf("SHLVL= %s\n", lvl->val);
 }

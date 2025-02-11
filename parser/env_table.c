@@ -38,9 +38,12 @@ t_var	*set_env_var(t_data *data, char *key, char *val)
 		new = create_env_var(key, val);
 		return (push_back(data, new));
 	}
+	if (key && *key)
+		free(key);
+	key = NULL;
 	free(new->val);
 	new->val = NULL;
-	new->val = ft_strndup(val, str_len(val));
+	new->val = ft_strdup(val);
 	return (new);
 }
 
@@ -51,12 +54,12 @@ t_var	*create_env_var(char *key, char *val)
 	var = malloc(sizeof(t_var));
 	if (!var)
 		panic("malloc");
-	var->key = ft_strndup(key, str_len(key));
-	if (key && *key)
+	var->key = ft_strdup(key);
+	if (key)
 		free(key);
 	key = NULL;
 	var->is_valid = 1;
-	var->val = ft_strndup(val, str_len(val));
+	var->val = ft_strdup(val);
 	var->next = NULL;
 	return (var);
 }

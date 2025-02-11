@@ -49,7 +49,7 @@ char	*ft_strndup(char *str, int len)
 	int		i;
 
 	i = -1;
-	ret_str = malloc(sizeof(char *) * len + 1);
+	ret_str = ft_calloc(len, sizeof(char));
 	if (!ret_str)
 		panic("malloc");
 	while (++i < len && str[i] != '\0')
