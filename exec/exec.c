@@ -53,10 +53,7 @@ pid_t	make_fork(void)
 
 int	run_pipe(t_data *data, t_cmd *cmd, char **envp)
 {
-	int		prev_fd;
-	pid_t	pid;
-
-	prev_fd = init_parent_vars(data, cmd);
+	data->prev_fd = init_parent_vars(data, cmd);
 	while (cmd != NULL)
 	{
 		data->redir_err = 0;
@@ -64,15 +61,19 @@ int	run_pipe(t_data *data, t_cmd *cmd, char **envp)
 		{
 			data->err_no = exec_buildin(data, cmd);
 			if (cmd->next == NULL)
+			{
+				if (data->prev_fd != STDIN_FILENO)
+					close(data->prev_fd);
 				return (0);
+			}
 		}
 		if (cmd->next != NULL && pipe(cmd->fds) == -1)
 			panic("pipe err");
 		data->child_start = 1;
-		pid = make_fork();
-		if (pid == 0)
-			run_child(data, cmd, envp, prev_fd);
-		prev_fd = close_fds_parent(prev_fd, cmd);
+		data->pid = make_fork();
+		if (data->pid == 0)
+			run_child(data, cmd, envp, data->prev_fd);
+		data->prev_fd = close_fds_parent(data->prev_fd, cmd);
 		cmd = cmd->next;
 	}
 	parent_wait_child(data);
