@@ -122,6 +122,7 @@ typedef struct s_cmd
 
 typedef struct s_data
 {
+	int 	prev_fd;
 	int 	argc;
 	int		err_no;
 	int		last_err;
@@ -140,6 +141,7 @@ typedef struct s_data
 	t_var 	*env_var;
 	t_token *tokens;
 	t_cmd 	*cmds;
+	pid_t	pid;
 } t_data;
 
 int is_sep(char c);
