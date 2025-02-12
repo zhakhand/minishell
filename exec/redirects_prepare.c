@@ -34,8 +34,8 @@ int	process_output_list(t_redir *temp, t_redir **out, t_redir **last_out)
 		if (!(*out))
 			*out = temp;
 		else
-			(*last_output)->next = temp;
-		*last_output = temp;
+			(*last_out)->next = temp;
+		*last_out = temp;
 	}
 	return (0);
 }
