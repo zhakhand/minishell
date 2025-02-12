@@ -27,7 +27,7 @@ int	process_input_list(t_redir *temp, t_redir **in, t_redir **last_input)
 	return (0);
 }
 
-int	process_output_list(t_redir *temp, t_redir **out, t_redir **last_output)
+int	process_output_list(t_redir *temp, t_redir **out, t_redir **last_out)
 {
 	if (temp->type == OUT || temp->type == APPEND)
 	{

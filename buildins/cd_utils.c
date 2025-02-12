@@ -58,7 +58,6 @@ int	get_old_pwd(t_data *data)
 	return (1);
 }
 
-
 char	*get_home(t_data *data)
 {
 	t_var	*temp;

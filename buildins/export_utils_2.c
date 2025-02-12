@@ -75,88 +75,43 @@ int	add_to_env(char *str, t_data *data)
 	}
 	new_var = set_env_var(data, ft_substr(str, 0, i), str + i + 1);
 	new_var->is_valid = 1;
-	//free(str);
-	//free(new_var);
 	return (0);
 }
 
-// int	check_all_symbols(char *str)
-// {
-// 	int	i;
-// 	int	flag;
-
-// 	i = 0;
-// 	flag = 0;
-	
-// 	while (str[i] && str[i] != '\0')
-// 	{
-// 		printf("str[i] = %c\n", str[i]);
-// 		if (i == 0 && str[i] == '_')
-// 			i++;
-// 		if (str[i] == '=')
-// 		{
-// 			flag = 1;
-// 			i++;
-// 		}
-// 		if (flag == 0 && str[i] == '-')
-// 			return (1);
-// 		if (flag == 0)
-// 		{
-// 			if (ft_isalnum(str[i]) == 0 && (str[i] != ' ' && str[i] != '_')
-// 				&& str[i] != '"' && str[i] != '$')
-// 				return (1);
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }
 int	check_all_symbols(char *str)
 {
 	int	i;
 	int	flag;
 
-	if (!str)  // Prevent NULL pointer access
-		return (1);
-
 	i = 0;
+	if (str[0] == '_')
+		i++;
 	flag = 0;
-
-	while (str[i] != '\0')  // Avoid redundant check
+	while (str[i] != '\0')
 	{
-		if (i == 0 && str[i] == '_')
-		{
-			i++;
-			continue;
-		}
-
 		if (str[i] == '=')
 		{
 			flag = 1;
 			i++;
-			continue;
+			continue ;
 		}
-
 		if (flag == 0 && str[i] == '-')
 			return (1);
-
 		if (flag == 0)
-		{
-			if (!ft_isalnum(str[i]) && str[i] != ' ' && str[i] != '_' &&
-				str[i] != '"' && str[i] != '$')
+			if (!ft_isalnum(str[i]) && str[i] != ' ' && str[i] != '_'
+				&& str[i] != '"' && str[i] != '$')
 				return (1);
-		}
-
 		i++;
 	}
-
 	return (0);
 }
-
 
 int	check_symbols(char *str)
 {
 	int	res;
 
+	if (!str)
+		return (1);
 	if (str[0] == '|' || str[0] == '=')
 		return (1);
 	if (str[0] == '_' && str[1] == '\0')
