@@ -27,15 +27,15 @@ int	process_input_list(t_redir *temp, t_redir **in, t_redir **last_input)
 	return (0);
 }
 
-int	process_output_list(t_redir *temp, t_redir **out, t_redir **last_output)
+int	process_output_list(t_redir *temp, t_redir **out, t_redir **last_out)
 {
 	if (temp->type == OUT || temp->type == APPEND)
 	{
 		if (!(*out))
 			*out = temp;
 		else
-			(*last_output)->next = temp;
-		*last_output = temp;
+			(*last_out)->next = temp;
+		*last_out = temp;
 	}
 	return (0);
 }

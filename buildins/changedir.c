@@ -30,31 +30,6 @@ int	cd_home(t_data *data)
 	return (0);
 }
 
-// int	cd_prev(t_data *data)
-// {
-// 	char	*pwd;
-// 	char	*old_pwd;
-
-// 	if(get_old_pwd(data) == 1)
-// 	{
-// 		ft_putmsg_fd(MSH_CD, "OLDPWD not set", "\n", STDERR_FILENO);
-// 		return (EXIT_FAILURE);
-// 	}
-// 	pwd = ft_strdup(data->pwd);
-// 	old_pwd = ft_strdup(data->old_pwd);
-// 	if (!pwd || !old_pwd)
-// 		panic("pwd error!");
-// 	if (chdir(old_pwd) == -1)
-// 		perror("cd");
-// 	ft_putstr_fd(old_pwd, 1);
-// 	ft_putstr_fd("\n", 1);
-// 	change_old_pwd_in_env(data, pwd);
-// 	change_pwd_in_env(data, getcwd(NULL, 0));
-// 	free(pwd);
-// 	free(old_pwd);
-// 	return (0);
-// }
-
 int	cd_prev(t_data *data)
 {
 	char	*pwd;
@@ -82,20 +57,13 @@ int	cd_prev(t_data *data)
 	return (0);
 }
 
-
 int	cd_up(t_data *data, t_cmd *node)
 {
-	char	*pwd;
-	int i;
 	struct stat	sb;
+	char		*pwd;
+	int			i;
 
-	i = ft_strlen(data->pwd);
-	while (i > 0)
-	{
-		if (data->pwd[i] == '/')
-			break;
-		i--;
-	}
+	i = get_i_for_cd_up(data);
 	if (i == 0)
 		pwd = ft_strdup("/");
 	else
@@ -109,10 +77,7 @@ int	cd_up(t_data *data, t_cmd *node)
 	free(pwd);
 	pwd = ft_strdup(data->pwd);
 	if (chdir(node->args[1]) == -1)
-	{
-		ft_putmsg_fd("cd: ", node->args[1], N_F_D, STDERR_FILENO);
-		return (EXIT_FAILURE);
-	}
+		return (ft_putmsg_fd("cd: ", node->args[1], N_F_D, 2), EXIT_FAILURE);
 	change_old_pwd_in_env(data, pwd);
 	change_pwd_in_env(data, getcwd(NULL, 0));
 	free(pwd);

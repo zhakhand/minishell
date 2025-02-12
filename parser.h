@@ -109,6 +109,7 @@ typedef struct s_cmd
 {
 	int				in;
 	int				out;
+	int				fds[2];
 	int 			abs_path;
 	int				args_count;
 	char 			*cmd;

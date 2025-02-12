@@ -7,7 +7,7 @@ void	free_temp(t_var *temp)
 	free(temp);
 }
 
-void unset_one(t_data *data, t_cmd *n, int i)
+void	unset_one(t_data *data, t_cmd *n, int i)
 {
 	t_var	*temp;
 	t_var	*temp2;
@@ -33,6 +33,7 @@ void unset_one(t_data *data, t_cmd *n, int i)
 void	ft_unset(t_data *data, t_cmd *n)
 {
 	int		i;
+
 	i = 1;
 	while (n->args[i] != NULL)
 	{

@@ -542,3 +542,243 @@ int handle_redirects(t_data *data, t_cmd *node)
 // 	return (err);
 // }
 
+
+
+//LAST WORKING VERSION 100 LINES
+
+int run_pipe(t_data *data, t_cmd *cmd, char **envp)
+{
+	int fds[2];
+	int prev_fd = STDIN_FILENO;
+	int status;
+	pid_t pid;
+
+	data->child_start = 0;
+
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
+	while (cmd != NULL)
+	{
+//		printf("cmd->cmd %s\n", cmd->cmd);
+		data->redir_err = 0;
+		if (!check_parent_buildin(cmd))
+		{
+			data->err_no = exec_buildin(data, cmd);
+			if (cmd->next == NULL)
+				return (0);
+		}
+		if (cmd->next != NULL && pipe(fds) == -1)
+			panic("pipe err");
+		data->child_start = 1;
+		pid = fork();
+		if (!cmd->next)
+			data->last_pid = pid;
+		if (pid == -1)
+			panic("fork err");
+		else if (pid == 0) // Дочерний процесс
+		{
+			set_signals(CHILD);
+			if (prev_fd != STDIN_FILENO)
+			{
+				if (dup2(prev_fd, STDIN_FILENO) == -1)
+					panic("dup2 prev_fd");
+				close(prev_fd);
+			}
+			if (handle_redirects(data, cmd) == -1)
+			{
+				data->err_no = 1;
+				data->redir_err = 1;
+			}
+//			printf("child\n");
+			int check_redir = 0;
+			if (cmd->redir && (cmd->redir->type == OUT || cmd->redir->type == APPEND))
+				check_redir = 1;
+			if (cmd->next != NULL && !check_redir)
+			{
+				close(fds[0]); // Закрываем конец для чтения
+				if (dup2(fds[1], STDOUT_FILENO) == -1)
+					panic("dup2 fds[1]");
+				close(fds[1]);
+			}
+			if (!check_child_buildin(cmd) && data->redir_err == 0)
+			{
+			    data->err_no = exec_buildin(data, cmd);
+			}
+			else if (data->redir_err == 0 
+			&& !ft_edge_cases(data, cmd) && check_child_buildin(cmd) == 1)
+			{
+				data->err_no = run_execve(data, cmd, envp);
+//				free(full_path);
+			}
+//			system("ls -l /proc/self/fd"); // List open file descriptors
+			int err = data->err_no;
+			clean_data(data);
+			if (fds[0] != STDIN_FILENO)
+				close(fds[0]);
+			if (fds[1] != STDOUT_FILENO)
+				close(fds[1]);
+			// if (envp)
+			// 	free_args(&envp);
+			exit(err);
+		}
+
+		// Родительский процесс: закрываем дескрипторы
+		if (prev_fd != STDIN_FILENO)
+			close(prev_fd);
+		prev_fd = fds[0];
+		if (cmd->next != NULL)
+		{
+			close(fds[1]);    // Закрываем конец записи
+			prev_fd = fds[0]; // Устанавливаем новый ввод для следующей команды
+		}
+		// else
+		// {
+		// 	close(fds[0]); // ✅ Close read-end when not used
+		// 	close(fds[1]); // ✅ Close write-end when not used
+		// }
+		cmd = cmd->next;
+	}
+
+	// Ожидание завершения дочерних процессов
+	set_signals(WAIT);
+	while (waitpid(-1, &status, 0) > 0)
+	{
+		if (WIFEXITED(status))
+			data->err_no = WEXITSTATUS(status);
+	}
+//    clear_path_arr(data);
+	return (0);
+}
+
+//RANDOM NAME GENERATOR
+
+int	get_random_fd(t_data *data)
+{
+	int		fd[2];
+	int		pid;
+	int		temp_fd;
+	char	*temp;
+
+	if (pipe(fd) == -1)
+		panic("pipe");
+	pid = fork();
+	if (pid == -1)
+		panic("fork");
+	if (pid == 0)
+	{
+		close(fd[0]);
+		close(fd[1]);
+		exit (0);	
+	}
+	else
+	{
+		close(fd[1]);
+		temp = ft_strjoin("/tmp/", ft_itoa(pid));
+		temp_fd = open(temp, O_RDWR | O_CREAT | O_TRUNC, 0666);
+		if (temp_fd == -1)
+			panic("open");
+		free(temp);
+	}
+	data->temp_name = ft_strjoin("/tmp/", ft_itoa(pid));
+	return (temp_fd);
+}
+
+char	*get_temp_name(int pid)
+{
+	char *temp;
+
+	temp = ft_strjoin("/tmp/", ft_itoa(pid));
+	return (temp);
+}
+
+// FROM ENVP_UTILS 
+
+void get_envs(t_data *data, char **envp)
+{
+	int i;
+	int arr_lines;
+
+	i = 0;
+	arr_lines = get_arr_lines(envp) + 1;
+	data->env = malloc(arr_lines * sizeof(char *));;
+	if(!data->env)
+	{
+		panic("malloc");
+		return ;
+	}
+	while(envp[i] != NULL)
+	{
+		data->env[i] = ft_strdup(envp[i]);
+		if(!data->env[i])
+		{
+			while (i > 0)
+				free(data->env[--i]);
+			free(data->env);
+			return ;
+		}
+//		printf("%s\n", data->env[i]);  
+		i++;
+	}
+	data->env[i] = NULL;
+}
+
+void change_env_to_value(t_cmd_node *node, t_data *data, char *found, int ii)
+{
+	int i;
+	int len;
+	char *no_dollar;
+	char *value;int execute(t_data *data)
+
+
+	printf("fou %s", found);
+	no_dollar = ft_strdup(found + 1);
+	i = 0;
+	len = ft_strlen(no_dollar);
+	while(data->env[i] != NULL)
+	{
+//	printf("val %s", data->env[i]);
+		if (ft_strncmp(data->env[i], no_dollar, len) == 0)
+		{
+
+			value = ft_strdup(data->env[i] + len + 1);
+			if (!value)
+				panic("strdup");
+			free(node->cmd_args[ii]);
+			node->cmd_args[ii] = ft_strdup(value);
+			if (!node->cmd_args[ii])
+				panic("strdup");
+			free(value);
+		}
+		i++;
+	}
+	free(no_dollar);
+}
+
+void find_env_in_cmd(t_cmd_node **node, t_data *data)
+{
+	t_cmd_node *current;
+	int i;
+	char *found_env;
+
+	found_env = NULL;
+	current = *node;
+//	printf("bbbbbb  %s\n", current->cmd_args[0]);
+	while (current)
+	{
+		i = 0;
+		while (current->cmd_args[i] != NULL)
+		{
+			if(current->cmd_args[i][0] == '$')
+			{
+				found_env = ft_strdup(current->cmd_args[i]);
+				printf("ENV: %s  %d\n", current->cmd_args[i], i);
+				change_env_to_value(current, data, found_env, i);
+			}
+			i++;
+		}
+		current = current->left;    
+	}
+	if(found_env)
+		free(found_env);
+}
+
