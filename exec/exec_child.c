@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_child.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/13 12:19:13 by oshcheho          #+#    #+#             */
+/*   Updated: 2025/02/13 12:19:13 by oshcheho         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 #include "../parser.h"
 #include <unistd.h>
@@ -41,6 +53,7 @@ void	run_child(t_data *data, t_cmd *cmd, char **envp, int prev_fd)
 	int	check_redir;
 
 	set_signals(CHILD);
+	data->we_have_child = 1;
 	if (prev_fd != STDIN_FILENO)
 	{
 		if (dup2(prev_fd, STDIN_FILENO) == -1)
@@ -58,7 +71,7 @@ void	run_child(t_data *data, t_cmd *cmd, char **envp, int prev_fd)
 	}
 	if (!check_child_buildin(cmd) && data->redir_err == 0)
 		data->err_no = exec_buildin(data, cmd);
-	else if (data->redir_err == 0
+	if (data->redir_err == 0
 		&& !ft_edge_cases(data, cmd) && check_child_buildin(cmd) == 1)
 		data->err_no = run_execve(data, cmd, envp);
 	exit(set_child_err(data, cmd));

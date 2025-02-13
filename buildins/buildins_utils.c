@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   buildins_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/13 12:17:26 by oshcheho          #+#    #+#             */
+/*   Updated: 2025/02/13 12:17:26 by oshcheho         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	check_parent_buildin(t_cmd *node)
@@ -25,7 +37,8 @@ int	check_child_buildin(t_cmd *node)
 		|| node->built_in == ECH
 		|| node->built_in == PWD
 		|| node->built_in == EXPORT
-		|| node->built_in == ENV)
+		|| node->built_in == ENV
+		|| node->built_in == EXIT)
 		return (0);
 	return (1);
 }
