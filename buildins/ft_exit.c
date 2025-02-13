@@ -95,8 +95,7 @@ long	ft_exit_atol(t_data *data, t_cmd *n)
 			if (exit_code < 0)
 				exit_code = (exit_code % 256 + 256) % 256;
 		}
-		clean_data(data);
-		exit(exit_code);
+		return (exit_code);
 	}
 	return (exit_code);
 }
@@ -106,16 +105,10 @@ int	ft_exit(t_data *data, t_cmd *node)
 	long	exit_code;
 	int		i;
 
-	if (node->next != NULL || data->we_have_child == 1)
-		return (0);
 	i = 0;
 	exit_code = 0;
 	if (node->args[1] == NULL)
-	{
-		ft_putstr_fd("exit\n", 1);
-		clean_data(data);
-		exit(0);
-	}
+		return (exit_no_args(data, node));
 	if (handle_signs(node->args[1]) != 0)
 		return (s_e(data, 2), ft_putmsg_fd("exit: ", node->args[1], NAR, 2), 2);
 	while (node->args[1][i] != '\0')
@@ -127,5 +120,10 @@ int	ft_exit(t_data *data, t_cmd *node)
 		i++;
 	}
 	exit_code = ft_exit_atol(data, node);
-	return (exit_code);
+	data->err_no = exit_code;
+	if (node->next != NULL || data->we_have_child == 1)
+		return (data->err_no);
+	ft_putstr_fd("exit\n", 1);
+	clean_data(data);
+	exit (exit_code);
 }

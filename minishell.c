@@ -123,7 +123,10 @@ int main(int ac, char **av, char **ev)
 		free(prompt);
 		prompt = NULL;
 		if (data->line == 0)
+		{
+			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break ;
+		}
 		if (ft_strlen(data->line) == 0)
 			continue ;
 		data->env = make_env(data);

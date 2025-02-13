@@ -57,19 +57,13 @@ int	cd_prev(t_data *data)
 	return (0);
 }
 
+
 int	cd_up(t_data *data, t_cmd *node)
 {
 	struct stat	sb;
 	char		*pwd;
-	int			i;
 
-	i = get_i_for_cd_up(data);
-	if (i == 0)
-		pwd = ft_strdup("/");
-	else
-		pwd = ft_substr(data->pwd, 0, i);
-	if (!pwd)
-		panic("pwd error!");
+	pwd = get_i_for_cd_up(data);
 	if (stat(node->args[1], &sb) == -1)
 		return (free(pwd), ft_putmsg_fd(MSH_CD, node->args[1], N_F_D, 2), 1);
 	if (ft_strcmp(data->pwd, "/") == 0)
@@ -77,11 +71,14 @@ int	cd_up(t_data *data, t_cmd *node)
 	free(pwd);
 	pwd = ft_strdup(data->pwd);
 	if (chdir(node->args[1]) == -1)
-		return (ft_putmsg_fd("cd: ", node->args[1], N_F_D, 2), EXIT_FAILURE);
+		return (free(pwd), ft_putmsg_fd("cd: ", node->args[1], N_F_D, 2), 1);
 	change_old_pwd_in_env(data, pwd);
-	change_pwd_in_env(data, getcwd(NULL, 0));
 	free(pwd);
-	return (0);
+	pwd = getcwd(NULL, 0);
+	if (!pwd)
+		return (free(pwd), ft_putmsg_fd(MSH_CD, "", N_F_D, 2), 1);
+	change_pwd_in_env(data, getcwd(NULL, 0));
+	return (free(pwd), 0);
 }
 
 int	cd_dir(t_data *data, t_cmd *node)
@@ -109,7 +106,7 @@ int	cd_dir(t_data *data, t_cmd *node)
 int	changedir(t_data *data, t_cmd *node)
 {
 	int	res;
-
+	
 	res = -1;
 	if (data->child_start == 1)
 		return (0);

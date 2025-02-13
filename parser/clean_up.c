@@ -110,4 +110,5 @@ void	reset_data(t_data *data)
 	data->path_arr = NULL;
 	data->tokens = NULL;
 	data->cmds = NULL;
+	data->we_have_child = 0;
 }
