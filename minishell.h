@@ -32,7 +32,7 @@ int		process_output_list(t_redir *temp, t_redir **out, t_redir **last_out);
 
 void	run_child(t_data *data, t_cmd *cmd, char **envp, int prev_fd);
 
-int		get_i_for_cd_up(t_data *data);
+char	*get_i_for_cd_up(t_data *data);
 
 int		add_to_env_end(char *str, t_data *data);
 int		check_symbols(char *str);
