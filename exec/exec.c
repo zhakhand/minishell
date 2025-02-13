@@ -36,9 +36,22 @@ void	parent_wait_child(t_data *data)
 	set_signals(WAIT);
 	while (waitpid(-1, &status, 0) > 0)
 	{
-		if (WIFEXITED(status))
-			data->err_no = WEXITSTATUS(status);
 	}
+	if (WIFEXITED(status))
+			data->err_no = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		data->err_no = WTERMSIG(status) + 128;
+		if (data->err_no == 130)
+			ft_putendl_fd("", STDERR_FILENO);
+		else if (WCOREDUMP(data->err_no))
+		{
+			if (data->err_no == 131)
+				ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
+		}
+	}
+	else
+		data->err_no = 1;
 }
 
 int	init_parent_vars(t_data *data, t_cmd *cmd)
