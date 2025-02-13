@@ -54,6 +54,8 @@ int		check_directory(char *file);
 int		run_execve(t_data *data, t_cmd *cmd, char **envp);
 int		get_random_fd(t_data *data);
 
+int		exit_no_args(t_data *data, t_cmd *node);
+
 char	*get_temp_name(int pid);
 
 void	free_node(t_cmd_node *node);

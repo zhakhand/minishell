@@ -16,6 +16,8 @@ int	change_pwd_in_env(t_data *data, char *pwd)
 {
 	t_var	*temp;
 
+	if (!pwd)
+		return (EXIT_FAILURE);
 	temp = data->env_var;
 	while (temp)
 	{

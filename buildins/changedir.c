@@ -79,6 +79,8 @@ int	cd_up(t_data *data, t_cmd *node)
 	if (chdir(node->args[1]) == -1)
 		return (ft_putmsg_fd("cd: ", node->args[1], N_F_D, 2), EXIT_FAILURE);
 	change_old_pwd_in_env(data, pwd);
+	if (!getcwd(NULL, 0))
+		return (ft_putmsg_fd(MSH_CD, "", N_F_D, 2), 1);
 	change_pwd_in_env(data, getcwd(NULL, 0));
 	free(pwd);
 	return (0);
