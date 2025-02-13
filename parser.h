@@ -129,6 +129,7 @@ typedef struct s_data
 	int		last_pid;
 	int		redir_err;
 	int		child_start;
+	int		we_have_child;
 	char 	*temp_name;
 	char 	*line;
 	char 	**args;

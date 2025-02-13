@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/13 12:19:26 by oshcheho          #+#    #+#             */
+/*   Updated: 2025/02/13 12:19:26 by oshcheho         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 #include "../parser.h"
-//#include <cerrno>
 #include <unistd.h>
 
 extern sig_atomic_t	g_signal;
@@ -38,6 +49,8 @@ int	init_parent_vars(t_data *data, t_cmd *cmd)
 	cmd->fds[0] = STDIN_FILENO;
 	cmd->fds[1] = STDOUT_FILENO;
 	prev_fd = STDIN_FILENO;
+	if (cmd->next != NULL)
+		data->we_have_child = 1;
 	return (prev_fd);
 }
 

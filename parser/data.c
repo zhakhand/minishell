@@ -46,6 +46,7 @@ t_data	*init_data(int ac, char **av, char **ev)
 	new->argc = ac;
 	new->args = av;
 	new->err_no = 0;
+	new->we_have_child = 0;
 	new->last_err = 0;
 	new->redir_err = 0;
 	set_env(new, ev);

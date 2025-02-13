@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/13 16:33:14 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/13 16:33:14 by marvin           ###   ########.fr       */
+/*   Created: 2025/02/13 12:18:34 by oshcheho          #+#    #+#             */
+/*   Updated: 2025/02/13 12:18:34 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ int	ft_exit(t_data *data, t_cmd *node)
 	long	exit_code;
 	int		i;
 
+	if (node->next != NULL || data->we_have_child == 1)
+		return (0);
 	i = 0;
 	exit_code = 0;
 	if (node->args[1] == NULL)

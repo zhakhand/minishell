@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   envp.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/13 12:19:08 by oshcheho          #+#    #+#             */
+/*   Updated: 2025/02/13 12:19:08 by oshcheho         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	add_slash(char ***path_arr)
@@ -23,6 +35,7 @@ char	**fill_path_arr(char **envp)
 	int		i;
 	char	**path_arr;
 
+	path_arr = NULL;
 	i = 0;
 	while (envp[i] != NULL)
 	{
