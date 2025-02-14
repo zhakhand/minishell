@@ -43,6 +43,9 @@ char	**sort_env(char **arr);
 char	**make_env_arr(t_data *data);
 
 void	s_e(t_data *data, int err_no);
+int		init_parent_vars(t_data *data, t_cmd *cmd);
+int		wait_last_pid(t_data *data, int count);
+
 
 int		handle_input_redirects(t_redir *redir);
 int		handle_output_redirects(t_redir *redirects);

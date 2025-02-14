@@ -59,3 +59,36 @@ int	ft_edge_cases(t_data *data, t_cmd *cmd)
 	}
 	return (0);
 }
+
+int	wait_last_pid(t_data *data, int count)
+{
+	int	i;
+	int	status;
+
+	i = 0;
+	while (i < count)
+	{
+		if (data->pid[i] == -1)
+		{
+			i++;
+			continue ;
+		}
+		if (waitpid(data->pid[i], &status, 0) == -1)
+			panic("waitpid");
+		i++;
+	}
+	return (status);
+}
+
+int	init_parent_vars(t_data *data, t_cmd *cmd)
+{
+	int	prev_fd;
+
+	data->child_start = 0;
+	cmd->fds[0] = STDIN_FILENO;
+	cmd->fds[1] = STDOUT_FILENO;
+	prev_fd = STDIN_FILENO;
+	if (cmd->next != NULL)
+		data->we_have_child = 1;
+	return (prev_fd);
+}
