@@ -142,7 +142,7 @@ typedef struct s_data
 	t_var 	*env_var;
 	t_token *tokens;
 	t_cmd 	*cmds;
-	pid_t	pid;
+	int		pid[1024];
 } t_data;
 
 int is_sep(char c);

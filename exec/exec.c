@@ -29,13 +29,22 @@ int	close_fds_parent(int prev_fd, t_cmd *cmd)
 	return (prev_fd);
 }
 
-void	parent_wait_child(t_data *data)
+void	parent_wait_child(t_data *data, int count)
 {
 	int	status;
+	int	i = 0;
 
 	set_signals(WAIT);
-	while (waitpid(-1, &status, 0) > 0)
+	while (i < count)
 	{
+		if (data->pid[i] == -1)
+		{
+			i++;
+			continue;
+		}
+		if (waitpid(data->pid[i], &status, 0) == -1)
+			panic("waitpid");
+		i++;
 	}
 	if (WIFEXITED(status))
 			data->err_no = WEXITSTATUS(status);
@@ -79,6 +88,7 @@ pid_t	make_fork(void)
 
 int	run_pipe(t_data *data, t_cmd *cmd, char **envp)
 {
+	int	i = 0;
 	data->prev_fd = init_parent_vars(data, cmd);
 	while (cmd != NULL)
 	{
@@ -96,12 +106,14 @@ int	run_pipe(t_data *data, t_cmd *cmd, char **envp)
 		if (cmd->next != NULL && pipe(cmd->fds) == -1)
 			panic("pipe err");
 		data->child_start = 1;
-		data->pid = make_fork();
-		if (data->pid == 0)
+		data->pid[i] = -1;
+		data->pid[i] = make_fork();
+		if (data->pid[i] == 0)
 			run_child(data, cmd, envp, data->prev_fd);
 		data->prev_fd = close_fds_parent(data->prev_fd, cmd);
 		cmd = cmd->next;
+		i++;
 	}
-	parent_wait_child(data);
+	parent_wait_child(data, i);
 	return (0);
 }
