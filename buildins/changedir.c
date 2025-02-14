@@ -57,7 +57,6 @@ int	cd_prev(t_data *data)
 	return (0);
 }
 
-
 int	cd_up(t_data *data, t_cmd *node)
 {
 	struct stat	sb;
@@ -106,7 +105,7 @@ int	cd_dir(t_data *data, t_cmd *node)
 int	changedir(t_data *data, t_cmd *node)
 {
 	int	res;
-	
+
 	res = -1;
 	if (data->child_start == 1)
 		return (0);

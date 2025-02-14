@@ -6,7 +6,7 @@
 /*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 17:25:19 by oshcheho          #+#    #+#             */
-/*   Updated: 2025/02/13 17:55:25 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/02/13 18:44:16 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ char	*get_i_for_cd_up(t_data *data)
 			break ;
 		i--;
 	}
-//	i = get_i_for_cd_up(data);
 	if (i == 0)
 		pwd = ft_strdup("/");
 	else
