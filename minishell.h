@@ -60,12 +60,13 @@ void	s_e(t_data *data, int err_no);
 int		init_parent_vars(t_data *data, t_cmd *cmd);
 int		wait_last_pid(t_data *data, int count);
 
-int		handle_input_redirects(t_redir *redir);
-int		handle_output_redirects(t_redir *redirects);
+
+int		handle_input_redirects(t_redir *redir, t_data *data);
+int		handle_output_redirects(t_redir *redirects, t_data *data);
 int		process_input_list(t_redir *temp, t_redir **in, t_redir **last_input);
-int		process_output_redirects(t_redir *output_redirects);
-int		process_input_redirects(t_redir *input_redirects);
-int		check_directory(char *file);
+int		process_output_redirects(t_redir *output_redirects, t_data *data);
+int		process_input_redirects(t_redir *input_redirects, t_data *data);
+int		check_directory(char *file, t_data *data);
 
 int		run_execve(t_data *data, t_cmd *cmd, char **envp);
 int		get_random_fd(t_data *data);
@@ -77,7 +78,7 @@ char	*get_temp_name(int pid);
 void	free_node(t_cmd_node *node);
 void	free_node_2(t_cmd_node *node);
 
-void	ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd);
+void	ft_putmsg_fd(char *msg1, char *msg2, char *msg3, t_data *data);
 int		ft_edge_cases(t_data *data, t_cmd *cmd);
 
 int		exec_buildin(t_data *data, t_cmd *node);

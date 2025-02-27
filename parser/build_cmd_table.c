@@ -13,13 +13,13 @@
 #include "../parser.h"
 #include "../minishell.h"
 
-t_cmd	*create_cmd_table(void)
+t_cmd	*create_cmd_table(t_data *data)
 {
 	t_cmd	*cmd_table;
 
 	cmd_table = malloc(sizeof(t_cmd));
 	if (!cmd_table)
-		panic("malloc");
+		end_it(data);
 	ft_bzero(cmd_table, sizeof(t_cmd));
 	cmd_table->args = NULL;
 	cmd_table->in = -1;
@@ -27,13 +27,13 @@ t_cmd	*create_cmd_table(void)
 	return (cmd_table);
 }
 
-t_redir	*init_redir(void)
+t_redir	*init_redir(t_data *data)
 {
 	t_redir	*new;
 
 	new = malloc(sizeof(t_redir));
 	if (!new)
-		panic("malloc");
+		end_it(data);
 	new->type = 0;
 	new->expands = 1;
 	new->ambig = 0;
@@ -60,7 +60,7 @@ void	add_to_list(t_token *token, t_redir *tail)
 	token->prev->val = NULL;
 }
 
-t_redir	*redir_list(t_token *token)
+t_redir	*redir_list(t_token *token, t_data *data)
 {
 	t_redir	*head;
 	t_redir	*prev;
@@ -72,7 +72,7 @@ t_redir	*redir_list(t_token *token)
 	{
 		if (is_redir(token->type) && token->next->type == WORD)
 		{
-			tail = init_redir();
+			tail = init_redir(data);
 			if (!head)
 				head = tail;
 			if (prev)
@@ -95,7 +95,7 @@ void	set_cmd_table(t_data *data)
 	t_cmd	*current;
 	t_cmd	*prev;
 
-	head = create_cmd_table();
+	head = create_cmd_table(data);
 	current = head;
 	prev = NULL;
 	token = data->tokens;
@@ -104,11 +104,11 @@ void	set_cmd_table(t_data *data)
 	{
 		if (current == NULL)
 		{
-			current = create_cmd_table();
+			current = create_cmd_table(data);
 			if (prev)
 				prev->next = current;
 		}
-		token = put_cmds(token, current);
+		token = put_cmds(token, current, data);
 		prev = current;
 		current = current->next;
 	}

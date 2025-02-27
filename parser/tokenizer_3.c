@@ -13,26 +13,26 @@
 #include "../parser.h"
 #include "../minishell.h"
 
-int	handle_quotes(t_token *tok, char *line, int *start, int *end)
+int	handle_quotes(t_token *tok, t_data *data, int *start, int *end)
 {
 	char	quote;
 
-	quote = *(line + *start);
+	quote = *(data->line + *start);
 	(*start)++;
 	*end = *start;
-	while (line[*end] != quote && line[*end] != '\0')
+	while (data->line[*end] != quote && data->line[*end] != '\0')
 		(*end)++;
-	if (line[*end] == '\0')
+	if (data->line[*end] == '\0')
 		return (ft_putstr_fd("syntax error: unclosed quotes!\n", 2), 0);
 	if (*end - *start == 0)
 	{
 		tok->type = WORD;
-		tok->val = ft_strdup("");
+		tok->val = ft_strndup("", 1, data);
 		tok->was_quoted = 1;
 		*start = ++(*end);
 		return (1);
 	}
-	tok->val = ft_strndup(line + *start, *end - *start);
+	tok->val = ft_strndup(data->line + *start, *end - *start, data);
 	if (quote == '\'')
 		tok->type = S_QUOTE;
 	else

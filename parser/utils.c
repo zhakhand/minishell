@@ -43,7 +43,7 @@ int	is_sep(char c)
 	return (0);
 }
 
-char	*ft_strndup(char *str, int len)
+char	*ft_strndup(char *str, int len, t_data *data)
 {
 	char	*ret_str;
 	int		i;
@@ -51,7 +51,7 @@ char	*ft_strndup(char *str, int len)
 	i = -1;
 	ret_str = ft_calloc(len, sizeof(char));
 	if (!ret_str)
-		panic("malloc");
+		end_it(data);
 	while (++i < len && str[i] != '\0')
 		ret_str[i] = str[i];
 	ret_str[i] = '\0';

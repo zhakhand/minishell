@@ -32,6 +32,8 @@ int	change_pwd_in_env(t_data *data, char *pwd)
 	}
 	free(data->pwd);
 	data->pwd = ft_strdup(pwd);
+	if (!data->pwd)
+		end_it(data);
 	free(pwd);
 	return (0);
 }
@@ -55,6 +57,8 @@ int	change_old_pwd_in_env(t_data *data, char *pwd)
 	}
 	free(data->old_pwd);
 	data->old_pwd = ft_strdup(pwd);
+	if (!data->old_pwd)
+		end_it(data);
 	return (0);
 }
 

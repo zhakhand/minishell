@@ -34,18 +34,18 @@ int	add_to_env_end(char *str, t_data *data)
 		new_var = get_env_var(data, str);
 		if (!new_var)
 		{
-			new_var = set_env_var(data, ft_strdup(str), "");
+			new_var = set_env_var(data, ft_strndup(str, str_len(str), data), "");
 			new_var->is_valid = 0;
 		}
 		return (0);
 	}
 	else if (str[i] == '=' && !str[i + 1])
 	{
-		new_var = set_env_var(data, ft_strndup(str, i), "");
+		new_var = set_env_var(data, ft_strndup(str, i, data), "");
 		new_var->is_valid = 1;
 		return (0);
 	}
-	new_var = set_env_var(data, ft_strndup(str, i), str + i + 1);
+	new_var = set_env_var(data, ft_strndup(str, i, data), str + i + 1);
 	new_var->is_valid = 1;
 	return (0);
 }

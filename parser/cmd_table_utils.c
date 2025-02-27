@@ -50,15 +50,17 @@ void	fill_args(t_cmd *cmd, t_token *token)
 	}
 }
 
-t_token	*put_cmds(t_token *token, t_cmd *cmd)
+t_token	*put_cmds(t_token *token, t_cmd *cmd, t_data *data)
 {
 	int		count;
 	t_token	*tail;
 
 	count = 0;
-	cmd->redir = redir_list(token);
+	cmd->redir = redir_list(token, data);
 	tail = count_args(&count, token);
 	cmd->args = ft_calloc(count, sizeof(char *));
+	if (!cmd->args)
+		end_it(data);
 	fill_args(cmd, token);
 	cmd->args_count = count;
 	cmd->cmd = cmd->args[0];

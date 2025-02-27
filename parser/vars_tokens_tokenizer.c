@@ -12,25 +12,27 @@
 
 #include "../parser.h"
 
-void	fbi_open_up(t_token *new, char *line, int *start, int *end)
+void	fbi_open_up(t_token *new, t_data *data, int *start, int *end)
 {
 	*end = *start;
-	while (line[*end] != 32 && line[*end] != 0 && line[*end] != '$')
+	while (data->line[*end] != 32 && data->line[*end] != 0 && data->line[*end] != '$')
 		(*end)++;
-	new->val = ft_strndup(line + *start, *end - *start);
+	new->val = ft_strndup(data->line + *start, *end - *start, data);
+	if (!new->val)
+		end_it(data);
 	*start = *end;
 	new->type = WORD;
 }
 
-void	set_space_var(t_token *new, char *line, int *start, int *end)
+void	set_space_var(t_token *new, t_data *data, int *start, int *end)
 {
-	if (line[*start] == 32 || line[*start] == 9)
-		return (set_space(new, line, start, end));
-	else if (line[*start] == '$')
-		return (handle_var(new, line, start, end));
+	if (data->line[*start] == 32 || data->line[*start] == 9)
+		return (set_space(new, data, start, end));
+	else if (data->line[*start] == '$')
+		return (handle_var(new, data, start, end));
 }
 
-t_token	*tokenize_quotes_vars(char *line)
+t_token	*tokenize_quotes_vars(char *line, t_data *data)
 {
 	t_token	*head;
 	t_token	*previous;
@@ -42,17 +44,19 @@ t_token	*tokenize_quotes_vars(char *line)
 	end = 0;
 	head = NULL;
 	previous = NULL;
-	while (line[start] && line[end])
+	data->line = line;
+	while (data->line[start] && data->line[end])
 	{
-		new = init_token();
+		new = init_token(data);
 		if (!head)
 			head = new;
 		place_token(new, previous);
-		if (line[start] == 32 || line[start] == '$')
-			set_space_var(new, line, &start, &end);
+		if (data->line[start] == 32 || data->line[start] == '$')
+			set_space_var(new, data, &start, &end);
 		else
-			fbi_open_up(new, line, &start, &end);
+			fbi_open_up(new, data, &start, &end);
 		previous = new;
 	}
+	data->line = NULL;
 	return (head);
 }

@@ -90,6 +90,8 @@ void	join_tokens(t_data *data)
 				current->next->was_quoted = 2;
 			}
 			merged = ft_strjoin(current->val, current->next->val);
+			if (!merged)
+				end_it(data);
 			current = relink_tokens(current, current->next, data);
 			free(current->val);
 			current->val = merged;

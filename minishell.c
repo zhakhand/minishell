@@ -23,10 +23,12 @@ void	increase_shell_lvl(t_data *data)
 
 	lvl = get_env_var(data, "SHLVL");
 	if (!lvl)
-		lvl = set_env_var(data, ft_strdup("SHLVL"), "0");
+		lvl = set_env_var(data, ft_strndup("SHLVL", 5, data), "0");
 	val = ft_atoi(lvl->val) + 1;
 	s = ft_itoa(val);
-	set_env_var(data, ft_strdup("SHLVL"), s);
+	if (!s)
+		end_it(data);
+	set_env_var(data, ft_strndup("SHLVL", 5, data), s);
 	free(s);
 	//printf("SHLVL= %s\n", lvl->val);
 }
@@ -48,7 +50,7 @@ char **make_env(t_data *data)
 	}
 	res = ft_calloc((i + 1), sizeof(char *));
 	if (!res)
-		panic("malloc");
+		end_it(data);
 	i = 0;
 	temp = data->env_var;
 	while (temp)
@@ -61,7 +63,7 @@ char **make_env(t_data *data)
 			if (tmp)
 				free(tmp);
 			if (!res[i])
-				panic("strjoin");
+				end_it(data);
 		}
 		i++;
 		temp = temp->next;
@@ -118,7 +120,7 @@ int main(int ac, char **av, char **ev)
 		data->env = NULL;
 		prompt = ft_strjoin(data->pwd, " $ ");
 		if (!prompt)
-			panic("strjoin");
+			end_it(data);
 		data->line = readline(prompt);
 		free(prompt);
 		prompt = NULL;
@@ -131,7 +133,7 @@ int main(int ac, char **av, char **ev)
 			continue ;
 		data->env = make_env(data);
 		//data->path_arr = get_path_arr(env);
-		data->tokens = tokenize(data->line);
+		data->tokens = tokenize(data);
 		if (data->tokens && reorder_tokens(data) == 0)
 		{
 			set_cmd_table(data);

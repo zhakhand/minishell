@@ -19,8 +19,8 @@ void	create_env(t_data *data)
 	t_var	*new;
 
 	pwd = getcwd(NULL, 0);
-	data->env_var = create_env_var(ft_strdup("PWD"), pwd);
-	new = set_env_var(data, ft_strdup("OLDPWD"), "");
+	data->env_var = create_env_var(ft_strndup("PWD", 3, data), pwd, data);
+	new = set_env_var(data, ft_strndup("OLDPWD", 6, data), "");
 	new->is_valid = 0;
 	if (pwd)
 		free(pwd);
@@ -43,6 +43,7 @@ t_data	*init_data(int ac, char **av, char **ev)
 	if (!new)
 		panic("malloc");
 	ft_bzero(new, sizeof(t_data));
+	new->out_fd = STDERR_FILENO;
 	new->argc = ac;
 	new->args = av;
 	new->err_no = 0;
@@ -52,13 +53,12 @@ t_data	*init_data(int ac, char **av, char **ev)
 	set_env(new, ev);
 	temp = get_env_var(new, "PATH");
 	if (temp)
-		new->path = ft_strdup(temp->val);
+		new->path = ft_strndup(temp->val, str_len(temp->val), new);
 	temp = get_env_var(new, "OLDPWD");
 	if (temp)
-		new->old_pwd = ft_strdup(temp->val);
+		new->old_pwd = ft_strndup(temp->val, str_len(temp->val), new);
 	temp = get_env_var(new, "PWD");
 	if (temp)
-		new->pwd = ft_strdup(temp->val);
-	new->user = get_env_var(new, "USER");
+		new->pwd = ft_strndup(temp->val, str_len(temp->val), new);
 	return (new);
 }
