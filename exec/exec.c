@@ -52,13 +52,13 @@ void	parent_wait_child(t_data *data, int count)
 		data->err_no = 1;
 }
 
-pid_t	make_fork(void)
+pid_t	make_fork(t_data *data)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == -1)
-		panic("fork err");
+		end_it(data);
 	return (pid);
 }
 
@@ -66,7 +66,7 @@ void	fork_and_run_child(t_data *data, t_cmd *cmd, char **envp, int i)
 {
 	data->child_start = 1;
 	data->pid[i] = -1;
-	data->pid[i] = make_fork();
+	data->pid[i] = make_fork(data);
 	if (data->pid[i] == 0)
 		run_child(data, cmd, envp, data->prev_fd);
 	data->prev_fd = close_fds_parent(data->prev_fd, cmd);

@@ -91,7 +91,7 @@ long	ft_exit_atol(t_data *data, t_cmd *n)
 		{
 			exit_code = ft_atol(n->args[1]);
 			if (exit_code == -1)
-				return (s_e(data, 2), ft_putmsg_fd(EX, n->args[1], NAR, 2), 2);
+				return (s_e(data, 2), ft_putmsg_fd(EX, n->args[1], NAR, data), 2);
 			if (exit_code < 0)
 				exit_code = (exit_code % 256 + 256) % 256;
 		}
@@ -110,13 +110,13 @@ int	ft_exit(t_data *data, t_cmd *node)
 	if (node->args[1] == NULL)
 		return (exit_no_args(data, node));
 	if (handle_signs(node->args[1]) != 0)
-		return (s_e(data, 2), ft_putmsg_fd("exit: ", node->args[1], NAR, 2), 2);
+		return (s_e(data, 2), ft_putmsg_fd("exit: ", node->args[1], NAR, data), 2);
 	while (node->args[1][i] != '\0')
 	{
 		if (ft_isdigit(node->args[1][i]) == 0
 			&& node->args[1][i] != '+' && node->args[1][i] != '-'
 			&& node->args[1][i] != ' ')
-			return (s_e(data, 2), ft_putmsg_fd(EX, node->args[1], NAR, 2), 2);
+			return (s_e(data, 2), ft_putmsg_fd(EX, node->args[1], NAR, data), 2);
 		i++;
 	}
 	exit_code = ft_exit_atol(data, node);

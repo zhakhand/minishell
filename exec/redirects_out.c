@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	open_and_close(t_redir *redir)
+int	open_and_close(t_redir *redir, t_data *data)
 {
 	int	out_fd;
 
@@ -21,12 +21,12 @@ int	open_and_close(t_redir *redir)
 		return (0);
 	out_fd = open(redir->val, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	if (out_fd == -1)
-		return (ft_putmsg_fd(MSH, redir->val, N_F_D, STDERR_FILENO), -1);
+		return (ft_putmsg_fd(MSH, redir->val, N_F_D, data), -1);
 	close(out_fd);
 	return (0);
 }
 
-int	handle_out_helper(t_redir *redir)
+int	handle_out_helper(t_redir *redir, t_data *data)
 {
 	int	out_fd;
 
@@ -37,7 +37,7 @@ int	handle_out_helper(t_redir *redir)
 		out_fd = open(redir->val, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	if (out_fd == -1)
 	{
-		ft_putmsg_fd(MSH, redir->val, N_F_D, STDERR_FILENO);
+		ft_putmsg_fd(MSH, redir->val, N_F_D, data);
 		return (-1);
 	}
 	if (dup2(out_fd, STDOUT_FILENO) == -1)
@@ -46,25 +46,25 @@ int	handle_out_helper(t_redir *redir)
 	return (0);
 }
 
-int	handle_output_redirects(t_redir *redirects)
+int	handle_output_redirects(t_redir *redirects, t_data *data)
 {
 	t_redir	*redir;
 
 	redir = redirects;
-	if (check_directory(redirects->val) == -1)
+	if (check_directory(redirects->val, data) == -1)
 		return (-1);
 	while (redir)
 	{
 		if (redirects->ambig == 1)
-			return (ft_putmsg_fd(MSH, redirects->val, AMB, STDERR_FILENO), -1);
+			return (ft_putmsg_fd(MSH, redirects->val, AMB, data), -1);
 		if (redir->next)
 		{
-			if (open_and_close(redir))
+			if (open_and_close(redir, data))
 				return (-1);
 		}
 		else
 		{
-			if (handle_out_helper(redir) == -1)
+			if (handle_out_helper(redir, data) == -1)
 				return (-1);
 		}
 		redir = redir->next;

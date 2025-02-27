@@ -30,7 +30,7 @@ char	**fill_env_arr(t_data *data, char **res)
 		else
 			res[i] = ft_strdup(temp->key);
 		if (!res[i])
-			panic("strjoin");
+			end_it(data);
 		if (tmp_val)
 			free(tmp_val);
 		tmp_val = NULL;
@@ -56,7 +56,7 @@ char	**make_env_arr(t_data *data)
 	}
 	res = malloc((i + 1) * sizeof(char *));
 	if (!res)
-		panic("malloc");
+		end_it(data);
 	res = fill_env_arr(data, res);
 	return (res);
 }

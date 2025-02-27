@@ -6,7 +6,7 @@
 /*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 17:31:25 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/10 15:00:45 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:51:52 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,10 @@ char	*get_key(t_data *data, char *line, int *index)
 	if (end - *index == 1 && line[end] == '?')
 	{
 		*index = end;
-		key = ft_strdup("$?");
-		if (!key)
-			end_it(data);
+		key = ft_strndup("$?", 2, data);
 		return (key);	
 	}
-	key = ft_strndup(line + *index, end - *index);
-	if (!key)
-		end_it(data);
+	key = ft_strndup(line + *index, end - *index, data);
 	*index = end;
 	return (key);
 }

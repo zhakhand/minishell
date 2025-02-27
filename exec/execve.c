@@ -12,16 +12,16 @@
 
 #include "../minishell.h"
 
-int	check_full_path(char *full_path, t_cmd *cmd, char **envp)
+int	check_full_path(char *full_path, t_cmd *cmd, char **envp, t_data *data)
 {
 	struct stat	sb;
 
 	if (stat(full_path, &sb) == -1)
-		return (ft_putmsg_fd("", cmd->args[0], N_F_D, STDERR_FILENO), 127);
+		return (ft_putmsg_fd("", cmd->args[0], N_F_D, data), 127);
 	if (S_ISDIR(sb.st_mode))
-		return (ft_putmsg_fd("", cmd->args[0], I_A_D, STDERR_FILENO), 126);
+		return (ft_putmsg_fd("", cmd->args[0], I_A_D, data), 126);
 	if (access(full_path, X_OK) == -1)
-		return (ft_putmsg_fd("", cmd->args[0], P_D, STDERR_FILENO), 126);
+		return (ft_putmsg_fd("", cmd->args[0], P_D, data), 126);
 	if (execve(full_path, cmd->args, envp))
 		return (perror ("execve"), 1);
 	return (0);
@@ -53,18 +53,18 @@ int	run_execve(t_data *data, t_cmd *cmd, char **envp)
 			if (stat(cmd->args[0], &sb) == 0)
 			{
 				if (access(cmd->args[0], X_OK) == -1)
-					return (ft_putmsg_fd("", cmd->args[0], P_D, 2), 126);
+					return (ft_putmsg_fd("", cmd->args[0], P_D, data), 126);
 				full_path = cmd->args[0];
 			}
 			else
-				return (ft_putmsg_fd("", cmd->args[0], N_F_D, 2), 127);
+				return (ft_putmsg_fd("", cmd->args[0], N_F_D, data), 127);
 		}
 		else
 		{
 			full_path = find_path(cmd->args[0], data->path_arr);
 			if (!full_path)
-				return (ft_putmsg_fd("", cmd->args[0], C_N_F, 2), 127);
+				return (ft_putmsg_fd("", cmd->args[0], C_N_F, data), 127);
 		}
 	}
-	return (check_full_path(full_path, cmd, envp));
+	return (check_full_path(full_path, cmd, envp, data));
 }

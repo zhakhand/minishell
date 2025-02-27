@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildins_utils_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 17:25:19 by oshcheho          #+#    #+#             */
-/*   Updated: 2025/02/13 18:44:16 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/02/27 14:01:38 by dzhakhan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,6 @@ char	*get_i_for_cd_up(t_data *data)
 	else
 		pwd = ft_substr(data->pwd, 0, i);
 	if (!pwd)
-		panic("pwd error!");
+		end_it(data);
 	return (pwd);
 }

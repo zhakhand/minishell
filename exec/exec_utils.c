@@ -18,27 +18,28 @@ void	panic(char *msg)
 	exit(EXIT_FAILURE);
 }
 
-void	ft_putmsg_fd(char *msg1, char *msg2, char *msg3, int fd)
+void	ft_putmsg_fd(char *msg1, char *msg2, char *msg3, t_data *data)
 {
 	char	*msg;
 	char	*temp;
 
 	msg = ft_strdup(msg1);
 	if (!msg)
-		panic("strdup");
+		end_it(data);
 	temp = ft_strjoin(msg, msg2);
 	free(msg);
 	msg = NULL;
 	if (!temp)
-		panic("strjoin");
+		end_it(data);
 	msg = ft_strjoin(temp, msg3);
 	free(temp);
 	temp = NULL;
 	if (!msg)
-		panic("strjoin");
-	ft_putstr_fd(msg, fd);
+		end_it(data);
+	ft_putstr_fd(msg, data->out_fd);
 	free(msg);
 	msg = NULL;
+	data->out_fd = 2;
 }
 
 int	ft_edge_cases(t_data *data, t_cmd *cmd)
@@ -54,7 +55,7 @@ int	ft_edge_cases(t_data *data, t_cmd *cmd)
 		|| ft_strcmp(cmd->args[0], "~") == 0)
 	{
 		data->err_no = 127;
-		ft_putmsg_fd(MSH, cmd->args[0], C_N_F, STDERR_FILENO);
+		ft_putmsg_fd(MSH, cmd->args[0], C_N_F, data);
 		return (1);
 	}
 	return (0);
@@ -74,7 +75,10 @@ int	wait_last_pid(t_data *data, int count)
 			continue ;
 		}
 		if (waitpid(data->pid[i], &status, 0) == -1)
+		{
+			clean_data(data);
 			panic("waitpid");
+		}
 		i++;
 	}
 	return (status);

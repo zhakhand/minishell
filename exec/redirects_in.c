@@ -12,19 +12,19 @@
 
 #include "../minishell.h"
 
-int	handle_in(t_redir *redir)
+int	handle_in(t_redir *redir, t_data *data)
 {
 	int	in_fd;
 
 	if (redir->ambig == 1)
 	{
-		ft_putmsg_fd(MSH, redir->val, AMB, STDERR_FILENO);
+		ft_putmsg_fd(MSH, redir->val, AMB, data);
 		return (-1);
 	}
 	in_fd = open(redir->val, O_RDONLY);
 	if (in_fd == -1)
 	{
-		ft_putmsg_fd(MSH, redir->val, N_F_D, STDERR_FILENO);
+		ft_putmsg_fd(MSH, redir->val, N_F_D, data);
 		return (-1);
 	}
 	if (dup2(in_fd, STDIN_FILENO) == -1)
@@ -33,7 +33,7 @@ int	handle_in(t_redir *redir)
 	return (0);
 }
 
-int	handle_input_redirects(t_redir *redir)
+int	handle_input_redirects(t_redir *redir, t_data *data)
 {
 	t_redir	*redirects;
 	int		in_fd;
@@ -43,7 +43,7 @@ int	handle_input_redirects(t_redir *redir)
 	{
 		if (redirects->type == IN)
 		{
-			if (handle_in(redirects) == -1)
+			if (handle_in(redirects, data) == -1)
 				return (-1);
 		}
 		else if (redirects->type == HEREDOC)
@@ -51,7 +51,7 @@ int	handle_input_redirects(t_redir *redir)
 			set_signals(HEREDOC);
 			in_fd = open(redirects->heredoc, O_RDONLY);
 			if (in_fd == -1)
-				return (ft_putmsg_fd(MSH, redirects->heredoc, N_F_D, 2), -1);
+				return (ft_putmsg_fd(MSH, redirects->heredoc, N_F_D, data), -1);
 			if (dup2(in_fd, STDIN_FILENO) == -1)
 				return (-1);
 			close(in_fd);

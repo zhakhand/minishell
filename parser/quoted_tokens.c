@@ -58,14 +58,17 @@ t_token	*set_quoted(t_token *token, t_token *head)
 	return (curr);
 }
 
-t_token	*break_down_tokens(t_token *token)
+t_token	*break_down_tokens(t_token *token, t_data *data)
 {
 	t_token	*head;
 	t_token	*curr;
 
 	head = NULL;
 	curr = NULL;
-	head = tokenize_quotes_vars(token->val);
+	if (data->line)
+		free(data->line);
+	data->line = NULL;
+	head = tokenize_quotes_vars(token->val, data);
 	curr = set_quoted(token, head);
 	return (link_tokens(token, head, curr));
 }
@@ -83,9 +86,9 @@ void	clear_quote_tokens(t_data *data)
 		if (current->type == S_QUOTE || current->type == D_QUOTE)
 		{
 			if (!current->prev)
-				data->tokens = break_down_tokens(current);
+				data->tokens = break_down_tokens(current, data);
 			else
-				current = break_down_tokens(current);
+				current = break_down_tokens(current, data);
 		}
 		current = next;
 	}

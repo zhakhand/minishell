@@ -35,7 +35,7 @@ t_var	*set_env_var(t_data *data, char *key, char *val)
 	new = get_env_var(data, key);
 	if (!new)
 	{
-		new = create_env_var(key, val);
+		new = create_env_var(key, val, data);
 		return (push_back(data, new));
 	}
 	if (key && *key)
@@ -43,23 +43,23 @@ t_var	*set_env_var(t_data *data, char *key, char *val)
 	key = NULL;
 	free(new->val);
 	new->val = NULL;
-	new->val = ft_strdup(val);
+	new->val = ft_strndup(val, str_len(val), data);
 	return (new);
 }
 
-t_var	*create_env_var(char *key, char *val)
+t_var	*create_env_var(char *key, char *val, t_data *data)
 {
 	t_var	*var;
 
 	var = malloc(sizeof(t_var));
 	if (!var)
-		panic("malloc");
-	var->key = ft_strdup(key);
+		end_it(data);
+	var->key = ft_strndup(key, str_len(key), data);
 	if (key)
 		free(key);
 	key = NULL;
 	var->is_valid = 1;
-	var->val = ft_strdup(val);
+	var->val = ft_strndup(val, str_len(val), data);
 	var->next = NULL;
 	return (var);
 }
@@ -89,7 +89,7 @@ void	copy_env(t_data *data, char **envp)
 	while (envp[++i] != 0)
 	{
 		j = move_index(envp[i]);
-		new = create_env_var(ft_strndup(envp[i], j), envp[i] + j + 1);
+		new = create_env_var(ft_strndup(envp[i], j, data), envp[i] + j + 1, data);
 		if (!head)
 		{
 			head = new;
