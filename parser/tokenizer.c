@@ -58,7 +58,7 @@ t_token	*init_token(void)
 	new->is_delim = 0;
 	new->next = NULL;
 	new->prev = NULL;
-	new->ogVal = NULL;
+	new->ogval = NULL;
 	new->type = 0;
 	new->val = NULL;
 	return (new);

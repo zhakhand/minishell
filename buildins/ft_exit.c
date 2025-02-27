@@ -111,6 +111,8 @@ int	ft_exit(t_data *data, t_cmd *node)
 		return (exit_no_args(data, node));
 	if (handle_signs(node->args[1]) != 0)
 		return (s_e(data, 2), ft_putmsg_fd("exit: ", node->args[1], NAR, 2), 2);
+	if (node->args[1] && node->args[2] != NULL)
+		return (s_e(data, 1), ft_putstr_fd(E_T_M_A, STDERR_FILENO), 1);
 	while (node->args[1][i] != '\0')
 	{
 		if (ft_isdigit(node->args[1][i]) == 0
@@ -123,7 +125,6 @@ int	ft_exit(t_data *data, t_cmd *node)
 	data->err_no = exit_code;
 	if (node->next != NULL || data->we_have_child == 1)
 		return (data->err_no);
-	ft_putstr_fd("exit\n", 1);
-	clean_data(data);
-	exit (exit_code);
+	clean_exit(data, exit_code);
+	return (0);
 }

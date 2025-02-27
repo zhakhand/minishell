@@ -28,9 +28,9 @@ t_token	*link_tokens(t_token *token, t_token *head, t_token *tail)
 	if (token->val)
 		free(token->val);
 	token->val = NULL;
-	if (token->ogVal)
-		free(token->ogVal);
-	token->ogVal = NULL;
+	if (token->ogval)
+		free(token->ogval);
+	token->ogval = NULL;
 	if (token)
 		free(token);
 	token = NULL;

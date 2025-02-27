@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/19 13:34:25 by oshcheho          #+#    #+#             */
+/*   Updated: 2025/02/19 13:34:25 by oshcheho         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include <stdlib.h>
@@ -28,6 +40,8 @@ typedef struct s_redirects
 	char				*file;
 }			t_redirects;
 
+void	clean_exit(t_data *data, int exit_code);
+
 int		process_output_list(t_redir *temp, t_redir **out, t_redir **last_out);
 
 void	run_child(t_data *data, t_cmd *cmd, char **envp, int prev_fd);
@@ -45,7 +59,6 @@ char	**make_env_arr(t_data *data);
 void	s_e(t_data *data, int err_no);
 int		init_parent_vars(t_data *data, t_cmd *cmd);
 int		wait_last_pid(t_data *data, int count);
-
 
 int		handle_input_redirects(t_redir *redir);
 int		handle_output_redirects(t_redir *redirects);
