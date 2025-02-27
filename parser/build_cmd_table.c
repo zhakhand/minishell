@@ -50,8 +50,6 @@ void	add_to_list(t_token *token, t_redir *tail)
 	tail->val = token->val;
 	if (token->prev->type == HEREDOC && token->was_quoted != 0)
 		tail->expands = 0;
-	// if (token->prev->type == HEREDOC && token->was_quoted == 2 && token->ogVal)
-	// 	tail->val = token->ogVal;
 	if (token->is_ambiguous)
 		tail->ambig = 1;
 	token->val = NULL;

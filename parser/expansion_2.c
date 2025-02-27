@@ -74,30 +74,29 @@ void	clear_out_es(t_data *data)
 void	join_tokens(t_data *data)
 {
 	char	*merged;
-	t_token	*current;
+	t_token	*c;
 
-	current = NULL;
+	c = NULL;
 	if (data->tokens)
-		current = data->tokens;
-	while (current)
+		c = data->tokens;
+	while (c)
 	{
-		if (current->touches_next == 1 && current->next)
+		if (c->touches_next == 1 && c->next)
 		{
-			if (current->is_delim && (current->was_quoted != 0 \
-			|| current->next->was_quoted != 0))
+			if (c->is_delim && (c->was_quoted != 0 || c->next->was_quoted != 0))
 			{
-				current->was_quoted = 2;
-				current->next->was_quoted = 2;
+				c->was_quoted = 2;
+				c->next->was_quoted = 2;
 			}
-			merged = ft_strjoin(current->val, current->next->val);
+			merged = ft_strjoin(c->val, c->next->val);
 			if (!merged)
 				end_it(data);
-			current = relink_tokens(current, current->next, data);
-			free(current->val);
-			current->val = merged;
+			c = relink_tokens(c, c->next, data);
+			free(c->val);
+			c->val = merged;
 		}
 		else
-			current = current->next;
+			c = c->next;
 	}
 }
 

@@ -15,7 +15,8 @@
 void	fbi_open_up(t_token *new, t_data *data, int *start, int *end)
 {
 	*end = *start;
-	while (data->line[*end] != 32 && data->line[*end] != 0 && data->line[*end] != '$')
+	while (data->line[*end] != 32 && data->line[*end] != 0
+		&& data->line[*end] != '$')
 		(*end)++;
 	new->val = ft_strndup(data->line + *start, *end - *start, data);
 	if (!new->val)

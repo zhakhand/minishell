@@ -60,7 +60,6 @@ void	s_e(t_data *data, int err_no);
 int		init_parent_vars(t_data *data, t_cmd *cmd);
 int		wait_last_pid(t_data *data, int count);
 
-
 int		handle_input_redirects(t_redir *redir, t_data *data);
 int		handle_output_redirects(t_redir *redirects, t_data *data);
 int		process_input_list(t_redir *temp, t_redir **in, t_redir **last_input);

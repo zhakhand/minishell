@@ -12,16 +12,16 @@
 
 #include "../minishell.h"
 
-int	process_input_redirects(t_redir *input_redirects, t_data *data)
+int	process_input_redirects(t_redir *in_redirects, t_data *data)
 {
-	if (input_redirects && handle_input_redirects(input_redirects, data) == -1)
+	if (in_redirects && handle_input_redirects(in_redirects, data) == -1)
 		return (-1);
 	return (0);
 }
 
-int	process_output_redirects(t_redir *output_redirects, t_data *data)
+int	process_output_redirects(t_redir *out_redirects, t_data *data)
 {
-	if (output_redirects && handle_output_redirects(output_redirects, data) == -1)
+	if (out_redirects && handle_output_redirects(out_redirects, data) == -1)
 		return (-1);
 	return (0);
 }

@@ -34,6 +34,33 @@ void	set_env(t_data *data, char **ev)
 		copy_env(data, ev);
 }
 
+void	increase_shell_lvl(t_data *data)
+{
+	int		val;
+	char	*s;
+	t_var	*lvl;
+
+	lvl = get_env_var(data, "SHLVL");
+	if (!lvl)
+		lvl = set_env_var(data, ft_strndup("SHLVL", 5, data), "0");
+	val = ft_atoi(lvl->val) + 1;
+	s = ft_itoa(val);
+	if (!s)
+		end_it(data);
+	set_env_var(data, ft_strndup("SHLVL", 5, data), s);
+	free(s);
+}
+
+void	init_data_helper(t_data *new)
+{
+	new->redir_err = 0;
+	new->err_no = 0;
+	new->out_fd = STDERR_FILENO;
+	new->err_no = 0;
+	new->we_have_child = 0;
+	new->last_err = 0;
+}
+
 t_data	*init_data(int ac, char **av, char **ev)
 {
 	t_data	*new;
@@ -43,13 +70,9 @@ t_data	*init_data(int ac, char **av, char **ev)
 	if (!new)
 		panic("malloc");
 	ft_bzero(new, sizeof(t_data));
-	new->out_fd = STDERR_FILENO;
 	new->argc = ac;
 	new->args = av;
-	new->err_no = 0;
-	new->we_have_child = 0;
-	new->last_err = 0;
-	new->redir_err = 0;
+	init_data_helper(new);
 	set_env(new, ev);
 	temp = get_env_var(new, "PATH");
 	if (temp)
@@ -61,4 +84,5 @@ t_data	*init_data(int ac, char **av, char **ev)
 	if (temp)
 		new->pwd = ft_strndup(temp->val, str_len(temp->val), new);
 	return (new);
+	increase_shell_lvl(new);
 }
