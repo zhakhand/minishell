@@ -6,7 +6,7 @@
 /*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 17:31:25 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/27 13:51:52 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/27 19:51:58 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*get_key(t_data *data, char *line, int *index)
 	{
 		*index = end;
 		key = ft_strndup("$?", 2, data);
-		return (key);	
+		return (key);
 	}
 	key = ft_strndup(line + *index, end - *index, data);
 	*index = end;
@@ -51,6 +51,14 @@ void	expand_error(t_data *data, char **exp_line)
 		end_it(data);
 }
 
+void	expand_variable_helper(char **temp, char **key, char **exp_line)
+{
+	free(*temp);
+	free(*key);
+	if (!*exp_line)
+		end_it(NULL);
+}
+
 void	expand_variable(char *line, int *index, char **exp_line, t_data *data)
 {
 	t_var	*env_var;
@@ -68,8 +76,7 @@ void	expand_variable(char *line, int *index, char **exp_line, t_data *data)
 	key = get_key(data, line, index);
 	if (ft_strcmp(key, "$?") == 0)
 	{
-		free(key);
-		key = NULL;
+		free_and_null(&key);
 		return (expand_error(data, exp_line));
 	}
 	env_var = get_env_var(data, key + 1);
@@ -77,10 +84,7 @@ void	expand_variable(char *line, int *index, char **exp_line, t_data *data)
 		*exp_line = ft_strjoin(temp, "");
 	else
 		*exp_line = ft_strjoin(temp, env_var->val);
-	free(temp);
-	free(key);
-	if (!*exp_line)
-		end_it(data);
+	expand_variable_helper(&temp, &key, exp_line);
 	(*index)--;
 }
 

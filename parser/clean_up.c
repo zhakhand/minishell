@@ -59,10 +59,8 @@ void	clean_env(t_data *data)
 	}
 }
 
-void	clean_data(t_data *data)
+void	clean_data_helper(t_data *data)
 {
-	if (!data)
-		return ;
 	if (data->tokens)
 		free_tokens(data->tokens);
 	if (data->cmds)
@@ -77,7 +75,6 @@ void	clean_data(t_data *data)
 		clean_env(data);
 	if (data->old_pwd)
 		free(data->old_pwd);
-//	if (data->line)
 	if (data->pwd)
 		free(data->pwd);
 	if (data->path)
@@ -85,6 +82,13 @@ void	clean_data(t_data *data)
 	if (data->temp_name)
 		free(data->temp_name);
 	free(data->line);
+}
+
+void	clean_data(t_data *data)
+{
+	if (!data)
+		return ;
+	clean_data_helper(data);
 	free(data);
 	data = NULL;
 	close(STDIN_FILENO);
@@ -94,6 +98,8 @@ void	clean_data(t_data *data)
 
 void	reset_data(t_data *data)
 {
+	free(data->line);
+	data->line = NULL;
 	if (!data)
 		return ;
 	if (data->tokens)

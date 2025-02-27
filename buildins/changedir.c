@@ -37,7 +37,7 @@ int	cd_prev(t_data *data)
 
 	if (!data->old_pwd || data->old_pwd[0] == '\0')
 	{
-		return (ft_putmsg_fd("cd: ", "OLDPWD not set", "\n", data), EXIT_FAILURE);
+		return (ft_putmsg_fd("cd: ", O_PWD, "\n", data), EXIT_FAILURE);
 	}
 	pwd = ft_strdup(data->pwd);
 	old_pwd = ft_strdup(data->old_pwd);

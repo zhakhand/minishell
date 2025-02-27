@@ -89,7 +89,8 @@ void	copy_env(t_data *data, char **envp)
 	while (envp[++i] != 0)
 	{
 		j = move_index(envp[i]);
-		new = create_env_var(ft_strndup(envp[i], j, data), envp[i] + j + 1, data);
+		new = create_env_var(ft_strndup(envp[i], j, data), \
+		envp[i] + j + 1, data);
 		if (!head)
 		{
 			head = new;

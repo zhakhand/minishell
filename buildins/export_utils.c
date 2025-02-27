@@ -34,7 +34,8 @@ int	add_to_env_end(char *str, t_data *data)
 		new_var = get_env_var(data, str);
 		if (!new_var)
 		{
-			new_var = set_env_var(data, ft_strndup(str, str_len(str), data), "");
+			new_var = set_env_var \
+			(data, ft_strndup(str, str_len(str), data), "");
 			new_var->is_valid = 0;
 		}
 		return (0);

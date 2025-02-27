@@ -57,3 +57,12 @@ char	*ft_strndup(char *str, int len, t_data *data)
 	ret_str[i] = '\0';
 	return (ret_str);
 }
+
+void	free_and_null(char **str)
+{
+	if (*str)
+	{
+		free(*str);
+		*str = NULL;
+	}
+}

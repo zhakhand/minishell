@@ -6,7 +6,7 @@
 /*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
-/*   Updated: 2025/02/27 13:51:24 by dzhakhan         ###   ########.fr       */
+/*   Updated: 2025/02/27 18:16:13 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	open_heredoc(t_data *data, t_redir *redir, int i)
 	if (!filename)
 		end_it(data);
 	redir->heredoc = ft_strndup(filename, str_len(filename), data);
-	free(filename);// leaks?
+	free(filename);
 	filename = NULL;
 	fd = open(redir->heredoc, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fill_heredoc(fd, redir, data) == -1)

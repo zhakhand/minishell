@@ -13,44 +13,14 @@
 #include "minishell.h"
 #include "parser.h"
 
-sig_atomic_t g_signal = 0;
+sig_atomic_t	g_signal = 0;
 
-void	increase_shell_lvl(t_data *data)
+char	**fill_temp(char **res, t_data *data)
 {
-	int		val;
-	char	*s;
-	t_var	*lvl;
+	int		i;
+	char	*tmp;
+	t_var	*temp;
 
-	lvl = get_env_var(data, "SHLVL");
-	if (!lvl)
-		lvl = set_env_var(data, ft_strndup("SHLVL", 5, data), "0");
-	val = ft_atoi(lvl->val) + 1;
-	s = ft_itoa(val);
-	if (!s)
-		end_it(data);
-	set_env_var(data, ft_strndup("SHLVL", 5, data), s);
-	free(s);
-	//printf("SHLVL= %s\n", lvl->val);
-}
-
-char **make_env(t_data *data)
-{
-	char **res;
-	char *tmp;
-	t_var *temp;
-	int i;
-
-	temp = data->env_var;
-	tmp = NULL;
-	i = 0;
-	while (temp)
-	{
-		i++;
-		temp = temp->next;
-	}
-	res = ft_calloc((i + 1), sizeof(char *));
-	if (!res)
-		end_it(data);
 	i = 0;
 	temp = data->env_var;
 	while (temp)
@@ -72,58 +42,74 @@ char **make_env(t_data *data)
 	return (res);
 }
 
-void	print_tokens(t_data *data)
+char	**make_env(t_data *data)
 {
-	t_token *curr;
+	t_var	*temp;
+	char	**res;
+	char	*tmp;
+	int		i;
 
-	curr = NULL;
-	if (data->tokens)
-		curr = data->tokens;
-	while (curr)
+	temp = data->env_var;
+	tmp = NULL;
+	i = 0;
+	while (temp)
 	{
-		printf("[%s]", curr->val);
-		curr = curr->next;
+		i++;
+		temp = temp->next;
+	}
+	res = ft_calloc((i + 1), sizeof(char *));
+	if (!res)
+		end_it(data);
+	res = fill_temp(res, data);
+	if (!res)
+		end_it(data);
+	return (res);
+}
+
+void	tokens_and_heredoc(t_data *data)
+{
+	t_cmd	*cmd;
+
+	cmd = NULL;
+	data->env = make_env(data);
+	data->tokens = tokenize(data);
+	if (data->tokens && reorder_tokens(data) == 0)
+	{
+		set_cmd_table(data);
+		set_signals(HEREDOC);
+		if (data->cmds && heredoc(data) == 0)
+		{
+			set_signals(PARENT);
+			cmd = data->cmds;
+			run_pipe(data, cmd, data->env);
+		}
 	}
 }
 
-
-int main(int ac, char **av, char **ev)
+void	make_line(t_data *data)
 {
-//	char *line;
-	char *prompt;
-	t_cmd *cmd;
-//	char *prompt;
-	t_data *data;
-	int err_no;
-//	char **env;
-	
+	char	*prompt;
 
-	// t_cmd	*cmd;
+	data->env = NULL;
+	prompt = ft_strjoin(data->pwd, " $ ");
+	if (!prompt)
+		end_it(data);
+	data->line = readline(prompt);
+	add_history(data->line);
+	free(prompt);
+	prompt = NULL;
+}
 
-//printf("1\n");
+int	main(int ac, char **av, char **ev)
+{
+	t_data	*data;
+	int		err_no;
+
 	data = init_data(ac, av, ev);
-	data->err_no = 0;
-	increase_shell_lvl(data);
 	while (1)
 	{
 		set_signals(PARENT);
-		// if (isatty(fileno(stdin)))
-		// 	line = readline("> ");
-		// else
-		// {
-		// 	char *pr;
-		// 	pr = get_next_line(fileno(stdin));
-		// 	line = ft_strtrim(pr, "\n");
-		// 	free(pr);
-		// }
-		cmd = NULL;
-		data->env = NULL;
-		prompt = ft_strjoin(data->pwd, " $ ");
-		if (!prompt)
-			end_it(data);
-		data->line = readline(prompt);
-		free(prompt);
-		prompt = NULL;
+		make_line(data);
 		if (data->line == 0)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
@@ -131,44 +117,11 @@ int main(int ac, char **av, char **ev)
 		}
 		if (ft_strlen(data->line) == 0)
 			continue ;
-		data->env = make_env(data);
-		//data->path_arr = get_path_arr(env);
-		data->tokens = tokenize(data);
-		if (data->tokens && reorder_tokens(data) == 0)
-		{
-			set_cmd_table(data);
-			set_signals(HEREDOC);
-			if (data->cmds && heredoc(data) == 0)
-			{
-				set_signals(PARENT);
-				cmd = data->cmds;
-				run_pipe(data, cmd, data->env);
-			}
-		}
-		//data->env_arr = make_env(data);
-		// if (!data->env_arr)
-		// 	panic("malloc");
-		//data->err_no = run_pipe(data, data->cmds, ev);
-		// free_tokens(data->tokens);
-		// free_cmds(data->cmds);
-		add_history(data->line);
-		free(data->line);
-		data->line = NULL;
-		// if (env)
-		// 	free_args(&env);
+		tokens_and_heredoc(data);
 		reset_data(data);
-//		clean_data(data);
-	
-	//	break;
 	}
-
-
-//	print_cmd_table(data->cmds);
 	err_no = data->err_no;
 	clean_data(data);
-
-    clear_history();
-
+	clear_history();
 	return (err_no);
-
 }
