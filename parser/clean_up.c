@@ -28,9 +28,9 @@ void	free_tokens(t_token *token)
 		if (to_free->val)
 			free(to_free->val);
 		to_free->val = NULL;
-		if (to_free->ogVal)
-			free(to_free->ogVal);
-		to_free->ogVal = NULL;
+		if (to_free->ogval)
+			free(to_free->ogval);
+		to_free->ogval = NULL;
 		if (to_free)
 			free(to_free);
 		to_free = NULL;

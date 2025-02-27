@@ -6,7 +6,7 @@
 /*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 17:25:19 by oshcheho          #+#    #+#             */
-/*   Updated: 2025/02/13 18:44:16 by oshcheho         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:55:36 by oshcheho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ int	exit_no_args(t_data *data, t_cmd *node)
 	exit_code = data->err_no;
 	if (node->next != NULL || data->we_have_child == 1)
 		return (data->err_no);
+	ft_putstr_fd("exit\n", 1);
+	clean_data(data);
+	exit (exit_code);
+}
+
+void	clean_exit(t_data *data, int exit_code)
+{
 	ft_putstr_fd("exit\n", 1);
 	clean_data(data);
 	exit (exit_code);
