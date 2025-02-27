@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dzhakhan <dzhakhan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oshcheho <oshcheho@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 14:29:19 by dzhakhan          #+#    #+#             */
 /*   Updated: 2025/02/27 13:51:24 by dzhakhan         ###   ########.fr       */
@@ -13,7 +13,7 @@
 #include "../parser.h"
 #include "../minishell.h"
 
-extern sig_atomic_t g_signal;
+extern sig_atomic_t	g_signal;
 
 char	*random_name(t_data *data, int i)
 {
@@ -65,13 +65,13 @@ int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 			return (close(fd), -1);
 		if (!line)
 		{
-			ft_putstr_fd("minishell: warning: heredoc delimited by EOF\n", STDERR_FILENO);
-            break;
+			ft_putstr_fd(H_D_D, STDERR_FILENO);
+			break ;
 		}
 		if (ft_strcmp(line, redir->val) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		if (redir->expands && ft_strchr(line, '$'))
 			line = expand_heredoc(line, data);

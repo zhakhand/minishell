@@ -123,7 +123,6 @@ int	ft_exit(t_data *data, t_cmd *node)
 	data->err_no = exit_code;
 	if (node->next != NULL || data->we_have_child == 1)
 		return (data->err_no);
-	ft_putstr_fd("exit\n", 1);
-	clean_data(data);
-	exit (exit_code);
+	clean_exit(data, exit_code);
+	return (0);
 }

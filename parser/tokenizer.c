@@ -63,7 +63,7 @@ t_token	*init_token(t_data *data)
 	new->is_delim = 0;
 	new->next = NULL;
 	new->prev = NULL;
-	new->ogVal = NULL;
+	new->ogval = NULL;
 	new->type = 0;
 	new->val = NULL;
 	return (new);

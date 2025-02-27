@@ -37,8 +37,6 @@ int	ft_export(t_data *data, t_cmd *node)
 {
 	int	i;
 
-	if (node->next != NULL)
-		return (0);
 	if (node->args[1] == NULL)
 		return (export_no_args(data), 0);
 	i = 1;
@@ -46,6 +44,8 @@ int	ft_export(t_data *data, t_cmd *node)
 		return (ft_putmsg_fd("export: `", node->args[1], NVI, data), 1);
 	while (node->args[i] != NULL)
 	{
+		if (node->next != NULL)
+			return (0);
 		add_to_env_end(node->args[i], data);
 		i++;
 	}

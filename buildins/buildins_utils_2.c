@@ -24,6 +24,13 @@ int	exit_no_args(t_data *data, t_cmd *node)
 	exit (exit_code);
 }
 
+void	clean_exit(t_data *data, int exit_code)
+{
+	ft_putstr_fd("exit\n", 1);
+	clean_data(data);
+	exit (exit_code);
+}
+
 char	*get_i_for_cd_up(t_data *data)
 {
 	int		i;
