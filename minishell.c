@@ -46,11 +46,9 @@ char	**make_env(t_data *data)
 {
 	t_var	*temp;
 	char	**res;
-	char	*tmp;
 	int		i;
 
 	temp = data->env_var;
-	tmp = NULL;
 	i = 0;
 	while (temp)
 	{

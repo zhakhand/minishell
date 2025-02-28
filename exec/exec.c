@@ -14,8 +14,6 @@
 #include "../parser.h"
 #include <unistd.h>
 
-extern sig_atomic_t	g_signal;
-
 int	close_fds_parent(int prev_fd, t_cmd *cmd)
 {
 	if (prev_fd != STDIN_FILENO)
@@ -50,6 +48,7 @@ void	parent_wait_child(t_data *data, int count)
 	}
 	else
 		data->err_no = 1;
+	set_signals(PARENT);
 }
 
 pid_t	make_fork(t_data *data)

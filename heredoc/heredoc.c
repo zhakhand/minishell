@@ -65,7 +65,7 @@ int	fill_heredoc(int fd, t_redir *redir, t_data *data)
 			return (close(fd), -1);
 		if (!line)
 		{
-			ft_putstr_fd(H_D_D, STDERR_FILENO);
+			heredoc_msg(redir);
 			break ;
 		}
 		if (ft_strcmp(line, redir->val) == 0)

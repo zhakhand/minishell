@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern sig_atomic_t	g_signal;
-
 int	check_directory(char *file, t_data *data)
 {
 	struct stat	sb;

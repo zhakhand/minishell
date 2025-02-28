@@ -18,7 +18,6 @@ extern sig_atomic_t	g_signal;
 void	ctrl_slash(int signal)
 {
 	(void)signal;
-	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
 }

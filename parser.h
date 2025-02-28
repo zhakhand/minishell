@@ -69,7 +69,7 @@
 # define N_A_D ": Not a directory\n"
 # define N_F_D ": No such file or directory\n"
 # define F_C_D ": Failed to change directory\n"
-# define H_D_D "minishell: warning: heredoc delimited by EOF\n"
+# define H_D_D "minishell: warning: heredoc delimited by EOF (wanted `"
 # define O_PWD "OLDPWD not set"
 
 typedef struct s_var
@@ -209,5 +209,6 @@ char	*expand_heredoc(char *line, t_data *data);
 void	end_it(t_data *data);
 void	add_to_line(char c, char **line, t_data *data);
 int		heredoc(t_data *data);
+void	heredoc_msg(t_redir *redir);
 
 #endif
