@@ -19,7 +19,8 @@ void	create_env(t_data *data)
 	t_var	*new;
 
 	pwd = getcwd(NULL, 0);
-	data->env_var = create_env_var(ft_strndup("PWD", 3, data), pwd, data);
+	data->env_var = create_env_var(ft_strndup("SHLVL", 6, data), "1", data);
+	new = set_env_var(data, ft_strndup("PWD", 3, data), pwd);
 	new = set_env_var(data, ft_strndup("OLDPWD", 6, data), "");
 	new->is_valid = 0;
 	if (pwd)
@@ -28,10 +29,20 @@ void	create_env(t_data *data)
 
 void	set_env(t_data *data, char **ev)
 {
+	t_var	*old_pwd;
+
 	if (!ev[0])
 		create_env(data);
 	else
+	{
 		copy_env(data, ev);
+		if (get_env_var(data, "OLDPWD") == NULL)
+		{
+			old_pwd = set_env_var(data, ft_strndup("OLDPWD", 6, data), "");
+			old_pwd->is_valid = 0;
+		}
+		increase_shell_lvl(data);
+	}
 }
 
 void	increase_shell_lvl(t_data *data)
@@ -42,13 +53,17 @@ void	increase_shell_lvl(t_data *data)
 
 	lvl = get_env_var(data, "SHLVL");
 	if (!lvl)
-		lvl = set_env_var(data, ft_strndup("SHLVL", 5, data), "0");
-	val = ft_atoi(lvl->val) + 1;
-	s = ft_itoa(val);
-	if (!s)
-		end_it(data);
-	set_env_var(data, ft_strndup("SHLVL", 5, data), s);
-	free(s);
+		lvl = set_env_var(data, ft_strndup("SHLVL", 6, data), "1");
+	else
+	{
+		val = ft_atoi(lvl->val);
+		s = ft_itoa(++val);
+		if (!s)
+			end_it(data);
+		set_env_var(data, ft_strndup("SHLVL", 6, data), s);
+		free(s);
+		s = NULL;
+	}
 }
 
 void	init_data_helper(t_data *new)
@@ -84,5 +99,4 @@ t_data	*init_data(int ac, char **av, char **ev)
 	if (temp)
 		new->pwd = ft_strndup(temp->val, str_len(temp->val), new);
 	return (new);
-	increase_shell_lvl(new);
 }

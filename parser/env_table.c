@@ -68,9 +68,9 @@ int	move_index(char *str)
 {
 	int	i;
 
-	i = -1;
-	while (str[++i] != '=')
-		;
+	i = 0;
+	while (str[i] != '=')
+		i++;
 	return (i);
 }
 
