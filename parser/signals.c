@@ -46,7 +46,7 @@ void	set_signals(int mode)
 	}
 	else if (mode == CHILD)
 	{
-		signal(SIGINT, ctrl_c);
+		signal(SIGINT, ctrl_c_child);
 		signal(SIGQUIT, ctrl_slash);
 	}
 	else if (mode == HEREDOC)
