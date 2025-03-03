@@ -57,7 +57,7 @@ void	run_child(t_data *data, t_cmd *cmd, char **envp, int prev_fd)
 	if (prev_fd != STDIN_FILENO)
 	{
 		if (dup2(prev_fd, STDIN_FILENO) == -1)
-			panic("dup2 prev_fd");
+			end_it(data);
 		close(prev_fd);
 	}
 	check_redirects(data, cmd);
@@ -66,7 +66,7 @@ void	run_child(t_data *data, t_cmd *cmd, char **envp, int prev_fd)
 	{
 		close(cmd->fds[0]);
 		if (dup2(cmd->fds[1], STDOUT_FILENO) == -1)
-			panic("dup2 fds[1]");
+			end_it(data);
 		close(cmd->fds[1]);
 	}
 	if (!check_child_buildin(cmd) && data->redir_err == 0)

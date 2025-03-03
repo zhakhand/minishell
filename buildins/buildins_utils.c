@@ -48,6 +48,7 @@ int	exec_buildin(t_data *data, t_cmd *node)
 	int	res;
 
 	res = 0;
+	signal(SIGPIPE, SIG_IGN);
 	if (node == NULL || node->cmd == NULL)
 		return (-1);
 	if (node->built_in == CD && !node->prev)
