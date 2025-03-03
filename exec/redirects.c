@@ -74,10 +74,10 @@ int	process_redir_list(t_redir *temp, t_redir **in, t_redir **out, t_data *data)
 		process_output_list(temp, out, &last_output);
 		temp = temp->next;
 	}
-	if (last_input)
-		last_input->next = NULL;
-	if (last_output)
-		last_output->next = NULL;
+	// if (last_input)
+	// 	last_input->next = NULL;
+	// if (last_output)
+	// 	last_output->next = NULL;
 	return (0);
 }
 
