@@ -25,11 +25,11 @@ char	*random_name(t_data *data, int i)
 	if (!num)
 		end_it(data);
 	if (i % 3 == 0)
-		res = ft_strjoin("here", num);
+		res = ft_strjoin("/tmp/here", num);
 	else if (i % 3 == 1)
-		res = ft_strjoin("there", num);
+		res = ft_strjoin("/tmp/there", num);
 	else
-		res = ft_strjoin("nowhere", num);
+		res = ft_strjoin("/tmp/nowhere", num);
 	free(num);
 	if (!res)
 		end_it(data);
