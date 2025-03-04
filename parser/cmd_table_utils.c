@@ -17,6 +17,34 @@ int	is_redir(int type)
 	return (type == IN || type == OUT || type == HEREDOC || type == APPEND);
 }
 
+t_redir	*redir_list(t_token *token, t_data *data)
+{
+	t_redir	*head;
+	t_redir	*prev;
+	t_redir	*tail;
+
+	head = NULL;
+	prev = NULL;
+	while (token && token->type != PIPE)
+	{
+		if (is_redir(token->type) && token->next->type == WORD)
+		{
+			tail = init_redir(data);
+			if (!head)
+				head = tail;
+			if (prev)
+			{
+				prev->next = tail;
+				tail->prev = prev;
+			}
+			add_to_list(token->next, tail);
+			prev = tail;
+		}
+		token = token->next;
+	}
+	return (head);
+}
+
 t_token	*count_args(int *count, t_token *token)
 {
 	t_token	*tail;
@@ -56,7 +84,9 @@ t_token	*put_cmds(t_token *token, t_cmd *cmd, t_data *data)
 	t_token	*tail;
 
 	count = 0;
-	cmd->redir = redir_list(token, data);
+	cmd->redir_in = redir_list_in(token, data);
+	cmd->redir_out = redir_list_out(token, data);
+	cmd->redirs = redir_list(token, data);
 	tail = count_args(&count, token);
 	cmd->args = ft_calloc(count, sizeof(char *));
 	if (!cmd->args)

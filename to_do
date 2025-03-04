@@ -173,6 +173,8 @@ fixed some minor errors
                           TOTAL FAILED AND PASSED CASES:
                                       ❌ 24 
                                       ✅ 2934 
+                                      
+valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell
 
 
 echo hi > out > out2 << EOF | cat | << HI

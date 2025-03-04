@@ -7,7 +7,7 @@ BOLD=\033[1m
 RESET=\033[0m
 
 SRCS = minishell.c parser/parser.c parser/utils.c parser/tokenizer.c parser/quoted_tokens.c \
-		parser/data.c parser/env_table.c parser/env_table_utils.c parser/cmd_table_utils.c \
+		parser/data.c parser/env_table.c parser/env_table_utils.c parser/cmd_table_utils.c  parser/cmd_table_utils2.c \
 		parser/expansion.c parser/vars_tokens_tokenizer.c parser/expansion_2.c parser/clean_up_2.c \
 		parser/expansion_3.c parser/build_cmd_table.c parser/built_in_check.c parser/tokenizer_3.c \
 		parser/errors.c parser/clean_up.c parser/signals.c parser/tokenizer_2.c \

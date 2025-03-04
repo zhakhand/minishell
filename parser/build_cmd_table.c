@@ -58,7 +58,7 @@ void	add_to_list(t_token *token, t_redir *tail)
 	token->prev->val = NULL;
 }
 
-t_redir	*redir_list(t_token *token, t_data *data)
+t_redir	*redir_list_in(t_token *token, t_data *data)
 {
 	t_redir	*head;
 	t_redir	*prev;
@@ -68,7 +68,8 @@ t_redir	*redir_list(t_token *token, t_data *data)
 	prev = NULL;
 	while (token && token->type != PIPE)
 	{
-		if (is_redir(token->type) && token->next->type == WORD)
+		if (is_redir(token->type) && token->next->type == WORD \
+		&& (token->type == IN || token->type == HEREDOC))
 		{
 			tail = init_redir(data);
 			if (!head)
@@ -78,7 +79,7 @@ t_redir	*redir_list(t_token *token, t_data *data)
 				prev->next = tail;
 				tail->prev = prev;
 			}
-			add_to_list(token->next, tail);
+			add_to_list_no_del(token->next, tail, data);
 			prev = tail;
 		}
 		token = token->next;

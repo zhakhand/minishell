@@ -69,9 +69,14 @@ void	free_cmds(t_cmd *cmd)
 			free_args(&to_free->args);
 		to_free->args = NULL;
 		to_free->cmd = NULL;
-		if (to_free->redir)
-			free_redirs(to_free->redir);
-		to_free->redir = NULL;
+		if (to_free->redirs)
+			free_redirs(to_free->redirs);
+		if (to_free->redir_in)
+			free_redirs(to_free->redir_in);
+		to_free->redir_in = NULL;
+		if (to_free->redir_out)
+			free_redirs(to_free->redir_out);
+		to_free->redir_out = NULL;
 		if (to_free)
 			free(to_free);
 		to_free = NULL;

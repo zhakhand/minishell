@@ -111,8 +111,8 @@ int	heredoc(t_data *data)
 	redir = NULL;
 	while (curr)
 	{
-		if (curr->redir)
-			redir = curr->redir;
+		if (curr->redir_in)
+			redir = curr->redir_in;
 		while (redir)
 		{
 			if (redir->type == HEREDOC)

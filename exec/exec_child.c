@@ -34,7 +34,8 @@ void	check_redirects(t_data *data, t_cmd *cmd)
 
 int	if_was_redir(t_cmd *cmd)
 {
-	if (cmd->redir && (cmd->redir->type == OUT || cmd->redir->type == APPEND))
+	if (cmd->redir_out \
+	&& (cmd->redir_out->type == OUT || cmd->redir_out->type == APPEND))
 		return (1);
 	return (0);
 }

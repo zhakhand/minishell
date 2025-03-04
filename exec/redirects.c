@@ -36,6 +36,8 @@ int	check_directory(char *file, t_data *data)
 	if (stat(file, &sb) == 0 && S_ISDIR(sb.st_mode))
 		return (ft_putmsg_fd(MSH, file, I_A_D, data), free(temp), -1);
 	free(temp);
+	if (open_out(file, data) == -1)
+		return (-1);
 	return (0);
 }
 
@@ -59,19 +61,12 @@ int	check_redirect(t_redir *redir, t_data *data)
 	return (0);
 }
 
-int	process_redir_list(t_redir *temp, t_redir **in, t_redir **out, t_data *data)
+int	process_redir_list(t_redir *temp, t_data *data)
 {
-	t_redir	*last_input;
-	t_redir	*last_output;
-
-	last_input = NULL;
-	last_output = NULL;
 	while (temp)
 	{
 		if (check_redirect(temp, data) == -1)
 			return (-1);
-		process_input_list(temp, in, &last_input);
-		process_output_list(temp, out, &last_output);
 		temp = temp->next;
 	}
 	return (0);
@@ -86,11 +81,11 @@ int	handle_redirects(t_data *data, t_cmd *node)
 	in = NULL;
 	out = NULL;
 	err = 0;
-	if (process_redir_list(node->redir, &in, &out, data) == -1)
+	if (process_redir_list(node->redirs, data) == -1)
 		return (-1);
-	if (process_input_redirects(in, data) == -1)
+	if (process_input_redirects(node->redir_in, data) == -1)
 		return (-1);
-	if (process_output_redirects(out, data) == -1)
+	if (process_output_redirects(node->redir_out, data) == -1)
 		return (-1);
 	data->err_no = err;
 	return (err);
