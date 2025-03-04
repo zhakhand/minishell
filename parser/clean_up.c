@@ -69,6 +69,9 @@ void	clean_data_helper(t_data *data)
 		free_args(&data->path_arr);
 	if (data->env)
 		free_args(&data->env);
+	if (data->full_path)
+		free(data->full_path);
+	data->full_path = NULL;
 	data->tokens = NULL;
 	data->cmds = NULL;
 	if (data->env_var)
@@ -112,6 +115,9 @@ void	reset_data(t_data *data)
 		free_args(&data->env);
 	if (data->temp_name)
 		free(data->temp_name);
+	if (data->full_path)
+		free(data->full_path);
+	data->full_path = NULL;
 	data->temp_name = NULL;
 	data->path_arr = NULL;
 	data->tokens = NULL;

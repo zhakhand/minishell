@@ -91,7 +91,7 @@ int	run_pipe(t_data *data, t_cmd *cmd, char **envp)
 			}
 		}
 		if (cmd->next != NULL && pipe(cmd->fds) == -1)
-			panic("pipe err");
+			end_it(data);
 		fork_and_run_child(data, cmd, envp, i);
 		cmd = cmd->next;
 		i++;

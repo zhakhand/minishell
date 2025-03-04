@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	add_slash(char ***path_arr)
+void	add_slash(char ***path_arr, t_data *data)
 {
 	int		i;
 	char	*new_path;
@@ -23,6 +23,11 @@ void	add_slash(char ***path_arr)
 		if ((*path_arr)[i][ft_strlen((*path_arr)[i]) - 1] != '/')
 		{
 			new_path = ft_strjoin((*path_arr)[i], "/");
+			if (!new_path)
+			{
+				free_args(path_arr);
+				end_it(data);
+			}
 			free((*path_arr)[i]);
 			(*path_arr)[i] = new_path;
 		}
@@ -67,7 +72,7 @@ int	get_path_line(char **envp)
 	return (-1);
 }
 
-char	**get_path_arr(char **envp)
+char	**get_path_arr(char **envp, t_data *data)
 {
 	int		i;
 	char	**path_arr;
@@ -89,7 +94,7 @@ char	**get_path_arr(char **envp)
 		free(path_arr[0]);
 		path_arr[0] = trimmed_path;
 	}
-	add_slash(&path_arr);
+	add_slash(&path_arr, data);
 	return (path_arr);
 }
 

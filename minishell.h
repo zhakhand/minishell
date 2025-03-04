@@ -112,7 +112,7 @@ int		get_arr_lines(char **arr);
 void	get_envs(t_data *data, char **envp);
 int		run_pipe(t_data *data, t_cmd *cmd, char **envp);
 char	*find_path(char *cmd, char **envp);
-char	**get_path_arr(char **envp);
+char	**get_path_arr(char **envp, t_data *data);
 void	print_path(char **path_arr);
 void	run(t_cmd_node *list, char **envp);
 void	ft_bzero(void *s, size_t n);

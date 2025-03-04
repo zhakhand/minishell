@@ -85,6 +85,7 @@ t_data	*init_data(int ac, char **av, char **ev)
 	if (!new)
 		panic("malloc");
 	ft_bzero(new, sizeof(t_data));
+	new->full_path = NULL;
 	new->argc = ac;
 	new->args = av;
 	init_data_helper(new);

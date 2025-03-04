@@ -134,6 +134,7 @@ typedef struct s_data
 	int		out_fd;
 	char	*temp_name;
 	char	*line;
+	char	*full_path;
 	char	**args;
 	char	**env;
 	char	**path_arr;
