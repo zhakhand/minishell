@@ -17,7 +17,7 @@ int	check_full_path(char *full_path, t_cmd *cmd, char **envp, t_data *data)
 	struct stat	sb;
 
 	if (stat(full_path, &sb) == -1)
-		return (ft_putmsg_fd("", cmd->args[0], N_F_D, data),127);
+		return (ft_putmsg_fd("", cmd->args[0], N_F_D, data), 127);
 	if (S_ISDIR(sb.st_mode))
 		return (ft_putmsg_fd("", cmd->args[0], I_A_D, data), 126);
 	if (access(full_path, X_OK) == -1)
