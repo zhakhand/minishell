@@ -53,7 +53,8 @@ int	run_execve(t_data *data, t_cmd *cmd, char **envp)
 			{
 				if (access(cmd->args[0], X_OK) == -1)
 					return (ft_putmsg_fd("", cmd->args[0], P_D, data), 126);
-				data->full_path = ft_strndup(cmd->args[0], str_len(cmd->args[0]), data);
+				data->full_path = \
+				ft_strndup(cmd->args[0], str_len(cmd->args[0]), data);
 			}
 			else
 				return (ft_putmsg_fd("", cmd->args[0], N_F_D, data), 127);
